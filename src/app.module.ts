@@ -5,6 +5,8 @@ import { StartModule } from './start/start.module';
 import { MenuModule } from './menu/menu.module';
 import { ConfigModule } from '@nestjs/config';
 import { ServicesModule } from './services/services.module';
+import { GeneralModule } from './general/general.module';
+import { InfoModule } from './info/info.module';
 
 const sessions = new LocalSession({ database: 'session_db.json' });
 
@@ -23,6 +25,8 @@ const sessions = new LocalSession({ database: 'session_db.json' });
     StartModule,
     MenuModule,
     ServicesModule,
+    GeneralModule,
+    InfoModule,
   ],
 })
 export class AppModule {}
