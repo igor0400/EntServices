@@ -8,6 +8,7 @@ import {
   FindOrCreateOptions,
   UpdateOptions,
 } from 'sequelize';
+import { Col, Fn, Literal } from 'sequelize/types/utils';
 
 export abstract class AbstractRepository<
   TModel extends AbstractModel,
@@ -53,7 +54,13 @@ export abstract class AbstractRepository<
   }
 
   async findOrCreate(options: FindOrCreateOptions<TModel, TModelCreation>) {
-    const documents = await this.model.findOrCreate(options);
+    const documents = await this.model.findOrCreate({
+      ...options,
+      defaults: {
+        id: getUId(),
+        ...options?.defaults,
+      },
+    });
 
     return documents[0] as TModel;
   }
@@ -65,7 +72,9 @@ export abstract class AbstractRepository<
   }
 
   async update(
-    values: TModel,
+    values: {
+      [key in keyof TModel]?: TModel[key] | Fn | Col | Literal;
+    },
     options: Omit<UpdateOptions<TModel>, 'returning'>,
   ) {
     const affectedCount = await this.model.update(values, options);

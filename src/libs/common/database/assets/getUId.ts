@@ -1,5 +1,5 @@
 import { uid } from 'uid';
 
 export const getUId = () => {
-  return `${uid(10)}-${uid(10)}-${uid(10)}-${uid(10)}`;
+  return uid(20);
 };
