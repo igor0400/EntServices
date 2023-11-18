@@ -1,4 +1,4 @@
-import { backMarkup } from '../../general';
+import { backInlineBtn } from '../../general';
 
 export const infoMessage = () => `<b>Информация</b>
 
@@ -17,6 +17,6 @@ export const infoMarkup = {
       { text: '📨 Наш канал', url: 'https://t.me/EntServicesNews' },
     ],
     [{ text: '💻 Администратор', url: `https://t.me/just_close` }],
-    ...backMarkup.inline_keyboard,
+    backInlineBtn,
   ],
 };

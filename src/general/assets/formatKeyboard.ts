@@ -1,4 +1,7 @@
-export const formatKeyboard = (arr: any[], rowLen = 2) => {
+export const formatKeyboard = (
+  arr: { text: string; callback_data: string }[],
+  rowLen = 2,
+) => {
   const keyboardItems = [];
   let prepeadedItems = [];
   let index = 0;

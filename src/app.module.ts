@@ -10,6 +10,8 @@ import { InfoModule } from './info/info.module';
 import { validationSchema } from './libs/common';
 import { UsersModule } from './users/users.module';
 import { DatabaseModule } from './general/database/database.module';
+import { ListenersModule } from './listeners/listeners.module';
+import { CalendarModule } from './calendar/calendar.module';
 
 const sessions = new LocalSession({ database: 'session_db.json' });
 
@@ -34,6 +36,8 @@ const sessions = new LocalSession({ database: 'session_db.json' });
     GeneralModule,
     InfoModule,
     UsersModule,
+    ListenersModule,
+    CalendarModule,
   ],
 })
 export class AppModule {}

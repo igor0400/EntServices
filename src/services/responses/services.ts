@@ -1,4 +1,4 @@
-import { backMarkup } from '../../general';
+import { backInlineBtn } from '../../general';
 
 export const servicesMessage = () => `<b>Сервисы</b>
 
@@ -7,6 +7,6 @@ export const servicesMessage = () => `<b>Сервисы</b>
 export const servicesMarkup = {
   inline_keyboard: [
     [{ text: '🗓 Календарь', callback_data: 'calendar' }],
-    ...backMarkup.inline_keyboard,
+    backInlineBtn,
   ],
 };
