@@ -4,8 +4,8 @@ services:
   # app:
   #   build: ./
 
-  #   container_name: 'EntServices'
-  #   image: EntServices
+  #   container_name: 'entservices'
+  #   image: entservices
 
   #   ports:
   #     - '8080:8080'
@@ -17,12 +17,9 @@ services:
   #   environment:
   #     # - REDIS_HOST=redis
   #     # - REDIS_PORT=6379
-  #     - DATABASE_HOST=database
-  #     - DATABASE_PORT=3306
+  #     - MYSQL_HOST=database
+  #     - MYSQL_PORT=3306
   #     - NODE_ENV=production
-
-  #   volumes:
-  #     - 'D:/Progects/Ent/EntServices:/data'
 
   database:
     container_name: 'database'

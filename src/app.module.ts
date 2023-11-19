@@ -19,7 +19,7 @@ const sessions = new LocalSession({ database: 'session_db.json' });
   imports: [
     ConfigModule.forRoot({
       validationSchema,
-      envFilePath: `.${process.env.NODE_ENV}.env`,
+      envFilePath: [`.${process.env.NODE_ENV}.env`, `.env.stage.dev`],
       isGlobal: true,
     }),
     TelegrafModule.forRootAsync({
