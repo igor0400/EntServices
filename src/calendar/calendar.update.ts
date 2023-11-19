@@ -24,4 +24,17 @@ export class CalendarUpdate {
     );
   }
 
+  @Action(/.*::next_calendar_mouth/)
+  async nextCalendarMouthBtn(ctx: Context) {
+    await this.middlewares.btnMiddleware(ctx, (ctx: Context) =>
+      this.calendarService.navCalendarItem(ctx, 'next'),
+    );
+  }
+
+  @Action(/.*::prev_calendar_mouth/)
+  async prevCalendarMouthBtn(ctx: Context) {
+    await this.middlewares.btnMiddleware(ctx, (ctx: Context) =>
+      this.calendarService.navCalendarItem(ctx, 'prev'),
+    );
+  }
 }

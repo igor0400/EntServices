@@ -10,22 +10,22 @@ export const calendarMessage = () => `<b>Календарь встреч/соб�
 
 <i>❌ – день недоступен</i>`;
 
-export const calendarMarkup = () => {
+export const calendarMarkup = (incMouth = 0) => {
   const oldestDate = getNowDate();
-  oldestDate.setMonth(oldestDate.getMonth() + 1);
+  oldestDate.setMonth(oldestDate.getMonth() + 1 + incMouth);
   oldestDate.setDate(0);
-
   const maxDate = oldestDate.getDate();
   const maxDateDay = oldestDate.getDay();
-  const newestDate = getNowDate();
 
+  const newestDate = getNowDate();
+  newestDate.setMonth(newestDate.getMonth() + incMouth);
   newestDate.setDate(1);
   const minDateDay = newestDate.getDay();
 
   const days = [];
 
   if (minDateDay !== 1) {
-    days.push(...getEmptyDays(minDateDay - 1));
+    days.push(...getEmptyDays(minDateDay === 0 ? 6 : minDateDay - 1));
   }
 
   for (let i = 1; i < maxDate + 1; i++) {
@@ -37,18 +37,20 @@ export const calendarMarkup = () => {
 
   const daysDiff = maxDate % 7;
 
-  if (daysDiff !== 0 && maxDateDay !== 7) {
+  if (daysDiff !== 0 && maxDateDay !== 0) {
     days.push(...getEmptyDays(7 - maxDateDay));
   }
 
+  const mouthBtn = months[oldestDate.getMonth()];
+
   return {
     inline_keyboard: [
-      [months[oldestDate.getMonth()]],
+      [{ ...mouthBtn, text: `${mouthBtn.text} ${oldestDate.getFullYear()}` }],
       weekDays,
       ...formatKeyboard(days, 7),
       [
-        { text: '◀️', callback_data: 'prev' },
-        { text: '▶️', callback_data: 'next' },
+        { text: '◀️', callback_data: `${incMouth}::prev_calendar_mouth` },
+        { text: '▶️', callback_data: `${incMouth}::next_calendar_mouth` },
       ],
       backInlineBtn,
     ],
