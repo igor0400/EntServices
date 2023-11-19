@@ -24,10 +24,4 @@ export class CalendarUpdate {
     );
   }
 
-  @Action('calendar_v2')
-  async calendarV2Btn(ctx: Context) {
-    await this.middlewares.btnMiddleware(ctx, (ctx: Context) =>
-      this.calendarService.changeToCalendarV2(ctx),
-    );
-  }
 }

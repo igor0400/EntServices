@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { replyPhoto } from 'src/libs/common';
 import { Context } from 'telegraf';
-import { calendarMarkup, calendarMessage, calendarV2Markup } from './responses';
+import { calendarMarkup, calendarMessage } from './responses';
 
 @Injectable()
 export class CalendarService {
@@ -16,13 +16,6 @@ export class CalendarService {
   async changeToCalendar(ctx: Context) {
     await ctx.editMessageCaption(calendarMessage(), {
       reply_markup: calendarMarkup(),
-      parse_mode: 'HTML',
-    });
-  }
-
-  async changeToCalendarV2(ctx: Context) {
-    await ctx.editMessageCaption(calendarMessage(), {
-      reply_markup: calendarV2Markup(),
       parse_mode: 'HTML',
     });
   }

@@ -8,9 +8,7 @@ export const calendarMessage = () => `<b>Календарь встреч/соб�
 
 👇 Выберите день для...
 
-<i>🟢 – день свободен
-🟡 – день частично свободен
-🔴 – день занят</i>`;
+<i>❌ – день недоступен</i>`;
 
 export const calendarMarkup = () => {
   const oldestDate = getNowDate();
@@ -31,7 +29,10 @@ export const calendarMarkup = () => {
   }
 
   for (let i = 1; i < maxDate + 1; i++) {
-    days.push({ text: `${i}`, callback_data: `${i}::calendar_date` });
+    days.push({
+      text: i > 4 && i < 8 ? '❌' : `${i}`,
+      callback_data: `${i}::calendar_date`,
+    });
   }
 
   const daysDiff = maxDate % 7;
