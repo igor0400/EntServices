@@ -3,5 +3,5 @@ export const getNowDate = (incHours = 0) => {
    const totalHours = new Date().getUTCHours() + 3 + incHours;
    nowDate.setUTCHours(totalHours);
 
-   return nowDate.toISOString();
+   return nowDate;
 };

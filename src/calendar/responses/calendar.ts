@@ -1,4 +1,6 @@
-import { backInlineBtn, formatKeyboard } from '../../general';
+import { backInlineBtn, formatKeyboard, getNowDate } from '../../general';
+import { getEmptyDays } from '../assets';
+import { months, weekDays } from '../configs';
 
 export const calendarMessage = () => `<b>Календарь встреч/событий</b>
 
@@ -11,36 +13,43 @@ export const calendarMessage = () => `<b>Календарь встреч/соб�
 🔴 – день занят</i>`;
 
 export const calendarMarkup = () => {
-  const weekDays = [
-    { text: 'Пн', callback_data: 'mon' },
-    { text: 'Вт', callback_data: 'tue' },
-    { text: 'Ср', callback_data: 'wed' },
-    { text: 'Чт', callback_data: 'thu' },
-    { text: 'Пт', callback_data: 'fri' },
-    { text: 'Сб', callback_data: 'sat' },
-    { text: 'Вс', callback_data: 'sun' },
-  ];
-  const date = new Date();
-  date.setDate(-1);
-  const maxDate = date.getDate();
+  const oldestDate = getNowDate();
+  oldestDate.setMonth(oldestDate.getMonth() + 1);
+  oldestDate.setDate(0);
+
+  const maxDate = oldestDate.getDate();
+  const maxDateDay = oldestDate.getDay();
+  const newestDate = getNowDate();
+
+  newestDate.setDate(1);
+  const minDateDay = newestDate.getDay();
 
   const days = [];
 
+  if (minDateDay !== 1) {
+    days.push(...getEmptyDays(minDateDay - 1));
+  }
+
   for (let i = 1; i < maxDate + 1; i++) {
-    days.push({ text: `🟢 ${i}`, callback_data: `${i}::calendar_date` });
+    days.push({ text: `${i}`, callback_data: `${i}::calendar_date` });
   }
 
   const daysDiff = maxDate % 7;
 
-  if (daysDiff !== 0) {
-    const emptyDatesCount = 7 - daysDiff;
-
-    for (let i = 0; i < emptyDatesCount; i++) {
-      days.push({ text: ' ', callback_data: `empty_calendar_date` });
-    }
+  if (daysDiff !== 0 && maxDateDay !== 7) {
+    days.push(...getEmptyDays(7 - maxDateDay));
   }
 
   return {
-    inline_keyboard: [weekDays, ...formatKeyboard(days, 7), backInlineBtn],
+    inline_keyboard: [
+      [months[oldestDate.getMonth()]],
+      weekDays,
+      ...formatKeyboard(days, 7),
+      [
+        { text: '◀️', callback_data: 'prev' },
+        { text: '▶️', callback_data: 'next' },
+      ],
+      backInlineBtn,
+    ],
   };
 };

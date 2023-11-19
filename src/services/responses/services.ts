@@ -7,6 +7,7 @@ export const servicesMessage = () => `<b>Сервисы</b>
 export const servicesMarkup = {
   inline_keyboard: [
     [{ text: '🗓 Календарь', callback_data: 'calendar' }],
+    [{ text: '🗓 Календарь v2', callback_data: 'calendar_v2' }],
     backInlineBtn,
   ],
 };
