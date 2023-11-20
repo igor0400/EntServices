@@ -7,5 +7,6 @@ import { UsersModule } from 'src/users/users.module';
 @Module({
   imports: [GeneralModule, UsersModule],
   providers: [CalendarService, CalendarUpdate],
+  exports: [CalendarService],
 })
 export class CalendarModule {}
