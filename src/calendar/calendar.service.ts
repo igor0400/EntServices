@@ -5,6 +5,8 @@ import { calendarMarkup, calendarMessage } from './responses';
 import { getCtxData } from 'src/general';
 import { UsersRepository } from 'src/users/repositories/users.repository';
 
+// сделать дни, мб разделить все на отдельные сервисы (месяцы, дни и тд, мб как то по другому)
+
 @Injectable()
 export class CalendarService {
   constructor(private readonly userRepository: UsersRepository) {}
