@@ -4,13 +4,15 @@ import { months, weekDays } from '../configs';
 
 export const calendarMessage = () => `<b>Календарь встреч/событий</b>
 
-🗓 Календарь – это...
+🗓 Календарь – это сервис для удобного планирования встреч и событий.
 
-👇 Выберите день для...
+👇 Вы можете поделиться ссылкой на свой календарь и вам не придется обсуждать время встречи, так как человек выберет его сам, основываясь на вашем графике.
+
+При необходимости вы также можете отправить ссылку на конкретную дату, для этого выберите её и нажмите <b>поделиться ссылкой</b>.
 
 <i>❌ – день недоступен</i>`;
 
-export const calendarMarkup = (incMouth = 0) => {
+export const calendarMarkup = (userId: string, incMouth = 0) => {
   const oldestDate = getNowDate();
   oldestDate.setMonth(oldestDate.getMonth() + 1 + incMouth);
   oldestDate.setDate(0);
@@ -36,8 +38,9 @@ export const calendarMarkup = (incMouth = 0) => {
   }
 
   const daysDiff = maxDate % 7;
+  const isMouthClear = daysDiff === 0 && minDateDay === 1;
 
-  if (daysDiff !== 0 && maxDateDay !== 0) {
+  if (!isMouthClear && maxDateDay !== 0) {
     days.push(...getEmptyDays(7 - maxDateDay));
   }
 
@@ -51,6 +54,12 @@ export const calendarMarkup = (incMouth = 0) => {
       [
         { text: '◀️', callback_data: `${incMouth}::prev_calendar_mouth` },
         { text: '▶️', callback_data: `${incMouth}::next_calendar_mouth` },
+      ],
+      [
+        {
+          text: '🔗 Поделиться ссылкой',
+          url: `https://t.me/share/url?url=https://t.me/EntServicesBot?start=cal-m-${oldestDate.getMonth()}-${userId}&text=%D0%92%D0%BE%D1%82%20%D1%81%D1%81%D1%8B%D0%BB%D0%BA%D0%B0%20%D0%BD%D0%B0%20%D0%BA%D0%B0%D0%BB%D0%B5%D0%BD%D0%B4%D0%B0%D1%80%D1%8C%20%D0%BC%D0%BE%D0%B5%D0%B9%20%D0%B7%D0%B0%D0%BD%D1%8F%D1%82%D0%BE%D1%81%D1%82%D0%B8`,
+        },
       ],
       backInlineBtn,
     ],

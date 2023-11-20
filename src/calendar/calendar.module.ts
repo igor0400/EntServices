@@ -2,9 +2,10 @@ import { Module } from '@nestjs/common';
 import { CalendarService } from './calendar.service';
 import { CalendarUpdate } from './calendar.update';
 import { GeneralModule } from 'src/general/general.module';
+import { UsersModule } from 'src/users/users.module';
 
 @Module({
-  imports: [GeneralModule],
+  imports: [GeneralModule, UsersModule],
   providers: [CalendarService, CalendarUpdate],
 })
 export class CalendarModule {}

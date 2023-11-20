@@ -2,6 +2,7 @@ import { AbstractRepository } from 'src/libs/common';
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { User, UserCreationArgs } from '../models/user.model';
+import { FindOptions } from 'sequelize';
 
 @Injectable()
 export class UsersRepository extends AbstractRepository<
@@ -15,5 +16,19 @@ export class UsersRepository extends AbstractRepository<
     private userModel: typeof User,
   ) {
     super(userModel);
+  }
+
+  async findByTgId(
+    tgId: string | number,
+    options?: Omit<FindOptions<User>, 'where'>,
+  ) {
+    const document = await this.userModel.findOne({
+      where: {
+        telegramId: tgId,
+      },
+      ...options,
+    });
+
+    return document as User;
   }
 }
