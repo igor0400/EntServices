@@ -1,17 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { replyPhoto } from 'src/libs/common';
 import { Context } from 'telegraf';
-import { calendarMarkup, calendarMessage } from './responses';
+import { calendarMarkup, calendarMessage } from '../responses';
 import { getCtxData } from 'src/general';
 import { UsersRepository } from 'src/users/repositories/users.repository';
 
-// сделать дни, мб разделить все на отдельные сервисы (месяцы, дни и тд, мб как то по другому)
-
 @Injectable()
-export class CalendarService {
+export class CalendarMonthsService {
   constructor(private readonly userRepository: UsersRepository) {}
 
-  async sendCalendar(ctx: Context) {
+  async sendCalendarMouth(ctx: Context) {
     const { user: ctxUser } = getCtxData(ctx);
     const user = await this.userRepository.findByTgId(ctxUser.id);
 
@@ -22,7 +20,7 @@ export class CalendarService {
     });
   }
 
-  async changeToCalendar(ctx: Context) {
+  async changeToCalendarMouth(ctx: Context) {
     const { user: ctxUser } = getCtxData(ctx);
     const user = await this.userRepository.findByTgId(ctxUser.id);
 
@@ -32,7 +30,7 @@ export class CalendarService {
     });
   }
 
-  async navCalendarItem(ctx: Context, type: 'next' | 'prev') {
+  async navCalendarMouthItem(ctx: Context, type: 'next' | 'prev') {
     const { data, user: ctxUser } = getCtxData(ctx);
     const mouthInt = +data.split('::')[0];
     const user = await this.userRepository.findByTgId(ctxUser.id);
