@@ -10,6 +10,7 @@ export const getCtxData = (ctx: Context | any) => {
       user: query?.from,
       message: query?.message,
       data: query?.data,
+      dataValue: query?.data?.split('::')[0],
     };
   }
 };

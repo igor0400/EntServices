@@ -22,3 +22,18 @@ export const months = [
   { text: 'Ноябрь', callback_data: 'november' },
   { text: 'Декабрь', callback_data: 'december' },
 ];
+
+export const textMonths = [
+  'января',
+  'февраля',
+  'марта',
+  'апреля',
+  'мая',
+  'июня',
+  'июля',
+  'августа',
+  'сентября',
+  'октября',
+  'ноября',
+  'декабря',
+];

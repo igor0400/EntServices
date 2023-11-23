@@ -8,11 +8,20 @@ import { CalendarDaysUpdate } from './days/days.update';
 import { EventsService } from './events/events.service';
 import { EventsUpdate } from './events/events.update';
 import { DatabaseModule } from 'src/libs/common';
-import { CalendarEvent } from './models/calendar-event.model';
+import { CalendarEvent } from './models/event.model';
+import { CalendarEventMember } from './models/event-member.model';
+import { CalendarBusyDay } from './models/busy-day.model';
+import { EventsRepository } from './repositories/event.repository';
+import { EventsMembersRepository } from './repositories/event-member.repository';
+import { BusyDaysRepository } from './repositories/busy-day.repository';
 
 @Module({
   imports: [
-    DatabaseModule.forFeature([CalendarEvent]),
+    DatabaseModule.forFeature([
+      CalendarEvent,
+      CalendarEventMember,
+      CalendarBusyDay,
+    ]),
     GeneralModule,
     UsersModule,
   ],
@@ -23,6 +32,9 @@ import { CalendarEvent } from './models/calendar-event.model';
     CalendarDaysUpdate,
     EventsService,
     EventsUpdate,
+    EventsRepository,
+    EventsMembersRepository,
+    BusyDaysRepository,
   ],
   exports: [CalendarMonthsService],
 })

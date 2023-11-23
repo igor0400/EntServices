@@ -1,8 +1,9 @@
-import { backInlineBtn, formatKeyboard, getNowDate } from '../../general';
-import { getEmptyDays } from '../assets';
-import { months, weekDays } from '../configs';
+import { CalendarBusyDay } from 'src/calendar/models/busy-day.model';
+import { backInlineBtn, formatKeyboard, getNowDate } from '../../../general';
+import { getEmptyDays } from '../../assets';
+import { months, weekDays } from '../../configs';
 
-export const calendarMessage = () => `<b>Календарь встреч/событий</b>
+export const calendarMonthsMessage = () => `<b>Календарь встреч/событий</b>
 
 🗓 Календарь – это сервис для удобного планирования встреч и событий.
 
@@ -12,7 +13,11 @@ export const calendarMessage = () => `<b>Календарь встреч/соб�
 
 <i>❌ – день недоступен</i>`;
 
-export const calendarMarkup = (userId: string, incMouth = 0) => {
+export const calendarMonthsMarkup = (
+  userId: string,
+  busyDays: CalendarBusyDay[],
+  incMouth = 0,
+) => {
   const oldestDate = getNowDate();
   oldestDate.setMonth(oldestDate.getMonth() + 1 + incMouth);
   oldestDate.setDate(0);
@@ -31,9 +36,13 @@ export const calendarMarkup = (userId: string, incMouth = 0) => {
   }
 
   for (let i = 1; i < maxDate + 1; i++) {
+    const isBusy = busyDays.map((i) => i.date).includes(i);
+
     days.push({
-      text: i > 4 && i < 8 ? '❌' : `${i}`,
-      callback_data: `${i}::calendar_date`,
+      text: isBusy ? '❌' : `${i}`,
+      callback_data: `${i}.${
+        oldestDate.getMonth() + 1
+      }.${oldestDate.getFullYear()}::calendar_date`,
     });
   }
 
@@ -60,7 +69,7 @@ export const calendarMarkup = (userId: string, incMouth = 0) => {
           text: '🔗 Поделиться ссылкой',
           url: `https://t.me/share/url?url=https://t.me/EntServicesBot?start=cal-m-${
             oldestDate.getMonth() + 1
-          }-${userId}&text=%D0%92%D0%BE%D1%82%20%D1%81%D1%81%D1%8B%D0%BB%D0%BA%D0%B0%20%D0%BD%D0%B0%20%D0%BA%D0%B0%D0%BB%D0%B5%D0%BD%D0%B4%D0%B0%D1%80%D1%8C%20%D0%BC%D0%BE%D0%B5%D0%B9%20%D0%B7%D0%B0%D0%BD%D1%8F%D1%82%D0%BE%D1%81%D1%82%D0%B8`,
+          }.${oldestDate.getFullYear()}-${userId}&text=%D0%92%D0%BE%D1%82%20%D1%81%D1%81%D1%8B%D0%BB%D0%BA%D0%B0%20%D0%BD%D0%B0%20%D0%BA%D0%B0%D0%BB%D0%B5%D0%BD%D0%B4%D0%B0%D1%80%D1%8C%20%D0%BC%D0%BE%D0%B5%D0%B9%20%D0%B7%D0%B0%D0%BD%D1%8F%D1%82%D0%BE%D1%81%D1%82%D0%B8`,
         },
       ],
       backInlineBtn,
