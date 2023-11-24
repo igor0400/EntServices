@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Context } from 'telegraf';
 import { UsersRepository } from './repositories/users.repository';
-import { getCtxData } from 'src/general';
+import { getCtxData } from 'src/libs/common';
 
 @Injectable()
 export class UsersService {

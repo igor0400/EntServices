@@ -3,9 +3,10 @@ import { AbstractModel } from 'src/libs/common';
 import { CalendarEventMember } from './event-member.model';
 
 export interface CalendarEventCreationArgs {
+  creatorId: string;
   title?: string;
-  from: string;
-  till: string;
+  startTime: string;
+  endTime: string;
   type: string;
 }
 
@@ -16,6 +17,12 @@ export class CalendarEvent extends AbstractModel<
 > {
   @Column({
     type: DataType.STRING,
+    allowNull: false,
+  })
+  creatorId: string;
+
+  @Column({
+    type: DataType.STRING,
   })
   title: string;
 
@@ -23,13 +30,13 @@ export class CalendarEvent extends AbstractModel<
     type: DataType.STRING,
     allowNull: false,
   })
-  from: string;
+  startTime: string;
 
   @Column({
     type: DataType.STRING,
     allowNull: false,
   })
-  till: string;
+  endTime: string;
 
   @Column({
     type: DataType.STRING,

@@ -1,6 +1,6 @@
 import { MenuService } from 'src/menu/menu.service';
 import { Context } from 'telegraf';
-import { getCtxData } from './assets';
+import { getCtxData } from 'src/libs/common';
 import { Action, Update } from 'nestjs-telegraf';
 import { GeneralPresets } from './general.presets';
 import { GeneralMiddlewares } from './general.middlewares';

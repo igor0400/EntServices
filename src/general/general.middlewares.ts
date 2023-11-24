@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { getCtxData } from './assets';
+import { getCtxData } from 'src/libs/common';
 import { Context } from 'telegraf';
 import { banMessage } from './responses';
 import { UsersService } from 'src/users/users.service';

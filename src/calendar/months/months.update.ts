@@ -2,6 +2,8 @@ import { Action, Command, Update } from 'nestjs-telegraf';
 import { CalendarMonthsService } from './months.service';
 import { Context } from 'telegraf';
 import { GeneralMiddlewares } from 'src/general/general.middlewares';
+import { getCtxData, getNowDate } from 'src/libs/common';
+import { getDateFromDataVal } from '../assets';
 
 @Update()
 export class CalendarMonthsUpdate {
@@ -35,6 +37,20 @@ export class CalendarMonthsUpdate {
   async prevCalendarMouthBtn(ctx: Context) {
     await this.middlewares.btnMiddleware(ctx, (ctx: Context) =>
       this.mouthsService.navCalendarMouthItem(ctx, 'prev'),
+    );
+  }
+
+  @Action(/.*::back_to_month/)
+  async backToMonthBtn(ctx: Context) {
+    const { dataValue } = getCtxData(ctx);
+    const nowDate = getNowDate();
+    const valDate = getDateFromDataVal(dataValue);
+    const yearsDiff =
+      12 * (valDate.getUTCFullYear() - nowDate.getUTCFullYear());
+    const incMouth = valDate.getUTCMonth() - nowDate.getUTCMonth() + yearsDiff;
+
+    await this.middlewares.btnMiddleware(ctx, (ctx: Context) =>
+      this.mouthsService.changeToCalendarMouth(ctx, incMouth),
     );
   }
 }

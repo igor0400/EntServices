@@ -4,17 +4,20 @@ import { EventsMembersRepository } from '../repositories/event-member.repository
 import { UsersRepository } from 'src/users/repositories/users.repository';
 import { getDayDate } from 'src/general';
 import { BusyDaysRepository } from '../repositories/busy-day.repository';
+import { getFreeIntervals } from '../assets';
+import { Op } from 'sequelize';
 
 interface CreateEvent {
+  creatorTgId: string;
   membersTgIds: string[];
-  from: string;
-  till: string;
+  startTime: string;
+  endTime: string;
 }
 
 interface CheckIsDayBusy {
   userId: string;
   userTelegramId: string;
-  date: string;
+  dateVal: string;
 }
 
 @Injectable()
@@ -26,14 +29,26 @@ export class EventsService {
     private readonly busyDaysRepository: BusyDaysRepository,
   ) {}
 
-  async createEvent({ membersTgIds, from, till }: CreateEvent) {
+  async createEvent({
+    creatorTgId,
+    membersTgIds,
+    startTime,
+    endTime,
+  }: CreateEvent) {
     const type = membersTgIds.length > 1 ? 'multiplayer' : 'solo';
 
-    const event = await this.eventsRepository.create({ from, till, type });
+    const creator = await this.usersRepository.findByTgId(creatorTgId);
+
+    const event = await this.eventsRepository.create({
+      startTime,
+      endTime,
+      type,
+      creatorId: creator.id,
+    });
     const dates = [];
-    const fromDate = getDayDate(from);
+    const fromDate = getDayDate(startTime);
     if (!dates.includes(fromDate)) dates.push(fromDate);
-    const tillDate = getDayDate(till);
+    const tillDate = getDayDate(endTime);
     if (!dates.includes(tillDate)) dates.push(tillDate);
 
     for (let memberTgId of membersTgIds) {
@@ -49,7 +64,7 @@ export class EventsService {
         await this.checkIsDayBusy({
           userId: user.id,
           userTelegramId: memberTgId,
-          date,
+          dateVal: date,
         });
       }
     }
@@ -58,19 +73,33 @@ export class EventsService {
   private async checkIsDayBusy({
     userId,
     userTelegramId,
-    date,
+    dateVal,
   }: CheckIsDayBusy) {
-    let isBusy = false;
-    const splitDate = date.split('.');
-    // const events =
+    const [date, month, year] = dateVal.split('.');
+    const newDate = new Date();
+    // сортировать и по event startTime
+    const eventMembers = await this.eventsMembersRepository.findAll({
+      where: {
+        userId,
+        event: {
+          startTime: {
+            [Op.regexp]: `${year}-${month}-${date}.*`,
+          },
+        },
+      },
+    });
+    const events = eventMembers.map((i) => i.event);
+    const freeIntervals = getFreeIntervals(newDate, events);
 
-    if (isBusy) {
+    console.log(eventMembers);
+
+    if (!freeIntervals.length) {
       await this.busyDaysRepository.create({
         userId,
         userTelegramId,
-        date: +splitDate[0],
-        month: +splitDate[1],
-        year: +splitDate[2],
+        date: +date,
+        month: +month,
+        year: +year,
       });
     }
   }

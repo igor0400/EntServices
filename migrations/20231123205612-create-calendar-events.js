@@ -10,14 +10,18 @@ module.exports = {
         unique: true,
         primaryKey: true,
       },
-      title: {
-        type: Sequelize.STRING(100),
-      },
-      from: {
+      creatorId: {
         type: Sequelize.STRING(100),
         allowNull: false,
       },
-      till: {
+      title: {
+        type: Sequelize.STRING(100),
+      },
+      startTime: {
+        type: Sequelize.STRING(100),
+        allowNull: false,
+      },
+      endTime: {
         type: Sequelize.STRING(100),
         allowNull: false,
       },
