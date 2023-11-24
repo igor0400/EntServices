@@ -20,7 +20,7 @@ export class CalendarMonthsService {
     const busyDays = await this.busyDaysRepository.findAll({
       where: {
         userId,
-        month: getNowDate().getMonth() + 1,
+        month: getNowDate().getUTCMonth() + 1,
       },
     });
 
@@ -38,7 +38,7 @@ export class CalendarMonthsService {
     const busyDays = await this.busyDaysRepository.findAll({
       where: {
         userId,
-        month: getNowDate().getMonth() + 1,
+        month: getNowDate().getUTCMonth() + 1,
       },
     });
 
@@ -57,7 +57,7 @@ export class CalendarMonthsService {
     const busyDays = await this.busyDaysRepository.findAll({
       where: {
         userId,
-        month: getNowDate().getMonth() + 1 + incMouth,
+        month: getNowDate().getUTCMonth() + 1 + incMouth,
       },
     });
 

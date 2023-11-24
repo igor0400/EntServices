@@ -19,15 +19,17 @@ export const calendarMonthsMarkup = (
   incMouth = 0,
 ) => {
   const oldestDate = getNowDate();
-  oldestDate.setMonth(oldestDate.getMonth() + 1 + incMouth);
-  oldestDate.setDate(0);
-  const maxDate = oldestDate.getDate();
-  const maxDateDay = oldestDate.getDay();
+  oldestDate.setUTCMonth(oldestDate.getUTCMonth() + 1 + incMouth);
+  oldestDate.setUTCDate(0);
+  const maxDate = oldestDate.getUTCDate();
+  const maxDateDay = oldestDate.getUTCDay();
 
   const newestDate = getNowDate();
-  newestDate.setMonth(newestDate.getMonth() + incMouth);
-  newestDate.setDate(1);
-  const minDateDay = newestDate.getDay();
+  newestDate.setUTCMonth(newestDate.getUTCMonth() + incMouth);
+  newestDate.setUTCDate(1);
+  const minDateDay = newestDate.getUTCDay();
+
+  console.log(newestDate, oldestDate);
 
   const days = [];
 
@@ -41,8 +43,8 @@ export const calendarMonthsMarkup = (
     days.push({
       text: isBusy ? '❌' : `${i}`,
       callback_data: `${i}.${
-        oldestDate.getMonth() + 1
-      }.${oldestDate.getFullYear()}::calendar_date`,
+        oldestDate.getUTCMonth() + 1
+      }.${oldestDate.getUTCFullYear()}::calendar_date`,
     });
   }
 
@@ -53,11 +55,16 @@ export const calendarMonthsMarkup = (
     days.push(...getEmptyDays(7 - maxDateDay));
   }
 
-  const mouthBtn = months[oldestDate.getMonth()];
+  const mouthBtn = months[oldestDate.getUTCMonth()];
 
   return {
     inline_keyboard: [
-      [{ ...mouthBtn, text: `${mouthBtn.text} ${oldestDate.getFullYear()}` }],
+      [
+        {
+          ...mouthBtn,
+          text: `${mouthBtn.text} ${oldestDate.getUTCFullYear()}`,
+        },
+      ],
       weekDays,
       ...formatKeyboard(days, 7),
       [
@@ -68,8 +75,8 @@ export const calendarMonthsMarkup = (
         {
           text: '🔗 Поделиться ссылкой',
           url: `https://t.me/share/url?url=https://t.me/EntServicesBot?start=cal-m-${
-            oldestDate.getMonth() + 1
-          }.${oldestDate.getFullYear()}-${userId}&text=%D0%92%D0%BE%D1%82%20%D1%81%D1%81%D1%8B%D0%BB%D0%BA%D0%B0%20%D0%BD%D0%B0%20%D0%BA%D0%B0%D0%BB%D0%B5%D0%BD%D0%B4%D0%B0%D1%80%D1%8C%20%D0%BC%D0%BE%D0%B5%D0%B9%20%D0%B7%D0%B0%D0%BD%D1%8F%D1%82%D0%BE%D1%81%D1%82%D0%B8`,
+            oldestDate.getUTCMonth() + 1
+          }.${oldestDate.getUTCFullYear()}-${userId}&text=%D0%92%D0%BE%D1%82%20%D1%81%D1%81%D1%8B%D0%BB%D0%BA%D0%B0%20%D0%BD%D0%B0%20%D0%BA%D0%B0%D0%BB%D0%B5%D0%BD%D0%B4%D0%B0%D1%80%D1%8C%20%D0%BC%D0%BE%D0%B5%D0%B9%20%D0%B7%D0%B0%D0%BD%D1%8F%D1%82%D0%BE%D1%81%D1%82%D0%B8`,
         },
       ],
       backInlineBtn,

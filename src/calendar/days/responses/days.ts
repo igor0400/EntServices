@@ -1,5 +1,14 @@
+import { CalendarEvent } from 'src/calendar/models/event.model';
 import { backInlineBtn, formatKeyboard, getNowDate } from '../../../general';
 import { textMonths } from '../../configs';
+import { getDateFromDataVal, getFreeIntervals } from '../../assets';
+import { slicedContinText } from 'src/libs/common';
+
+interface CalendarDaysMarkup {
+  userId: string;
+  date: string;
+  events: CalendarEvent[];
+}
 
 export const calendarDaysMessage = (date: string) => {
   const splitDate = date.split('.');
@@ -9,13 +18,52 @@ export const calendarDaysMessage = (date: string) => {
 Как управлять делами и тд`;
 };
 
-export const calendarDaysMarkup = (userId: string, date: string) => {
-  const newDate = new Date(date);
+export const calendarDaysMarkup = ({
+  userId,
+  date,
+  events,
+}: CalendarDaysMarkup) => {
+  const newDate = getDateFromDataVal(date);
+
+  // использовать при выводе времени при создании ивента
+  const freeIntervals = getFreeIntervals(newDate, events);
+
+  const eventsBtns = [];
+
+  if (events.length === 0) {
+    eventsBtns.push([
+      { text: '📋 Список пуст', callback_data: 'empty_calendar_day_events' },
+    ]);
+  } else {
+    for (let event of events) {
+      const eventFrom = new Date(event.from);
+      const eventTill = new Date(event.till);
+      const eventFromTime = `${eventFrom.getUTCHours()}:${eventFrom.getUTCMinutes()}`;
+      const eventTillTime = `${eventTill.getUTCHours()}:${eventTill.getUTCMinutes()}`;
+
+      eventsBtns.push([
+        {
+          text: `${eventFromTime} - ${eventTillTime} | ${slicedContinText(
+            event.title,
+            10,
+          )}`,
+          callback_data: `${event.id}::calendar_event`,
+        },
+      ]);
+    }
+  }
 
   // сделать кнопку назад (к месяцу)
 
   return {
     inline_keyboard: [
+      ...eventsBtns,
+      [
+        {
+          text: '❌ Отметить недоступным',
+          callback_data: `${date}::sey_busy_calendar_day`,
+        },
+      ],
       [
         { text: '◀️', callback_data: `${date}::prev_calendar_day` },
         { text: '▶️', callback_data: `${date}::next_calendar_day` },

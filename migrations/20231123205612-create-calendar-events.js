@@ -10,6 +10,9 @@ module.exports = {
         unique: true,
         primaryKey: true,
       },
+      title: {
+        type: Sequelize.STRING(100),
+      },
       from: {
         type: Sequelize.STRING(100),
         allowNull: false,

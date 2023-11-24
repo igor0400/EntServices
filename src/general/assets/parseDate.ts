@@ -3,12 +3,12 @@ export const parseDate = (date: string | number | Date) => {
 
   return `${getZero(expires.getUTCDate())}.${getZero(
     expires.getUTCMonth() + 1,
-  )}.${getZero(expires.getFullYear())} ${getZero(
+  )}.${getZero(expires.getUTCFullYear())} ${getZero(
     expires.getUTCHours(),
   )}:${getZero(expires.getUTCMinutes())}`;
 };
 
-function getZero(val) {
+function getZero(val: string | number) {
   const num = +val;
 
   if (num < 10) {
