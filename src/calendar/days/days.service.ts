@@ -7,6 +7,7 @@ import { EventsMembersRepository } from '../repositories/event-member.repository
 import { CalendarEvent } from '../models/event.model';
 import { BusyDaysRepository } from '../repositories/busy-day.repository';
 import { getDateFromDataVal } from '../assets';
+import { filterEventsByDate } from '../events/assets';
 
 @Injectable()
 export class CalendarDaysService {
@@ -39,7 +40,7 @@ export class CalendarDaysService {
     const userTgId = ctxUser.id;
     const user = await this.usersRepository.findByTgId(userTgId);
     const userId = user.id;
-    const events = await this.eventsMembersRepository.findAll({
+    const eventMembers = await this.eventsMembersRepository.findAll({
       where: {
         userTelegramId: userTgId,
       },
@@ -53,10 +54,14 @@ export class CalendarDaysService {
         date: date.getUTCDate(),
       },
     });
+    const sortedEvents = filterEventsByDate(
+      eventMembers.map((i) => i.event),
+      dateVal,
+    );
 
     return {
       userId,
-      events: events.map((i) => i.event),
+      events: sortedEvents,
       isBusy: busyDay ? true : false,
     };
   }

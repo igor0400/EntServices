@@ -17,7 +17,12 @@ export const getFreeIntervals = (
   );
 
   if (!events.length) {
-    return [{ startTime: startTimeOfDay.toISOString(), endTime: endOfDay.toISOString() }];
+    return [
+      {
+        startTime: startTimeOfDay.toISOString(),
+        endTime: endOfDay.toISOString(),
+      },
+    ];
   }
 
   const sortedEvents = events.sort((a, b) =>

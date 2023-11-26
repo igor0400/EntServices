@@ -16,6 +16,7 @@ export class EventsUpdate {
       this.eventsService.createEvent({
         creatorTgId: '861301267',
         membersTgIds: ['861301267'],
+        title: 'Встреча в офисе',
         startTime: '2024-11-25T10:00:00.000Z',
         endTime: '2024-11-25T11:00:00.000Z',
       }),

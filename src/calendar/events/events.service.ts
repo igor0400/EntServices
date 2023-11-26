@@ -4,12 +4,15 @@ import { EventsMembersRepository } from '../repositories/event-member.repository
 import { UsersRepository } from 'src/users/repositories/users.repository';
 import { getDayDate } from 'src/general';
 import { BusyDaysRepository } from '../repositories/busy-day.repository';
-import { getFreeIntervals } from '../assets';
+import { getDateFromDataVal, getFreeIntervals } from '../assets';
 import { Op } from 'sequelize';
+import { CalendarEvent } from '../models/event.model';
+import { filterEventsByDate } from './assets';
 
 interface CreateEvent {
   creatorTgId: string;
   membersTgIds: string[];
+  title?: string;
   startTime: string;
   endTime: string;
 }
@@ -32,6 +35,7 @@ export class EventsService {
   async createEvent({
     creatorTgId,
     membersTgIds,
+    title,
     startTime,
     endTime,
   }: CreateEvent) {
@@ -39,7 +43,9 @@ export class EventsService {
 
     const creator = await this.usersRepository.findByTgId(creatorTgId);
 
+    // проверять попадеат ли промежуток в freeIntervals и нет ли повторов
     const event = await this.eventsRepository.create({
+      title,
       startTime,
       endTime,
       type,
@@ -76,22 +82,17 @@ export class EventsService {
     dateVal,
   }: CheckIsDayBusy) {
     const [date, month, year] = dateVal.split('.');
-    const newDate = new Date();
-    // сортировать и по event startTime
+    const newDate = getDateFromDataVal(dateVal);
     const eventMembers = await this.eventsMembersRepository.findAll({
       where: {
         userId,
-        event: {
-          startTime: {
-            [Op.regexp]: `${year}-${month}-${date}.*`,
-          },
-        },
       },
+      include: [CalendarEvent],
     });
-    const events = eventMembers.map((i) => i.event);
-    const freeIntervals = getFreeIntervals(newDate, events);
 
-    console.log(eventMembers);
+    const events = eventMembers.map((i) => i?.event);
+    const sortedEvents = filterEventsByDate(events, dateVal);
+    const freeIntervals = getFreeIntervals(newDate, sortedEvents);
 
     if (!freeIntervals.length) {
       await this.busyDaysRepository.create({

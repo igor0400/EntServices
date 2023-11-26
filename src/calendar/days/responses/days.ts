@@ -1,7 +1,7 @@
 import { CalendarEvent } from 'src/calendar/models/event.model';
 import { backInlineBtn } from '../../../general';
 import { textMonths } from '../../configs';
-import { slicedContinText } from 'src/libs/common';
+import { getZero, slicedContinText } from 'src/libs/common';
 
 interface CalendarDaysMarkup {
   userId: string;
@@ -64,14 +64,18 @@ function getEventsBtns(events: CalendarEvent[], date: string, isBusy: boolean) {
     for (let event of events) {
       const eventFrom = new Date(event.startTime);
       const eventTill = new Date(event.endTime);
-      const eventFromTime = `${eventFrom.getUTCHours()}:${eventFrom.getUTCMinutes()}`;
-      const eventTillTime = `${eventTill.getUTCHours()}:${eventTill.getUTCMinutes()}`;
+      const eventFromTime = `${getZero(eventFrom.getUTCHours())}:${getZero(
+        eventFrom.getUTCMinutes(),
+      )}`;
+      const eventTillTime = `${getZero(eventTill.getUTCHours())}:${getZero(
+        eventTill.getUTCMinutes(),
+      )}`;
 
       eventsBtns.push([
         {
           text: `${eventFromTime} - ${eventTillTime} | ${slicedContinText(
             event.title,
-            10,
+            20,
           )}`,
           callback_data: `${event.id}::calendar_event`,
         },
