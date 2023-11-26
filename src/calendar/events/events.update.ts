@@ -10,6 +10,9 @@ export class EventsUpdate {
     private readonly eventsService: EventsService,
   ) {}
 
+  // сделать вывод создания события
+  // при выводе даты учитывать когда могут все челы (либо выводить только то время когда могут все, либо писать что чел не может или что то еще)
+
   @Command('create_event')
   async createEventCommand(ctx: Context) {
     await this.middlewares.commandMiddleware(ctx, (ctx: Context) =>

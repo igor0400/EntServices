@@ -5,7 +5,6 @@ import { UsersRepository } from 'src/users/repositories/users.repository';
 import { getDayDate } from 'src/general';
 import { BusyDaysRepository } from '../repositories/busy-day.repository';
 import { getDateFromDataVal, getFreeIntervals } from '../assets';
-import { Op } from 'sequelize';
 import { CalendarEvent } from '../models/event.model';
 import { filterEventsByDate } from './assets';
 
@@ -43,7 +42,6 @@ export class EventsService {
 
     const creator = await this.usersRepository.findByTgId(creatorTgId);
 
-    // проверять попадеат ли промежуток в freeIntervals и нет ли повторов
     const event = await this.eventsRepository.create({
       title,
       startTime,
