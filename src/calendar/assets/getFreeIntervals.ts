@@ -1,8 +1,11 @@
-import { CalendarEvent } from '../models/event.model';
+import {
+  CalendarEvent,
+  CalendarEventCreationArgs,
+} from '../models/event.model';
 
 export const getFreeIntervals = (
   initDate: string | Date,
-  events: CalendarEvent[],
+  events: CalendarEvent[] | CalendarEventCreationArgs[],
 ) => {
   const date = new Date(initDate);
   const startTimeOfDay = new Date(
@@ -31,10 +34,12 @@ export const getFreeIntervals = (
 
   const freeIntervals = [];
 
+  // console.log(sortedEvents);
+
   if (startTimeOfDay < new Date(sortedEvents[0]?.startTime)) {
     freeIntervals.push({
       startTime: startTimeOfDay.toISOString(),
-      endTime: sortedEvents[0].startTime,
+      endTime: incMinute(sortedEvents[0].startTime),
     });
   }
 
@@ -42,10 +47,12 @@ export const getFreeIntervals = (
     const currentEvent = new Date(events[i].endTime);
     const nextEvent = new Date(events[i + 1].startTime);
 
+    console.log(currentEvent, nextEvent);
+
     if (currentEvent < nextEvent) {
       freeIntervals.push({
         startTime: currentEvent.toISOString(),
-        endTime: nextEvent.toISOString(),
+        endTime: incMinute(nextEvent),
       });
     }
   }
@@ -59,3 +66,9 @@ export const getFreeIntervals = (
 
   return freeIntervals;
 };
+
+function incMinute(time: string | Date) {
+  const date = new Date(time);
+  date.setUTCMinutes(date.getUTCMinutes() - 1);
+  return date.toISOString();
+}

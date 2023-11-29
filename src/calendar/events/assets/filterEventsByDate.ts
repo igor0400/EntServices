@@ -5,7 +5,12 @@ export const filterEventsByDate = (
   dateVal: string,
 ) => {
   const [date, month, year] = dateVal.split('.');
-  return events.filter((val) =>
+  const filteredEvents = events.filter((val) =>
     new RegExp(`${year}-${month}-${date}.*`).test(val?.startTime),
   );
+  const sortedEvents = filteredEvents.sort((a, b) =>
+    new Date(a.startTime) > new Date(b.startTime) ? 1 : -1,
+  );
+
+  return sortedEvents;
 };

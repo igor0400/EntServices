@@ -14,6 +14,7 @@ import { CalendarBusyDay } from './models/busy-day.model';
 import { EventsRepository } from './repositories/event.repository';
 import { EventsMembersRepository } from './repositories/event-member.repository';
 import { BusyDaysRepository } from './repositories/busy-day.repository';
+import { EventsAdditionalService } from './events/events-additional.service';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { BusyDaysRepository } from './repositories/busy-day.repository';
     EventsRepository,
     EventsMembersRepository,
     BusyDaysRepository,
+    EventsAdditionalService,
   ],
   exports: [CalendarMonthsService],
 })

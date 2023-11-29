@@ -1,6 +1,9 @@
+import { getEmptyBtns } from 'src/calendar/assets';
+
 export const formatKeyboard = (
   arr: { text: string; callback_data: string }[],
   rowLen = 2,
+  isEmptyFill = false,
 ) => {
   const keyboardItems = [];
   let prepeadedItems = [];
@@ -10,6 +13,10 @@ export const formatKeyboard = (
     prepeadedItems.push(item);
 
     if (prepeadedItems.length >= rowLen || index === arr.length - 1) {
+      if (isEmptyFill && index === arr.length - 1) {
+        prepeadedItems.push(...getEmptyBtns(rowLen - prepeadedItems.length));
+      }
+
       keyboardItems.push(prepeadedItems);
       prepeadedItems = [];
     }

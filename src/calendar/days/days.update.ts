@@ -11,7 +11,7 @@ export class CalendarDaysUpdate {
     private readonly middlewares: GeneralMiddlewares,
   ) {}
 
-  @Action(/.*::calendar_date/)
+  @Action([/.*::calendar_date/, /.*::back_to_calendar_date/])
   async calendarDayBtn(ctx: Context) {
     const { dataValue } = getCtxData(ctx);
 

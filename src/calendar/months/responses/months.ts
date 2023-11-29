@@ -1,7 +1,7 @@
 import { CalendarBusyDay } from 'src/calendar/models/busy-day.model';
 import { backInlineBtn } from '../../../general';
 import { formatKeyboard, getNowDate } from 'src/libs/common';
-import { getEmptyDays } from '../../assets';
+import { getEmptyBtns } from '../../assets';
 import { months, weekDays } from '../../configs';
 
 export const calendarMonthsMessage = () => `<b>Календарь встреч/событий</b>
@@ -35,7 +35,7 @@ export const calendarMonthsMarkup = (
   const days = [];
 
   if (minDateDay !== 1) {
-    days.push(...getEmptyDays(minDateDay === 0 ? 6 : minDateDay - 1));
+    days.push(...getEmptyBtns(minDateDay === 0 ? 6 : minDateDay - 1));
   }
 
   for (let i = 1; i < maxDate + 1; i++) {
@@ -53,7 +53,7 @@ export const calendarMonthsMarkup = (
   const isMouthClear = daysDiff === 0 && minDateDay === 1;
 
   if (!isMouthClear && maxDateDay !== 0) {
-    days.push(...getEmptyDays(7 - maxDateDay));
+    days.push(...getEmptyBtns(7 - maxDateDay));
   }
 
   const mouthBtn = months[oldestDate.getUTCMonth()];

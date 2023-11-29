@@ -40,7 +40,7 @@ export class CalendarMonthsUpdate {
     );
   }
 
-  @Action(/.*::back_to_month/)
+  @Action(/.*::back_to_calendar_month/)
   async backToMonthBtn(ctx: Context) {
     const { dataValue } = getCtxData(ctx);
     const nowDate = getNowDate();

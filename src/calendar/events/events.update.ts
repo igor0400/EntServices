@@ -1,27 +1,50 @@
-import { Command, Update } from 'nestjs-telegraf';
+import { Action, Command, Update } from 'nestjs-telegraf';
 import { EventsService } from './events.service';
 import { Context } from 'telegraf';
 import { GeneralMiddlewares } from 'src/general/general.middlewares';
+import { EventsAdditionalService } from './events-additional.service';
+import { getCtxData } from 'src/libs/common';
 
 @Update()
 export class EventsUpdate {
   constructor(
     private readonly middlewares: GeneralMiddlewares,
     private readonly eventsService: EventsService,
+    private readonly eventsAdditionalService: EventsAdditionalService,
   ) {}
 
-  // сделать вывод создания события
-  // при выводе даты учитывать когда могут все челы (либо выводить только то время когда могут все, либо писать что чел не может или что то еще)
+  @Action(/.*::create_personal_calendar_event/)
+  async createPersonalEventBtn(ctx: Context) {
+    await this.middlewares.btnMiddleware(ctx, (ctx: Context) =>
+      this.eventsAdditionalService.changeToSelectHours(ctx, {
+        callbackDataTitle: 'pers_cal_event_start_time',
+        type: 'start',
+      }),
+    );
+  }
+
+  @Action(/.*::pers_cal_event_start_time/)
+  async personalEventStartTimeBtn(ctx: Context) {
+    const { dataValue } = getCtxData(ctx);
+
+    await this.middlewares.btnMiddleware(ctx, (ctx: Context) =>
+      this.eventsAdditionalService.changeToSelectHours(ctx, {
+        callbackDataTitle: 'pers_cal_event_end_time',
+        type: 'end',
+        startTime: dataValue.split('-')[1],
+      }),
+    );
+  }
 
   @Command('create_event')
-  async createEventCommand(ctx: Context) {
-    await this.middlewares.commandMiddleware(ctx, (ctx: Context) =>
+  async createEventsCommand(ctx: Context) {
+    await this.middlewares.commandMiddleware(ctx, () =>
       this.eventsService.createEvent({
         creatorTgId: '861301267',
         membersTgIds: ['861301267'],
         title: 'Встреча в офисе',
-        startTime: '2024-11-25T10:00:00.000Z',
-        endTime: '2024-11-25T11:00:00.000Z',
+        startTime: '2023-11-29T20:15:00.000Z',
+        endTime: '2023-11-29T20:30:00.000Z',
       }),
     );
   }
