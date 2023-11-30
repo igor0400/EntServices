@@ -34,8 +34,6 @@ export const getFreeIntervals = (
 
   const freeIntervals = [];
 
-  // console.log(sortedEvents);
-
   if (startTimeOfDay < new Date(sortedEvents[0]?.startTime)) {
     freeIntervals.push({
       startTime: startTimeOfDay.toISOString(),
@@ -46,8 +44,6 @@ export const getFreeIntervals = (
   for (let i = 0; i < sortedEvents.length - 1; i++) {
     const currentEvent = new Date(events[i].endTime);
     const nextEvent = new Date(events[i + 1].startTime);
-
-    console.log(currentEvent, nextEvent);
 
     if (currentEvent < nextEvent) {
       freeIntervals.push({

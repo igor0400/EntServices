@@ -13,7 +13,10 @@ export class EventsUpdate {
     private readonly eventsAdditionalService: EventsAdditionalService,
   ) {}
 
-  @Action(/.*::create_personal_calendar_event/)
+  @Action([
+    /.*::create_personal_calendar_event/,
+    /.*::back_to_pers_cal_event_start_time/,
+  ])
   async createPersonalEventBtn(ctx: Context) {
     await this.middlewares.btnMiddleware(ctx, (ctx: Context) =>
       this.eventsAdditionalService.changeToSelectHours(ctx, {

@@ -32,37 +32,7 @@ export class EventsAdditionalService {
     const events = eventsMembers.map((i) => i.event);
     const sortedEvents = filterEventsByDate(events, dateVal);
     const initDate = getDateFromDataVal(dateVal);
-
-    const optsEndTime =
-      options.startTime && sortedEvents.length
-        ? sortedEvents[0].startTime.replace(
-            /T\d{2}:\d{2}/,
-            `T${options.startTime.slice(0, options.startTime.length - 1)}1`,
-          )
-        : undefined;
-
-    const optsStartTime = optsEndTime
-      ? optsEndTime.replace(/T\d{2}:\d{2}/, `T00:00`)
-      : undefined;
-
-    // sortedEvents убирать те что раньше options.startTime
-
-    const freeIntervals = getFreeIntervals(
-      initDate,
-      optsStartTime
-        ? [
-            ...sortedEvents,
-            {
-              creatorId: sortedEvents[0].creatorId,
-              startTime: optsStartTime,
-              endTime: optsEndTime,
-              type: 'solo',
-            },
-          ]
-        : sortedEvents,
-    );
-
-    console.log(options.startTime, optsStartTime, optsEndTime, freeIntervals);
+    const freeIntervals = getFreeIntervals(initDate, sortedEvents);
 
     const hoursTexts = [];
     const hoursIntervals = [];
@@ -103,8 +73,29 @@ export class EventsAdditionalService {
       }
     }
 
+    const sortedHoursTexts = options.startTime
+      ? hoursTexts.filter((i) => {
+          const splI = i.split(':');
+          const hours = +splI[0];
+          const minutes = +splI[1];
+          const splStart = options.startTime.split(':');
+          const startHours = +splStart[0];
+          const startMinutes = +splStart[1];
+
+          if (hours < startHours) return false;
+
+          if (hours === startHours) {
+            if (minutes > startMinutes) return true;
+
+            return false;
+          }
+
+          return true;
+        })
+      : hoursTexts;
+
     await ctx.editMessageCaption(selectEventHoursMessage(options), {
-      reply_markup: selectEventHoursMarkup(dateVal, hoursTexts, options),
+      reply_markup: selectEventHoursMarkup(dateVal, sortedHoursTexts, options),
       parse_mode: 'HTML',
     });
   }

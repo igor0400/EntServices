@@ -11,7 +11,7 @@ export const selectEventHoursMessage = ({
 export const selectEventHoursMarkup = (
   dateVal: string,
   btns: string[],
-  { callbackDataTitle, startTime }: ChangeToSelectHoursOpts,
+  { callbackDataTitle, startTime, type }: ChangeToSelectHoursOpts,
 ) => {
   const hoursBtns = [];
 
@@ -22,13 +22,19 @@ export const selectEventHoursMarkup = (
     });
   }
 
+  // сделать либу для пагинации и выводить через нее кнопки времен
+  // если кнопок меньше чем максимум на странице убирать стрелочки
+
   return {
     inline_keyboard: [
-      ...formatKeyboard(hoursBtns, 6, true),
+      ...formatKeyboard(hoursBtns, 5, true),
       [
         {
           text: '↩️ Назад',
-          callback_data: `${dateVal}::back_to_calendar_date`,
+          callback_data:
+            type === 'start'
+              ? `${dateVal}::back_to_calendar_date`
+              : `${dateVal}::back_to_pers_cal_event_start_time`,
         },
       ],
       backInlineBtn,
