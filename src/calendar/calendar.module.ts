@@ -15,6 +15,7 @@ import { EventsRepository } from './repositories/event.repository';
 import { EventsMembersRepository } from './repositories/event-member.repository';
 import { BusyDaysRepository } from './repositories/busy-day.repository';
 import { EventsAdditionalService } from './events/events-additional.service';
+import { PaginationModule } from 'src/libs/pagination';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { EventsAdditionalService } from './events/events-additional.service';
     ]),
     GeneralModule,
     UsersModule,
+    PaginationModule,
   ],
   providers: [
     CalendarMonthsService,

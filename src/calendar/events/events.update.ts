@@ -26,7 +26,10 @@ export class EventsUpdate {
     );
   }
 
-  @Action(/.*::pers_cal_event_start_time/)
+  @Action([
+    /.*::pers_cal_event_start_time.*/,
+    /.*::back_to_pers_cal_event_end_time/,
+  ])
   async personalEventStartTimeBtn(ctx: Context) {
     const { dataValue } = getCtxData(ctx);
 
@@ -39,15 +42,22 @@ export class EventsUpdate {
     );
   }
 
+  @Action(/.*::pers_cal_event_end_time.*/)
+  async personalEventEndTimeBtn(ctx: Context) {
+    await this.middlewares.btnMiddleware(ctx, (ctx: Context) =>
+      this.eventsAdditionalService.changeToWriteTitle(ctx),
+    );
+  }
+
   @Command('create_event')
   async createEventsCommand(ctx: Context) {
     await this.middlewares.commandMiddleware(ctx, () =>
       this.eventsService.createEvent({
         creatorTgId: '861301267',
         membersTgIds: ['861301267'],
-        title: 'Встреча в офисе',
-        startTime: '2023-11-29T20:15:00.000Z',
-        endTime: '2023-11-29T20:30:00.000Z',
+        title: 'Тренировка',
+        startTime: '2023-11-30T23:30:00.000Z',
+        endTime: '2023-11-30T23:45:00.000Z',
       }),
     );
   }

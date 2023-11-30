@@ -24,7 +24,7 @@ export class CalendarEvent extends AbstractModel<
   @Column({
     type: DataType.STRING,
   })
-  title: string;
+  title?: string;
 
   @Column({
     type: DataType.STRING,

@@ -1,7 +1,8 @@
 import { getEmptyBtns } from 'src/calendar/assets';
+import { InlineBtnType } from 'src/general';
 
 export const formatKeyboard = (
-  arr: { text: string; callback_data: string }[],
+  arr: InlineBtnType[],
   rowLen = 2,
   isEmptyFill = false,
 ) => {

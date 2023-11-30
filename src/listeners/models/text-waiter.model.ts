@@ -41,5 +41,5 @@ export class TextWaiter extends AbstractModel<
   @Column({
     type: DataType.STRING,
   })
-  extraData: string;
+  extraData?: string;
 }

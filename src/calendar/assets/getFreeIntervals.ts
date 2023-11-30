@@ -6,6 +6,7 @@ import {
 export const getFreeIntervals = (
   initDate: string | Date,
   events: CalendarEvent[] | CalendarEventCreationArgs[],
+  addMins = 0,
 ) => {
   const date = new Date(initDate);
   const startTimeOfDay = new Date(
@@ -16,7 +17,7 @@ export const getFreeIntervals = (
   const endOfDay = new Date(
     `${date.getUTCFullYear()}-${
       date.getUTCMonth() + 1
-    }-${date.getUTCDate()}T23:59:59.999Z`,
+    }-${date.getUTCDate()}T23:45:00.000Z`,
   );
 
   if (!events.length) {
@@ -37,7 +38,7 @@ export const getFreeIntervals = (
   if (startTimeOfDay < new Date(sortedEvents[0]?.startTime)) {
     freeIntervals.push({
       startTime: startTimeOfDay.toISOString(),
-      endTime: incMinute(sortedEvents[0].startTime),
+      endTime: incMinutes(sortedEvents[0].startTime, addMins), // incMinutes()
     });
   }
 
@@ -48,7 +49,7 @@ export const getFreeIntervals = (
     if (currentEvent < nextEvent) {
       freeIntervals.push({
         startTime: currentEvent.toISOString(),
-        endTime: incMinute(nextEvent),
+        endTime: incMinutes(nextEvent, addMins), // incMinutes()
       });
     }
   }
@@ -63,8 +64,8 @@ export const getFreeIntervals = (
   return freeIntervals;
 };
 
-function incMinute(time: string | Date) {
+function incMinutes(time: string | Date, count: number = 1) {
   const date = new Date(time);
-  date.setUTCMinutes(date.getUTCMinutes() - 1);
+  date.setUTCMinutes(date.getUTCMinutes() + count);
   return date.toISOString();
 }

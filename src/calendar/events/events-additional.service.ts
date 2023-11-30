@@ -1,11 +1,17 @@
 import { Injectable } from '@nestjs/common';
 import { getCtxData, getZero } from 'src/libs/common';
 import { Context } from 'telegraf';
-import { selectEventHoursMarkup, selectEventHoursMessage } from './responses';
+import {
+  selectEventHoursMarkup,
+  selectEventHoursMessage,
+  writeTitleMarkup,
+  writeTitleMessage,
+} from './responses';
 import { EventsMembersRepository } from '../repositories/event-member.repository';
 import { CalendarEvent } from '../models/event.model';
 import { getDateFromDataVal, getFreeIntervals } from '../assets';
 import { filterEventsByDate } from './assets';
+import { CreatePaginationProps, PaginationService } from 'src/libs/pagination';
 
 export interface ChangeToSelectHoursOpts {
   callbackDataTitle: string;
@@ -17,6 +23,7 @@ export interface ChangeToSelectHoursOpts {
 export class EventsAdditionalService {
   constructor(
     private readonly eventsMembersRepository: EventsMembersRepository,
+    private readonly paginationService: PaginationService,
   ) {}
 
   async changeToSelectHours(ctx: Context, options: ChangeToSelectHoursOpts) {
@@ -32,7 +39,11 @@ export class EventsAdditionalService {
     const events = eventsMembers.map((i) => i.event);
     const sortedEvents = filterEventsByDate(events, dateVal);
     const initDate = getDateFromDataVal(dateVal);
-    const freeIntervals = getFreeIntervals(initDate, sortedEvents);
+    const freeIntervals = getFreeIntervals(
+      initDate,
+      sortedEvents,
+      options.type === 'start' ? 0 : 1,
+    );
 
     const hoursTexts = [];
     const hoursIntervals = [];
@@ -61,8 +72,11 @@ export class EventsAdditionalService {
     } of hoursIntervals) {
       for (let i = startHours; i < endHours + 1; i++) {
         if (i === startHours) {
-          const useEndMinutes = endMinutes === 0 ? 60 : endMinutes;
-          for (let x = startMinutes; x < useEndMinutes; x += 15) {
+          for (let x = startMinutes; x < 60; x += 15) {
+            hoursTexts.push(`${getZero(i)}:${getZero(x)}`);
+          }
+        } else if (i === endHours) {
+          for (let x = 0; x < endMinutes; x += 15) {
             hoursTexts.push(`${getZero(i)}:${getZero(x)}`);
           }
         } else {
@@ -94,9 +108,35 @@ export class EventsAdditionalService {
         })
       : hoursTexts;
 
+    const markup = await selectEventHoursMarkup(
+      dateVal,
+      sortedHoursTexts,
+      options,
+      async (conf: Omit<CreatePaginationProps, 'userTelegramId'>) => {
+        return await this.paginationService.create({
+          userTelegramId: userId,
+          ...conf,
+        });
+      },
+    );
+
     await ctx.editMessageCaption(selectEventHoursMessage(options), {
-      reply_markup: selectEventHoursMarkup(dateVal, sortedHoursTexts, options),
+      reply_markup: markup,
       parse_mode: 'HTML',
+    });
+  }
+
+  async changeToWriteTitle(ctx: Context) {
+    const { dataValue } = getCtxData(ctx);
+
+    // создавать textWaiter
+    // создавать event при скипе названия и в textWaiter
+
+    console.log(dataValue);
+
+    await ctx.editMessageCaption(writeTitleMessage(), {
+      parse_mode: 'HTML',
+      reply_markup: writeTitleMarkup(dataValue),
     });
   }
 }

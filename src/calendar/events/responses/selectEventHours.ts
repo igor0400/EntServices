@@ -1,6 +1,7 @@
 import { backInlineBtn } from 'src/general';
-import { formatKeyboard } from 'src/libs/common';
 import { ChangeToSelectHoursOpts } from '../events-additional.service';
+import { CreatePaginationProps } from 'src/libs/pagination';
+import { InlineBtnType } from 'src/general';
 
 export const selectEventHoursMessage = ({
   type,
@@ -8,26 +9,35 @@ export const selectEventHoursMessage = ({
 
 🕗 Выберите время ${type === 'start' ? 'начала' : 'окончания'} события:`;
 
-export const selectEventHoursMarkup = (
+export const selectEventHoursMarkup = async (
   dateVal: string,
   btns: string[],
   { callbackDataTitle, startTime, type }: ChangeToSelectHoursOpts,
+  createPagination: (
+    conf: Omit<CreatePaginationProps, 'userTelegramId'>,
+  ) => Promise<InlineBtnType[][]>,
 ) => {
   const hoursBtns = [];
 
   for (let btn of btns) {
     hoursBtns.push({
       text: btn,
-      callback_data: `${dateVal}-${btn}-${startTime}::${callbackDataTitle}`,
+      callback_data: `${dateVal}-${startTime ?? btn}-${
+        startTime ? btn : null
+      }::${callbackDataTitle}`,
     });
   }
 
-  // сделать либу для пагинации и выводить через нее кнопки времен
-  // если кнопок меньше чем максимум на странице убирать стрелочки
+  const pagination = await createPagination({
+    items: hoursBtns,
+    pageItemsCount: 40,
+    rowLen: 4,
+    isEmptyFill: true,
+  });
 
   return {
     inline_keyboard: [
-      ...formatKeyboard(hoursBtns, 5, true),
+      ...pagination,
       [
         {
           text: '↩️ Назад',

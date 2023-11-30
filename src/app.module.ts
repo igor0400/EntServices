@@ -13,8 +13,7 @@ import { DatabaseModule } from './general/database/database.module';
 import { ListenersModule } from './listeners/listeners.module';
 import { CalendarModule } from './calendar/calendar.module';
 import { NotificationsModule } from './notifications/notifications.module';
-import { PaginationModule } from './libs/pagination/pagination.module';
-import { PaginationModule } from './libs/pagination/pagination.module';
+import { PaginationModule } from './libs/pagination';
 
 const sessions = new LocalSession({ database: 'session_db.json' });
 

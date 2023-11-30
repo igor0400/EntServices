@@ -30,8 +30,6 @@ export const calendarMonthsMarkup = (
   newestDate.setUTCDate(1);
   const minDateDay = newestDate.getUTCDay();
 
-  console.log(newestDate, oldestDate);
-
   const days = [];
 
   if (minDateDay !== 1) {
