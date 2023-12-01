@@ -2,14 +2,10 @@ import { Injectable } from '@nestjs/common';
 import { getCtxData } from 'src/libs/common';
 import { MenuService } from 'src/menu/menu.service';
 import { Context } from 'telegraf';
-import { UsersRepository } from 'src/users/repositories/users.repository';
 
 @Injectable()
 export class StartService {
-  constructor(
-    private readonly menuService: MenuService,
-    private readonly userRepository: UsersRepository,
-  ) {}
+  constructor(private readonly menuService: MenuService) {}
 
   async sendStart(ctx: Context | any) {
     const { user } = getCtxData(ctx);
@@ -21,16 +17,7 @@ export class StartService {
       // args[0] это разные разделы
     }
 
-    await this.userRepository.findOrCreate({
-      where: { telegramId },
-      defaults: {
-        telegramId,
-        firstName: user.first_name,
-        lastName: user.last_name,
-        userName: user.username,
-      },
-    });
-
+    await ctx.reply('👋');
     await this.menuService.sendMenu(ctx);
   }
 }

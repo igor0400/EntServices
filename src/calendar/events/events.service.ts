@@ -1,12 +1,18 @@
 import { Injectable } from '@nestjs/common';
 import { EventsRepository } from '../repositories/event.repository';
 import { EventsMembersRepository } from '../repositories/event-member.repository';
-import { UsersRepository } from 'src/users/repositories/users.repository';
 import { getDayDate } from 'src/general';
 import { BusyDaysRepository } from '../repositories/busy-day.repository';
 import { getDateFromDataVal, getFreeIntervals } from '../assets';
 import { CalendarEvent } from '../models/event.model';
 import { filterEventsByDate } from './assets';
+import { Context, Telegraf } from 'telegraf';
+import { getCtxData, getZero, replyPhoto } from 'src/libs/common';
+import { eventMarkup, eventMessage } from './responses';
+import { User } from 'src/users/models/user.model';
+import { CalendarEventMember } from '../models/event-member.model';
+import { InjectBot } from 'nestjs-telegraf';
+import { UserRepository } from 'src/users/repositories/user.repository';
 
 interface CreateEvent {
   creatorTgId: string;
@@ -27,8 +33,9 @@ export class EventsService {
   constructor(
     private readonly eventsRepository: EventsRepository,
     private readonly eventsMembersRepository: EventsMembersRepository,
-    private readonly usersRepository: UsersRepository,
+    private readonly usersRepository: UserRepository,
     private readonly busyDaysRepository: BusyDaysRepository,
+    @InjectBot() private bot: Telegraf<Context>,
   ) {}
 
   async createEvent({
@@ -49,8 +56,10 @@ export class EventsService {
       type,
       creatorId: creator.id,
     });
+
     const dates = [];
     const fromDate = getDayDate(startTime);
+
     if (!dates.includes(fromDate)) dates.push(fromDate);
     const tillDate = getDayDate(endTime);
     if (!dates.includes(tillDate)) dates.push(tillDate);
@@ -72,6 +81,71 @@ export class EventsService {
         });
       }
     }
+
+    return event;
+  }
+
+  async createEventByDataValue({
+    dataValue,
+    creatorTgId,
+    membersTgIds,
+    title,
+  }: {
+    dataValue: string;
+    creatorTgId: string;
+    membersTgIds: string[];
+    title?: string;
+  }) {
+    const [date, startVal, endVal] = dataValue.split('-');
+    const [day, month, year] = date.split('.');
+    const startTime = `${year}-${getZero(month)}-${getZero(
+      day,
+    )}T${startVal}:00.000Z`;
+    const endTime = `${year}-${getZero(month)}-${getZero(
+      day,
+    )}T${endVal}:00.000Z`;
+
+    const event = await this.createEvent({
+      creatorTgId,
+      membersTgIds,
+      title,
+      startTime,
+      endTime,
+    });
+
+    return event;
+  }
+
+  async changeToEvent(ctx: Context, eventId: string) {
+    const event = await this.eventsRepository.findByPk(eventId, {
+      include: [{ model: CalendarEventMember, include: [User] }],
+    });
+
+    await ctx.editMessageCaption(eventMessage(event), {
+      reply_markup: eventMarkup(event),
+      parse_mode: 'HTML',
+    });
+  }
+
+  async changeToEventByMess(
+    chatId: string,
+    messageId: string,
+    eventId: string,
+  ) {
+    const event = await this.eventsRepository.findByPk(eventId, {
+      include: [{ model: CalendarEventMember, include: [User] }],
+    });
+
+    await this.bot.telegram.editMessageCaption(
+      chatId,
+      +messageId,
+      undefined,
+      eventMessage(event),
+      {
+        reply_markup: eventMarkup(event),
+        parse_mode: 'HTML',
+      },
+    );
   }
 
   private async checkIsDayBusy({

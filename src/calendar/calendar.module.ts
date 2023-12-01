@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { CalendarMonthsService } from './months/months.service';
 import { CalendarMonthsUpdate } from './months/months.update';
 import { GeneralModule } from 'src/general/general.module';
@@ -16,6 +16,7 @@ import { EventsMembersRepository } from './repositories/event-member.repository'
 import { BusyDaysRepository } from './repositories/busy-day.repository';
 import { EventsAdditionalService } from './events/events-additional.service';
 import { PaginationModule } from 'src/libs/pagination';
+import { ListenersModule } from 'src/listeners/listeners.module';
 
 @Module({
   imports: [
@@ -24,9 +25,10 @@ import { PaginationModule } from 'src/libs/pagination';
       CalendarEventMember,
       CalendarBusyDay,
     ]),
-    GeneralModule,
+    forwardRef(() => GeneralModule),
     UsersModule,
     PaginationModule,
+    forwardRef(() => ListenersModule),
   ],
   providers: [
     CalendarMonthsService,
@@ -40,6 +42,6 @@ import { PaginationModule } from 'src/libs/pagination';
     BusyDaysRepository,
     EventsAdditionalService,
   ],
-  exports: [CalendarMonthsService],
+  exports: [CalendarMonthsService, EventsService],
 })
 export class CalendarModule {}

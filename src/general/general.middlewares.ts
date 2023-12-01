@@ -1,52 +1,76 @@
 import { Injectable } from '@nestjs/common';
-import { getCtxData } from 'src/libs/common';
+import { getCtxData, replyPhoto } from 'src/libs/common';
 import { Context } from 'telegraf';
-import { banMessage } from './responses';
+import { banMarkup, banMessage } from './responses';
 import { UsersService } from 'src/users/users.service';
+import { ListenersService } from 'src/listeners/listeners.service';
+import { UserRepository } from 'src/users/repositories/user.repository';
+import { BanUserRepository } from 'src/bans/repositories/ban-user.repository';
 
 @Injectable()
 export class GeneralMiddlewares {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(
+    private readonly usersService: UsersService,
+    private readonly listenersService: ListenersService,
+    private readonly userRepository: UserRepository,
+    private readonly banUserRepository: BanUserRepository,
+  ) {}
 
   async btnMiddleware(ctx: Context, func: Function) {
-    const { user } = getCtxData(ctx);
-    const userId = user.id;
-    const banUser = undefined;
-    // const banUser = await getBanUserByUserId(userId);
-
     await this.usersService.updateUserNamesByCtx(ctx);
-
-    if (banUser) {
-      await ctx.editMessageCaption(banMessage(banUser.reason), {
-        parse_mode: 'HTML',
-      });
-      return;
-    }
-
-    try {
-      await func(ctx);
-    } catch (e) {
-      console.error('ERROR: ', e);
-    }
+    await this.defaultActions(ctx, func, 'edit');
   }
 
   async commandMiddleware(ctx: Context | any, func: Function) {
     const { user } = getCtxData(ctx);
-    const userId = user.id;
-    const banUser = undefined;
-    // const banUser = await getBanUserByUserId(userId);
+    const userTgId = user.id;
 
     if (ctx.command) {
       await this.usersService.updateUserNamesByCtx(ctx);
-      // await clearUserListeners(userId);
+      await this.listenersService.clearUserListeners(userTgId);
     }
 
+    await this.defaultActions(ctx, func, 'send');
+  }
+
+  private async defaultActions(
+    ctx: Context | any,
+    func: Function,
+    type: 'send' | 'edit',
+  ) {
+    const { user } = getCtxData(ctx);
+    const userTgId = user.id;
+
+    const banUser = await this.banUserRepository.findOne({
+      where: { userTelegramId: userTgId },
+    });
+
     if (banUser) {
-      await ctx.reply(banMessage(banUser.reason), {
-        parse_mode: 'HTML',
-      });
+      if (type === 'edit') {
+        await ctx.editMessageCaption(banMessage(banUser.reason), {
+          reply_markup: banMarkup,
+          parse_mode: 'HTML',
+        });
+      } else {
+        await ctx.replyWithPhoto(replyPhoto(), {
+          caption: banMessage(banUser.reason),
+          reply_markup: banMarkup,
+          parse_mode: 'HTML',
+        });
+      }
+
       return;
     }
+
+    await this.userRepository.findOrCreate({
+      where: { telegramId: userTgId },
+      defaults: {
+        telegramId: userTgId,
+        firstName: user.first_name,
+        lastName: user.last_name,
+        userName: user.username,
+      },
+    });
 
     try {
       await func(ctx);

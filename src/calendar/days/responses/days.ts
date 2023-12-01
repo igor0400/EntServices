@@ -1,7 +1,7 @@
 import { CalendarEvent } from 'src/calendar/models/event.model';
 import { backInlineBtn } from '../../../general';
 import { textMonths } from '../../configs';
-import { getZero, slicedContinText } from 'src/libs/common';
+import { getZero } from 'src/libs/common';
 
 interface CalendarDaysMarkup {
   userId: string;
@@ -12,8 +12,9 @@ interface CalendarDaysMarkup {
 
 export const calendarDaysMessage = (date: string) => {
   const splitDate = date.split('.');
+  const textDate = `${splitDate[0]} ${textMonths[+splitDate[1] - 1]}`;
 
-  return `<b>События ${splitDate[0]} ${textMonths[+splitDate[1] - 1]}</b>
+  return `<b>События ${textDate}</b>
 
 Как управлять делами и тд`;
 };
@@ -25,6 +26,8 @@ export const calendarDaysMarkup = ({
   isBusy = false,
 }: CalendarDaysMarkup) => {
   const eventsBtns = getEventsBtns(events, date, isBusy);
+  const splitDate = date.split('.');
+  const textDate = `${splitDate[0]} ${textMonths[+splitDate[1] - 1]}`;
 
   return {
     inline_keyboard: [
@@ -32,10 +35,12 @@ export const calendarDaysMarkup = ({
       [
         {
           text: '🔗 Поделиться ссылкой',
-          url: `https://t.me/share/url?url=https://t.me/EntServicesBot?start=cal-d-${date.replaceAll(
-            '.',
-            '-',
-          )}-${userId}&text=%D0%92%D0%BE%D1%82%20%D1%81%D1%81%D1%8B%D0%BB%D0%BA%D0%B0%20%D0%BD%D0%B0%20%D0%BA%D0%B0%D0%BB%D0%B5%D0%BD%D0%B4%D0%B0%D1%80%D1%8C%20%D0%BC%D0%BE%D0%B5%D0%B9%20%D0%B7%D0%B0%D0%BD%D1%8F%D1%82%D0%BE%D1%81%D1%82%D0%B8`,
+          url: encodeURI(
+            `https://t.me/share/url?url=https://t.me/EntServicesBot?start=cal-d-${date.replaceAll(
+              '.',
+              '-',
+            )}-${userId}&text=Вот ссылка на мою занятость ${textDate}`,
+          ),
         },
       ],
       [{ text: '↩️ Назад', callback_data: `${date}::back_to_calendar_month` }],
@@ -47,7 +52,7 @@ export const calendarDaysMarkup = ({
 function getEventsBtns(events: CalendarEvent[], date: string, isBusy: boolean) {
   const eventsBtns = [];
 
-  if (isBusy) {
+  if (isBusy && events.length === 0) {
     return [
       [{ text: '❌ День недоступен', callback_data: 'busy_calendar_day' }],
       [
@@ -76,29 +81,33 @@ function getEventsBtns(events: CalendarEvent[], date: string, isBusy: boolean) {
 
       eventsBtns.push([
         {
-          text: `${eventFromTime} - ${eventTillTime} | ${event.title}`,
+          text: `${eventFromTime} - ${eventTillTime}${
+            event.title ? ` | ${event.title}` : ''
+          }`,
           callback_data: `${event.id}::calendar_event`,
         },
       ]);
     }
   }
 
-  eventsBtns.push(
-    ...[
-      [
-        {
-          text: '❌ Отметить недоступным',
-          callback_data: `${date}::sey_busy_calendar_day`,
-        },
+  if (!isBusy) {
+    eventsBtns.push(
+      ...[
+        [
+          {
+            text: '❌ Отметить недоступным',
+            callback_data: `${date}::sey_busy_calendar_day`,
+          },
+        ],
+        [
+          {
+            text: '📝 Создать событие',
+            callback_data: `${date}::create_personal_calendar_event`,
+          },
+        ],
       ],
-      [
-        {
-          text: '📝 Создать событие',
-          callback_data: `${date}::create_personal_calendar_event`,
-        },
-      ],
-    ],
-  );
+    );
+  }
 
   return eventsBtns;
 }

@@ -1,15 +1,22 @@
 import { Injectable } from '@nestjs/common';
-import { Context } from 'telegraf';
+import { InjectBot } from 'nestjs-telegraf';
+import { sendTempMessage } from 'src/libs/common';
+import { Context, Telegraf } from 'telegraf';
+import { Validations } from './types';
 
 @Injectable()
 export class GeneralValidations {
-  async startValidation(
-    ctx: Context,
-    validations: { stipulation: boolean; text: string }[],
-  ) {
+  constructor(@InjectBot() private bot: Telegraf<Context>) {}
+
+  async startValidation(ctx: Context, validations: Validations) {
     for (let { stipulation, text } of validations) {
       if (stipulation) {
-        // await sendTempMessage({ ctx, text, isDeleteInitMess: true });
+        await sendTempMessage({
+          bot: this.bot,
+          ctx,
+          text,
+          isDeleteInitMess: true,
+        });
         return false;
       }
     }

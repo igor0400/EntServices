@@ -1,12 +1,14 @@
-export const getUserName = (user: any = {}) => {
-  const userLink = user.user_name ? `https://t.me/${user.user_name}` : false;
+import { User } from 'src/users/models/user.model';
 
-  const name = `${user.first_name ?? ''} ${user.last_name ?? ''}`.trim();
+export const getUserName = (user: User | any = {}) => {
+  const userLink = user.userName ? `https://t.me/${user.userName}` : false;
 
-  const linkName = name !== '' ? name : user.id;
+  const name = `${user.firstName ?? ''} ${user.lastName ?? ''}`.trim();
+
+  const linkName = name !== '' ? name : user.telegramId;
 
   const codeName =
-    name !== '' ? `<code>${name}</code>` : `с id <code>${user.id}</code>`;
+    name !== '' ? `<code>${name}</code>` : `<code>${user.telegramId}</code>`;
 
   const userName = userLink
     ? `<a href="${userLink}">${linkName}</a>`

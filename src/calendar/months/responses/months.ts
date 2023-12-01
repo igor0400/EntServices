@@ -1,6 +1,6 @@
 import { CalendarBusyDay } from 'src/calendar/models/busy-day.model';
 import { backInlineBtn } from '../../../general';
-import { formatKeyboard, getNowDate } from 'src/libs/common';
+import { formatKeyboard, getNowDate, getZero } from 'src/libs/common';
 import { getEmptyBtns } from '../../assets';
 import { months, weekDays } from '../../configs';
 
@@ -41,9 +41,9 @@ export const calendarMonthsMarkup = (
 
     days.push({
       text: isBusy ? '❌' : `${i}`,
-      callback_data: `${i}.${
-        oldestDate.getUTCMonth() + 1
-      }.${oldestDate.getUTCFullYear()}::calendar_date`,
+      callback_data: `${getZero(i)}.${getZero(
+        oldestDate.getUTCMonth() + 1,
+      )}.${oldestDate.getUTCFullYear()}::calendar_date`,
     });
   }
 
@@ -73,9 +73,11 @@ export const calendarMonthsMarkup = (
       [
         {
           text: '🔗 Поделиться ссылкой',
-          url: `https://t.me/share/url?url=https://t.me/EntServicesBot?start=cal-m-${
-            oldestDate.getUTCMonth() + 1
-          }.${oldestDate.getUTCFullYear()}-${userId}&text=%D0%92%D0%BE%D1%82%20%D1%81%D1%81%D1%8B%D0%BB%D0%BA%D0%B0%20%D0%BD%D0%B0%20%D0%BA%D0%B0%D0%BB%D0%B5%D0%BD%D0%B4%D0%B0%D1%80%D1%8C%20%D0%BC%D0%BE%D0%B5%D0%B9%20%D0%B7%D0%B0%D0%BD%D1%8F%D1%82%D0%BE%D1%81%D1%82%D0%B8`,
+          url: encodeURI(
+            `https://t.me/share/url?url=https://t.me/EntServicesBot?start=cal-m-${getZero(
+              oldestDate.getUTCMonth() + 1,
+            )}.${oldestDate.getUTCFullYear()}-${userId}&text=Вот ссылка на календарь моей занятости`,
+          ),
         },
       ],
       backInlineBtn,

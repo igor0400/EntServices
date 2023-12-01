@@ -49,16 +49,19 @@ export class EventsUpdate {
     );
   }
 
-  @Command('create_event')
-  async createEventsCommand(ctx: Context) {
-    await this.middlewares.commandMiddleware(ctx, () =>
-      this.eventsService.createEvent({
-        creatorTgId: '861301267',
-        membersTgIds: ['861301267'],
-        title: 'Тренировка',
-        startTime: '2023-11-30T23:30:00.000Z',
-        endTime: '2023-11-30T23:45:00.000Z',
-      }),
+  @Action(/.*::skip_pers_cal_event_title/)
+  async skipEventTitleBtn(ctx: Context) {
+    await this.middlewares.btnMiddleware(ctx, (ctx: Context) =>
+      this.eventsAdditionalService.skipWriteTitle(ctx),
+    );
+  }
+
+  @Action(/.*::calendar_event/)
+  async calendarEventBtn(ctx: Context) {
+    const { dataValue } = getCtxData(ctx);
+
+    await this.middlewares.btnMiddleware(ctx, (ctx: Context) =>
+      this.eventsService.changeToEvent(ctx, dataValue),
     );
   }
 }

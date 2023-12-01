@@ -2,18 +2,18 @@ import { Injectable } from '@nestjs/common';
 import { Context } from 'telegraf';
 import { calendarDaysMarkup, calendarDaysMessage } from './responses';
 import { getCtxData } from 'src/libs/common';
-import { UsersRepository } from 'src/users/repositories/users.repository';
 import { EventsMembersRepository } from '../repositories/event-member.repository';
 import { CalendarEvent } from '../models/event.model';
 import { BusyDaysRepository } from '../repositories/busy-day.repository';
 import { getDateFromDataVal } from '../assets';
 import { filterEventsByDate } from '../events/assets';
+import { UserRepository } from 'src/users/repositories/user.repository';
 
 @Injectable()
 export class CalendarDaysService {
   constructor(
     private readonly eventsMembersRepository: EventsMembersRepository,
-    private readonly usersRepository: UsersRepository,
+    private readonly usersRepository: UserRepository,
     private readonly busyDaysRepository: BusyDaysRepository,
   ) {}
 

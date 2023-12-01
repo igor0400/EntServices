@@ -12,6 +12,9 @@ import { CalendarEvent } from '../models/event.model';
 import { getDateFromDataVal, getFreeIntervals } from '../assets';
 import { filterEventsByDate } from './assets';
 import { CreatePaginationProps, PaginationService } from 'src/libs/pagination';
+import { TextWaitersRepository } from 'src/listeners/repositories/text-waiter.repository';
+import { EventsService } from './events.service';
+import { UserRepository } from 'src/users/repositories/user.repository';
 
 export interface ChangeToSelectHoursOpts {
   callbackDataTitle: string;
@@ -24,12 +27,16 @@ export class EventsAdditionalService {
   constructor(
     private readonly eventsMembersRepository: EventsMembersRepository,
     private readonly paginationService: PaginationService,
+    private readonly textWaitersRepository: TextWaitersRepository,
+    private readonly userRepository: UserRepository,
+    private readonly eventsService: EventsService,
   ) {}
 
   async changeToSelectHours(ctx: Context, options: ChangeToSelectHoursOpts) {
     const { user: ctxUser, dataValue } = getCtxData(ctx);
     const dateVal = dataValue.split('-')[0];
     const userId = ctxUser.id;
+
     const eventsMembers = await this.eventsMembersRepository.findAll({
       where: {
         userTelegramId: userId,
@@ -39,13 +46,14 @@ export class EventsAdditionalService {
     const events = eventsMembers.map((i) => i.event);
     const sortedEvents = filterEventsByDate(events, dateVal);
     const initDate = getDateFromDataVal(dateVal);
+
     const freeIntervals = getFreeIntervals(
       initDate,
       sortedEvents,
       options.type === 'start' ? 0 : 1,
+      options.type === 'start' ? '23:45' : '23:46',
     );
 
-    const hoursTexts = [];
     const hoursIntervals = [];
 
     for (let freeInterval of freeIntervals) {
@@ -56,13 +64,34 @@ export class EventsAdditionalService {
       const endTimeHours = endTime.getUTCHours();
       const endTimeMinutes = endTime.getUTCMinutes();
 
-      hoursIntervals.push({
-        startHours: startTimeHours,
-        startMinutes: startTimeMinutes,
-        endHours: endTimeHours,
-        endMinutes: endTimeMinutes,
-      });
+      if (options.startTime) {
+        const optStartDate = freeInterval?.startTime?.replace(
+          /T\d\d:\d\d/,
+          `T${options.startTime.slice(0, 4)}1`,
+        );
+
+        if (
+          startTime < new Date(optStartDate) &&
+          new Date(optStartDate) < endTime
+        ) {
+          hoursIntervals.push({
+            startHours: startTimeHours,
+            startMinutes: startTimeMinutes,
+            endHours: endTimeHours,
+            endMinutes: endTimeMinutes,
+          });
+        }
+      } else {
+        hoursIntervals.push({
+          startHours: startTimeHours,
+          startMinutes: startTimeMinutes,
+          endHours: endTimeHours,
+          endMinutes: endTimeMinutes,
+        });
+      }
     }
+
+    const hoursTexts = [];
 
     for (let {
       startHours,
@@ -127,16 +156,33 @@ export class EventsAdditionalService {
   }
 
   async changeToWriteTitle(ctx: Context) {
-    const { dataValue } = getCtxData(ctx);
+    const { dataValue, user: ctxUser, message } = getCtxData(ctx);
+    const userTgId = ctxUser.id;
+    const user = await this.userRepository.findByTgId(userTgId);
 
-    // создавать textWaiter
-    // создавать event при скипе названия и в textWaiter
-
-    console.log(dataValue);
+    await this.textWaitersRepository.create({
+      type: 'create_pers_cal_event_title',
+      userId: user?.id,
+      chatId: message?.chat?.id,
+      messageId: message?.message_id,
+      extraData: dataValue,
+    });
 
     await ctx.editMessageCaption(writeTitleMessage(), {
       parse_mode: 'HTML',
       reply_markup: writeTitleMarkup(dataValue),
     });
+  }
+
+  async skipWriteTitle(ctx: Context) {
+    const { dataValue, user } = getCtxData(ctx);
+
+    const event = await this.eventsService.createEventByDataValue({
+      dataValue,
+      creatorTgId: user.id,
+      membersTgIds: [user.id],
+    });
+
+    await this.eventsService.changeToEvent(ctx, event.id);
   }
 }

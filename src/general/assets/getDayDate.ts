@@ -1,7 +1,9 @@
+import { getZero } from 'src/libs/common';
+
 export const getDayDate = (date?: string) => {
   const newDate = date ? new Date(date) : new Date();
 
-  return `${newDate.getUTCDate()}.${
-    newDate.getUTCMonth() + 1
-  }.${newDate.getUTCFullYear()}`;
+  return `${getZero(newDate.getUTCDate())}.${getZero(
+    newDate.getUTCMonth() + 1,
+  )}.${newDate.getUTCFullYear()}`;
 };

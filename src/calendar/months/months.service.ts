@@ -3,13 +3,13 @@ import { replyPhoto } from 'src/libs/common';
 import { Context } from 'telegraf';
 import { calendarMonthsMarkup, calendarMonthsMessage } from './responses';
 import { getCtxData, getNowDate } from 'src/libs/common';
-import { UsersRepository } from 'src/users/repositories/users.repository';
 import { BusyDaysRepository } from '../repositories/busy-day.repository';
+import { UserRepository } from 'src/users/repositories/user.repository';
 
 @Injectable()
 export class CalendarMonthsService {
   constructor(
-    private readonly userRepository: UsersRepository,
+    private readonly userRepository: UserRepository,
     private readonly busyDaysRepository: BusyDaysRepository,
   ) {}
 
@@ -39,7 +39,7 @@ export class CalendarMonthsService {
     const user = await this.userRepository.findByTgId(userId);
     const busyDays = await this.busyDaysRepository.findAll({
       where: {
-        userId,
+        userId: user.id,
         month: getNowDate().getUTCMonth() + 1 + incMouth,
       },
     });

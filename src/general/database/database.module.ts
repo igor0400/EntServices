@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { BanUser } from 'src/bans/models/ban-user.model';
 import { CalendarBusyDay } from 'src/calendar/models/busy-day.model';
 import { CalendarEventMember } from 'src/calendar/models/event-member.model';
 import { CalendarEvent } from 'src/calendar/models/event.model';
@@ -16,6 +17,7 @@ import { User } from 'src/users/models/user.model';
       CalendarEventMember,
       CalendarBusyDay,
       Pagination,
+      BanUser,
     ]),
   ],
 })

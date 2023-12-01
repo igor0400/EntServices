@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { PaginationService } from './pagination.service';
 import { DatabaseModule } from 'src/libs/common';
 import { PaginationRepository } from './repositories/pagination.repository';
@@ -7,7 +7,7 @@ import { PaginationUpdate } from './pagination.update';
 import { GeneralModule } from 'src/general/general.module';
 
 @Module({
-  imports: [DatabaseModule.forFeature([Pagination]), GeneralModule],
+  imports: [DatabaseModule.forFeature([Pagination]), forwardRef(() => GeneralModule)],
   providers: [PaginationService, PaginationUpdate, PaginationRepository],
   exports: [PaginationService, PaginationRepository],
 })

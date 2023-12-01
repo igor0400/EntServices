@@ -7,6 +7,7 @@ import {
 } from 'sequelize-typescript';
 import { AbstractModel } from 'src/libs/common';
 import { CalendarEvent } from './event.model';
+import { User } from 'src/users/models/user.model';
 
 export interface CalendarEventMemberCreationArgs {
   calendarEventId: string;
@@ -26,6 +27,7 @@ export class CalendarEventMember extends AbstractModel<
   })
   calendarEventId: string;
 
+  @ForeignKey(() => User)
   @Column({
     type: DataType.STRING,
     allowNull: false,
@@ -40,4 +42,7 @@ export class CalendarEventMember extends AbstractModel<
 
   @BelongsTo(() => CalendarEvent)
   event: CalendarEvent;
+
+  @BelongsTo(() => User)
+  user: User;
 }

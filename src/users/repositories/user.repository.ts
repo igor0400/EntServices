@@ -5,7 +5,7 @@ import { User, UserCreationArgs } from '../models/user.model';
 import { FindOptions } from 'sequelize';
 
 @Injectable()
-export class UsersRepository extends AbstractRepository<
+export class UserRepository extends AbstractRepository<
   User,
   UserCreationArgs
 > {

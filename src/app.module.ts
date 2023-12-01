@@ -14,6 +14,8 @@ import { ListenersModule } from './listeners/listeners.module';
 import { CalendarModule } from './calendar/calendar.module';
 import { NotificationsModule } from './notifications/notifications.module';
 import { PaginationModule } from './libs/pagination';
+import { ListenersLowModule } from './listeners/listeners-low.module';
+import { BansModule } from './bans/bans.module';
 
 const sessions = new LocalSession({ database: 'session_db.json' });
 
@@ -32,16 +34,20 @@ const sessions = new LocalSession({ database: 'session_db.json' });
       inject: [ConfigService],
     }),
     DatabaseModule,
+    CalendarModule,
     StartModule,
     MenuModule,
     ServicesModule,
     GeneralModule,
     InfoModule,
     UsersModule,
-    ListenersModule,
-    CalendarModule,
     NotificationsModule,
     PaginationModule,
+    ListenersModule,
+
+    ListenersLowModule,
+
+    BansModule,
   ],
 })
 export class AppModule {}
