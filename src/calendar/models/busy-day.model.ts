@@ -7,6 +7,7 @@ export interface CalendarBusyDayCreationArgs {
   date: number;
   month: number;
   year: number;
+  type: string;
 }
 
 @Table({ tableName: 'calendar_busy_days' })
@@ -43,4 +44,10 @@ export class CalendarBusyDay extends AbstractModel<
     allowNull: false,
   })
   year: number;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: false,
+  })
+  type: string;
 }

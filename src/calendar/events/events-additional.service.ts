@@ -6,6 +6,8 @@ import {
   selectEventHoursMessage,
   writeTitleMarkup,
   writeTitleMessage,
+  deleteEventConfirmMessage,
+  deleteEventConfirmMarkup,
 } from './responses';
 import { EventsMembersRepository } from '../repositories/event-member.repository';
 import { CalendarEvent } from '../models/event.model';
@@ -184,5 +186,14 @@ export class EventsAdditionalService {
     });
 
     await this.eventsService.changeToEvent(ctx, event.id);
+  }
+
+  async deleteEventConfirm(ctx: Context) {
+    const { dataValue } = getCtxData(ctx);
+
+    await ctx.editMessageCaption(deleteEventConfirmMessage(), {
+      reply_markup: deleteEventConfirmMarkup(dataValue),
+      parse_mode: 'HTML',
+    });
   }
 }

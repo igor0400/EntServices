@@ -4,6 +4,8 @@ import { Context } from 'telegraf';
 import { GeneralMiddlewares } from 'src/general/general.middlewares';
 import { EventsAdditionalService } from './events-additional.service';
 import { getCtxData } from 'src/libs/common';
+import { CalendarDaysService } from '../days/days.service';
+import { getDayDate } from 'src/general';
 
 @Update()
 export class EventsUpdate {
@@ -11,6 +13,7 @@ export class EventsUpdate {
     private readonly middlewares: GeneralMiddlewares,
     private readonly eventsService: EventsService,
     private readonly eventsAdditionalService: EventsAdditionalService,
+    private readonly daysService: CalendarDaysService,
   ) {}
 
   @Action([
@@ -56,12 +59,34 @@ export class EventsUpdate {
     );
   }
 
-  @Action(/.*::calendar_event/)
+  @Action([/.*::calendar_event/, /.*::back_to_calendar_event/])
   async calendarEventBtn(ctx: Context) {
     const { dataValue } = getCtxData(ctx);
 
     await this.middlewares.btnMiddleware(ctx, (ctx: Context) =>
       this.eventsService.changeToEvent(ctx, dataValue),
     );
+  }
+
+  @Action(/.*::delete_calendar_event_confirm/)
+  async deleteCalendarEventConfirmBtn(ctx: Context) {
+    await this.middlewares.btnMiddleware(ctx, (ctx: Context) =>
+      this.eventsAdditionalService.deleteEventConfirm(ctx),
+    );
+  }
+
+  @Action(/.*::delete_calendar_event/)
+  async deleteCalendarEventBtn(ctx: Context) {
+    const { dataValue } = getCtxData(ctx);
+
+    await this.middlewares.btnMiddleware(ctx, async (ctx: Context) => {
+      const event = await this.eventsService.deleteEvent({
+        eventId: dataValue,
+      });
+      await this.daysService.changeToCalendarDay(
+        ctx,
+        getDayDate(event.startTime),
+      );
+    });
   }
 }

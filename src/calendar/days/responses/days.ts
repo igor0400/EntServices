@@ -12,7 +12,7 @@ interface CalendarDaysMarkup {
 
 export const calendarDaysMessage = (date: string) => {
   const splitDate = date.split('.');
-  const textDate = `${splitDate[0]} ${textMonths[+splitDate[1] - 1]}`;
+  const textDate = `${+splitDate[0]} ${textMonths[+splitDate[1] - 1]}`;
 
   return `<b>События ${textDate}</b>
 

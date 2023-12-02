@@ -1,6 +1,6 @@
 import { textMonths } from 'src/calendar/configs';
 import { CalendarEvent } from 'src/calendar/models/event.model';
-import { backInlineBtn } from 'src/general';
+import { backInlineBtn, getDayDate } from 'src/general';
 import { getUserName, getZero } from 'src/libs/common';
 
 export const eventMessage = (event: CalendarEvent) => {
@@ -35,8 +35,6 @@ export const eventMarkup = (event: CalendarEvent) => {
     textMonths[startDate.getUTCMonth()]
   }`;
 
-  // Удалить событие сначала подтверждение
-
   return {
     inline_keyboard: [
       [
@@ -50,15 +48,13 @@ export const eventMarkup = (event: CalendarEvent) => {
       [
         {
           text: '🗑 Удалить событие',
-          callback_data: `${event.id}::delete_calendar_event`,
+          callback_data: `${event.id}::delete_calendar_event_confirm`,
         },
       ],
       [
         {
           text: '↩️ Назад',
-          callback_data: `${getZero(startDate.getUTCDate())}.${getZero(
-            startDate.getUTCMonth() + 1,
-          )}.${startDate.getUTCFullYear()}::back_to_calendar_date`,
+          callback_data: `${getDayDate(startDate)}::back_to_calendar_date`,
         },
       ],
       backInlineBtn,

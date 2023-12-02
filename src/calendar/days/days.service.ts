@@ -35,6 +35,13 @@ export class CalendarDaysService {
     });
   }
 
+  async setDayBusy(ctx: Context) {
+    const { dataValue } = getCtxData(ctx);
+
+    // добавлять busyDay и отправлять на этот же день для обновления
+    // с удалением так же
+  }
+
   private async getMarkupData(ctx: Context, dateVal: string) {
     const { user: ctxUser } = getCtxData(ctx);
     const userTgId = ctxUser.id;

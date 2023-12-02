@@ -85,6 +85,30 @@ export class EventsService {
     return event;
   }
 
+  async deleteEvent({ eventId }) {
+    const event = await this.eventsRepository.findByPk(eventId, {
+      include: [{ model: CalendarEventMember, include: [User] }],
+    });
+    if (!event) return;
+
+    await this.eventsRepository.destroy({ where: { id: eventId } });
+
+    for (let member of event.members) {
+      await this.eventsMembersRepository.destroy({ where: { id: member.id } });
+    }
+
+    const creator = await this.usersRepository.findByPk(event.creatorId);
+    const startDate = new Date(event.startTime);
+
+    await this.checkIsDayBusy({
+      userId: creator.id,
+      userTelegramId: creator.telegramId,
+      dateVal: getDayDate(startDate),
+    });
+
+    return event;
+  }
+
   async createEventByDataValue({
     dataValue,
     creatorTgId,
@@ -166,13 +190,25 @@ export class EventsService {
     const sortedEvents = filterEventsByDate(events, dateVal);
     const freeIntervals = getFreeIntervals(newDate, sortedEvents);
 
-    if (!freeIntervals.length) {
+    if (freeIntervals.length) {
+      await this.busyDaysRepository.destroy({
+        where: {
+          userId,
+          userTelegramId,
+          date: +date,
+          month: +month,
+          year: +year,
+          type: 'auto',
+        },
+      });
+    } else {
       await this.busyDaysRepository.create({
         userId,
         userTelegramId,
         date: +date,
         month: +month,
         year: +year,
+        type: 'auto',
       });
     }
   }
