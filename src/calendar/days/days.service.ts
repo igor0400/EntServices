@@ -36,10 +36,77 @@ export class CalendarDaysService {
   }
 
   async setDayBusy(ctx: Context) {
-    const { dataValue } = getCtxData(ctx);
+    const { dataValue, user: ctxUser } = getCtxData(ctx);
 
-    // добавлять busyDay и отправлять на этот же день для обновления
-    // с удалением так же
+    await this.createBusyDayByDateVal({
+      dateVal: dataValue,
+      userTelegramId: ctxUser.id,
+      type: 'manually',
+    });
+
+    await this.changeToCalendarDay(ctx, dataValue);
+  }
+
+  async deleteBusyDay(ctx: Context) {
+    const { dataValue, user: ctxUser } = getCtxData(ctx);
+
+    await this.deleteBusyDayByDateVal({
+      dateVal: dataValue,
+      userTelegramId: ctxUser.id,
+    });
+
+    await this.changeToCalendarDay(ctx, dataValue);
+  }
+
+  async createBusyDayByDateVal({
+    dateVal,
+    userTelegramId,
+    type = 'auto',
+  }: {
+    dateVal: string;
+    userTelegramId: string;
+    type?: string;
+  }) {
+    const [date, month, year] = dateVal.split('.');
+    const user = await this.usersRepository.findByTgId(userTelegramId);
+
+    if (!user) return;
+
+    const busyDay = await this.busyDaysRepository.create({
+      userId: user.id,
+      userTelegramId,
+      date: +date,
+      month: +month,
+      year: +year,
+      type,
+    });
+
+    return busyDay;
+  }
+
+  async deleteBusyDayByDateVal({
+    dateVal,
+    userTelegramId,
+  }: {
+    dateVal: string;
+    userTelegramId: string;
+  }) {
+    const [date, month, year] = dateVal.split('.');
+    const user = await this.usersRepository.findByTgId(userTelegramId);
+
+    if (!user) return;
+
+    const data = await this.busyDaysRepository.destroy({
+      where: {
+        userId: user.id,
+        userTelegramId,
+        date: +date,
+        month: +month,
+        year: +year,
+      },
+    });
+
+    return data;
   }
 
   private async getMarkupData(ctx: Context, dateVal: string) {
@@ -69,7 +136,7 @@ export class CalendarDaysService {
     return {
       userId,
       events: sortedEvents,
-      isBusy: busyDay ? true : false,
+      busyDay,
     };
   }
 }

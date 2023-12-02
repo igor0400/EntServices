@@ -19,4 +19,18 @@ export class CalendarDaysUpdate {
       this.calendarDaysService.changeToCalendarDay(ctx, dataValue),
     );
   }
+
+  @Action(/.*::sey_busy_calendar_day/)
+  async setBusyDayBtn(ctx: Context) {
+    await this.middlewares.btnMiddleware(ctx, (ctx: Context) =>
+      this.calendarDaysService.setDayBusy(ctx),
+    );
+  }
+
+  @Action(/.*::set_unbusy_calendar_day/)
+  async deleteBusyDayBtn(ctx: Context) {
+    await this.middlewares.btnMiddleware(ctx, (ctx: Context) =>
+      this.calendarDaysService.deleteBusyDay(ctx),
+    );
+  }
 }

@@ -2,12 +2,13 @@ import { CalendarEvent } from 'src/calendar/models/event.model';
 import { backInlineBtn } from '../../../general';
 import { textMonths } from '../../configs';
 import { getZero } from 'src/libs/common';
+import { CalendarBusyDay } from 'src/calendar/models/busy-day.model';
 
 interface CalendarDaysMarkup {
   userId: string;
   date: string;
   events: CalendarEvent[];
-  isBusy: boolean;
+  busyDay: CalendarBusyDay | undefined;
 }
 
 export const calendarDaysMessage = (date: string) => {
@@ -23,9 +24,9 @@ export const calendarDaysMarkup = ({
   userId,
   date,
   events,
-  isBusy = false,
+  busyDay,
 }: CalendarDaysMarkup) => {
-  const eventsBtns = getEventsBtns(events, date, isBusy);
+  const eventsBtns = getEventsBtns(events, date, busyDay);
   const splitDate = date.split('.');
   const textDate = `${splitDate[0]} ${textMonths[+splitDate[1] - 1]}`;
 
@@ -49,10 +50,14 @@ export const calendarDaysMarkup = ({
   };
 };
 
-function getEventsBtns(events: CalendarEvent[], date: string, isBusy: boolean) {
+function getEventsBtns(
+  events: CalendarEvent[],
+  date: string,
+  busyDay: CalendarBusyDay,
+) {
   const eventsBtns = [];
 
-  if (isBusy && events.length === 0) {
+  if (busyDay && events.length === 0) {
     return [
       [{ text: '❌ День недоступен', callback_data: 'busy_calendar_day' }],
       [
@@ -90,7 +95,21 @@ function getEventsBtns(events: CalendarEvent[], date: string, isBusy: boolean) {
     }
   }
 
-  if (!isBusy) {
+  if (busyDay?.type === 'manually') {
+    eventsBtns.push(
+      ...[
+        [{ text: '❌ День недоступен', callback_data: 'busy_calendar_day' }],
+        [
+          {
+            text: '✅ Отметить доступным',
+            callback_data: `${date}::set_unbusy_calendar_day`,
+          },
+        ],
+      ],
+    );
+  }
+
+  if (!busyDay) {
     eventsBtns.push(
       ...[
         [
