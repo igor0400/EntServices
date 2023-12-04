@@ -41,7 +41,7 @@ export const eventMarkup = (event: CalendarEvent) => {
         {
           text: '🔗 Пригласить',
           url: `${encodeURI(
-            `https://t.me/share/url?url=https://t.me/EntServicesBot?start=cal-add-em-${event.id}&text=Приглашение присоединиться к событию ${textDate}`,
+            `https://t.me/share/url?url=https://t.me/EntServicesBot?start=cal-e-j-${event.id}&text=Приглашение присоединиться к событию ${textDate}`,
           )}`,
         },
       ],

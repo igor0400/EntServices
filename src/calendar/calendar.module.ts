@@ -17,6 +17,9 @@ import { BusyDaysRepository } from './repositories/busy-day.repository';
 import { EventsAdditionalService } from './events/events-additional.service';
 import { PaginationModule } from 'src/libs/pagination';
 import { ListenersModule } from 'src/listeners/listeners.module';
+import { ShareCalendarService } from './share/share.service';
+import { ShareCalendarMonthsService } from './months/share-months.service';
+import { ShareCalendarMonthsUpdate } from './months/share-months.update';
 
 @Module({
   imports: [
@@ -41,7 +44,10 @@ import { ListenersModule } from 'src/listeners/listeners.module';
     EventsMembersRepository,
     BusyDaysRepository,
     EventsAdditionalService,
+    ShareCalendarService,
+    ShareCalendarMonthsService,
+    ShareCalendarMonthsUpdate,
   ],
-  exports: [CalendarMonthsService, EventsService],
+  exports: [CalendarMonthsService, EventsService, ShareCalendarService],
 })
 export class CalendarModule {}

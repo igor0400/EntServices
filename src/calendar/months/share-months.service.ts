@@ -1,42 +1,47 @@
 import { Injectable } from '@nestjs/common';
 import { replyPhoto } from 'src/libs/common';
 import { Context } from 'telegraf';
-import { calendarMonthsMarkup, calendarMonthsMessage } from './responses';
+import {
+  calendarShareMonthsMarkup,
+  calendarShareMonthsMessage,
+} from './responses';
 import { getCtxData, getNowDate } from 'src/libs/common';
 import { BusyDaysRepository } from '../repositories/busy-day.repository';
 import { UserRepository } from 'src/users/repositories/user.repository';
 
 @Injectable()
-export class CalendarMonthsService {
+export class ShareCalendarMonthsService {
   constructor(
     private readonly userRepository: UserRepository,
     private readonly busyDaysRepository: BusyDaysRepository,
   ) {}
 
-  async sendMouth(ctx: Context, incMouth: number = 0) {
-    await this.sendContent(ctx, incMouth, true);
+  async sendMouth(ctx: Context, userId: string, incMouth: number = 0) {
+    await this.sendContent(ctx, userId, incMouth, true);
   }
 
   async changeToMouth(ctx: Context, incMouth: number = 0) {
-    await this.sendContent(ctx, incMouth, false);
+    const { dataValue } = getCtxData(ctx);
+
+    await this.sendContent(ctx, dataValue, incMouth, false);
   }
 
   async navMouthItem(ctx: Context, type: 'next' | 'prev') {
-    const { data } = getCtxData(ctx);
-    const mouthInt = +data.split('::')[0];
+    const { dataValue } = getCtxData(ctx);
+    const splitData = dataValue.split('_');
+    const mouthInt = +splitData[0];
     const incMouth = type === 'prev' ? mouthInt - 1 : mouthInt + 1;
 
-    await this.sendContent(ctx, incMouth, false);
+    await this.sendContent(ctx, splitData[1], incMouth, false);
   }
 
   private async sendContent(
     ctx: Context,
+    userId: string,
     incMouth: number = 0,
     isSend: boolean = true,
   ) {
-    const { user: ctxUser } = getCtxData(ctx);
-    const userId = ctxUser.id;
-    const user = await this.userRepository.findByTgId(userId);
+    const user = await this.userRepository.findByPk(userId);
     const busyDays = await this.busyDaysRepository.findAll({
       where: {
         userId: user.id,
@@ -46,13 +51,13 @@ export class CalendarMonthsService {
 
     if (isSend) {
       await ctx.replyWithPhoto(replyPhoto(), {
-        caption: calendarMonthsMessage(),
-        reply_markup: calendarMonthsMarkup(user?.id, busyDays, incMouth),
+        caption: calendarShareMonthsMessage(user),
+        reply_markup: calendarShareMonthsMarkup(user?.id, busyDays, incMouth),
         parse_mode: 'HTML',
       });
     } else {
-      await ctx.editMessageCaption(calendarMonthsMessage(), {
-        reply_markup: calendarMonthsMarkup(user?.id, busyDays, incMouth),
+      await ctx.editMessageCaption(calendarShareMonthsMessage(user), {
+        reply_markup: calendarShareMonthsMarkup(user?.id, busyDays, incMouth),
         parse_mode: 'HTML',
       });
     }

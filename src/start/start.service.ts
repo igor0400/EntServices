@@ -1,22 +1,26 @@
 import { Injectable } from '@nestjs/common';
-import { getCtxData } from 'src/libs/common';
 import { MenuService } from 'src/menu/menu.service';
 import { Context } from 'telegraf';
+import { StartArgsService } from './args.service';
 
 @Injectable()
 export class StartService {
-  constructor(private readonly menuService: MenuService) {}
+  constructor(
+    private readonly menuService: MenuService,
+    private readonly argsService: StartArgsService,
+  ) {}
 
   async sendStart(ctx: Context | any) {
-    const { user } = getCtxData(ctx);
-    const telegramId = user.id;
     const args = ctx.args;
 
     if (args.length) {
-      // сделать сервис для обработки аргументов
-      // args[0] это разные разделы
+      return await this.argsService.argsHandler(ctx);
     }
 
+    await this.sendStartMessage(ctx);
+  }
+
+  async sendStartMessage(ctx: Context) {
     await ctx.reply('👋');
     await this.menuService.sendMenu(ctx);
   }

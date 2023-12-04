@@ -1,46 +1,32 @@
-import { Action, Command, Update } from 'nestjs-telegraf';
-import { CalendarMonthsService } from './months.service';
+import { Action, Update } from 'nestjs-telegraf';
 import { Context } from 'telegraf';
 import { GeneralMiddlewares } from 'src/general/general.middlewares';
 import { getCtxData, getNowDate } from 'src/libs/common';
 import { getDateFromDataVal } from '../assets';
+import { ShareCalendarMonthsService } from './share-months.service';
 
 @Update()
-export class CalendarMonthsUpdate {
+export class ShareCalendarMonthsUpdate {
   constructor(
-    private readonly mouthsService: CalendarMonthsService,
+    private readonly shareMonthsService: ShareCalendarMonthsService,
     private readonly middlewares: GeneralMiddlewares,
   ) {}
 
-  @Command('calendar')
-  async calendarCommand(ctx: Context) {
-    await this.middlewares.commandMiddleware(ctx, (ctx: Context) =>
-      this.mouthsService.sendMouth(ctx),
-    );
-  }
-
-  @Action('calendar_service')
-  async calendarBtn(ctx: Context) {
-    await this.middlewares.btnMiddleware(ctx, (ctx: Context) =>
-      this.mouthsService.changeToMouth(ctx),
-    );
-  }
-
-  @Action(/.*::next_calendar_mouth/)
+  @Action(/.*::next_share_calendar_mouth/)
   async nextMouthBtn(ctx: Context) {
     await this.middlewares.btnMiddleware(ctx, (ctx: Context) =>
-      this.mouthsService.navMouthItem(ctx, 'next'),
+      this.shareMonthsService.navMouthItem(ctx, 'next'),
     );
   }
 
-  @Action(/.*::prev_calendar_mouth/)
+  @Action(/.*::prev_share_calendar_mouth/)
   async prevMouthBtn(ctx: Context) {
     await this.middlewares.btnMiddleware(ctx, (ctx: Context) =>
-      this.mouthsService.navMouthItem(ctx, 'prev'),
+      this.shareMonthsService.navMouthItem(ctx, 'prev'),
     );
   }
 
-  @Action(/.*::back_to_calendar_month/)
+  @Action(/.*::back_to_share_calendar_month/)
   async backToMonthBtn(ctx: Context) {
     const { dataValue } = getCtxData(ctx);
     const nowDate = getNowDate();
@@ -50,7 +36,7 @@ export class CalendarMonthsUpdate {
     const incMouth = valDate.getUTCMonth() - nowDate.getUTCMonth() + yearsDiff;
 
     await this.middlewares.btnMiddleware(ctx, (ctx: Context) =>
-      this.mouthsService.changeToMouth(ctx, incMouth),
+      this.shareMonthsService.changeToMouth(ctx, incMouth),
     );
   }
 }

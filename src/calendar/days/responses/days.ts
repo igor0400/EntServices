@@ -39,7 +39,7 @@ export const calendarDaysMarkup = ({
           url: encodeURI(
             `https://t.me/share/url?url=https://t.me/EntServicesBot?start=cal-d-${date.replaceAll(
               '.',
-              '-',
+              '_',
             )}-${userId}&text=Вот ссылка на мою занятость ${textDate}`,
           ),
         },
