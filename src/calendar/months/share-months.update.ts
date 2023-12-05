@@ -1,9 +1,9 @@
 import { Action, Update } from 'nestjs-telegraf';
 import { Context } from 'telegraf';
 import { GeneralMiddlewares } from 'src/general/general.middlewares';
-import { getCtxData, getNowDate } from 'src/libs/common';
-import { getDateFromDataVal } from '../assets';
+import { getCtxData } from 'src/libs/common';
 import { ShareCalendarMonthsService } from './share-months.service';
+import { getMonthDifferenceByDateVal } from './assets';
 
 @Update()
 export class ShareCalendarMonthsUpdate {
@@ -29,14 +29,11 @@ export class ShareCalendarMonthsUpdate {
   @Action(/.*::back_to_share_calendar_month/)
   async backToMonthBtn(ctx: Context) {
     const { dataValue } = getCtxData(ctx);
-    const nowDate = getNowDate();
-    const valDate = getDateFromDataVal(dataValue);
-    const yearsDiff =
-      12 * (valDate.getUTCFullYear() - nowDate.getUTCFullYear());
-    const incMouth = valDate.getUTCMonth() - nowDate.getUTCMonth() + yearsDiff;
+    const [date, userId] = dataValue.split('_');
+    const incMouths = getMonthDifferenceByDateVal(date);
 
     await this.middlewares.btnMiddleware(ctx, (ctx: Context) =>
-      this.shareMonthsService.changeToMouth(ctx, incMouth),
+      this.shareMonthsService.changeToMouth(ctx, userId, incMouths),
     );
   }
 }

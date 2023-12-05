@@ -2,8 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { replyPhoto } from 'src/libs/common';
 import { Context } from 'telegraf';
 import {
-  calendarShareMonthsMarkup,
-  calendarShareMonthsMessage,
+  shareCalendarMonthsMessage,
+  shareCalendarMonthsMarkup,
 } from './responses';
 import { getCtxData, getNowDate } from 'src/libs/common';
 import { BusyDaysRepository } from '../repositories/busy-day.repository';
@@ -20,10 +20,8 @@ export class ShareCalendarMonthsService {
     await this.sendContent(ctx, userId, incMouth, true);
   }
 
-  async changeToMouth(ctx: Context, incMouth: number = 0) {
-    const { dataValue } = getCtxData(ctx);
-
-    await this.sendContent(ctx, dataValue, incMouth, false);
+  async changeToMouth(ctx: Context, userId: string, incMouth: number = 0) {
+    await this.sendContent(ctx, userId, incMouth, false);
   }
 
   async navMouthItem(ctx: Context, type: 'next' | 'prev') {
@@ -51,13 +49,13 @@ export class ShareCalendarMonthsService {
 
     if (isSend) {
       await ctx.replyWithPhoto(replyPhoto(), {
-        caption: calendarShareMonthsMessage(user),
-        reply_markup: calendarShareMonthsMarkup(user?.id, busyDays, incMouth),
+        caption: shareCalendarMonthsMessage(user),
+        reply_markup: shareCalendarMonthsMarkup(user?.id, busyDays, incMouth),
         parse_mode: 'HTML',
       });
     } else {
-      await ctx.editMessageCaption(calendarShareMonthsMessage(user), {
-        reply_markup: calendarShareMonthsMarkup(user?.id, busyDays, incMouth),
+      await ctx.editMessageCaption(shareCalendarMonthsMessage(user), {
+        reply_markup: shareCalendarMonthsMarkup(user?.id, busyDays, incMouth),
         parse_mode: 'HTML',
       });
     }

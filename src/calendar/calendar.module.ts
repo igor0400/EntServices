@@ -20,6 +20,8 @@ import { ListenersModule } from 'src/listeners/listeners.module';
 import { ShareCalendarService } from './share/share.service';
 import { ShareCalendarMonthsService } from './months/share-months.service';
 import { ShareCalendarMonthsUpdate } from './months/share-months.update';
+import { ShareCalendarDaysService } from './days/share-days.service';
+import { ShareCalendarDaysUpdate } from './days/share-days.update';
 
 @Module({
   imports: [
@@ -47,6 +49,8 @@ import { ShareCalendarMonthsUpdate } from './months/share-months.update';
     ShareCalendarService,
     ShareCalendarMonthsService,
     ShareCalendarMonthsUpdate,
+    ShareCalendarDaysService,
+    ShareCalendarDaysUpdate,
   ],
   exports: [CalendarMonthsService, EventsService, ShareCalendarService],
 })

@@ -1,7 +1,15 @@
-export function getMonthDifference(date1: Date, date2: Date = new Date()) {
-  let months = (date1.getUTCFullYear() - date2.getUTCFullYear()) * 12;
+import { getDateFromDataVal } from 'src/calendar/assets';
+import { getNowDate } from 'src/libs/common';
+
+export function getMonthDifferenceByDateVal(
+  date1: string,
+  date2: Date = getNowDate(),
+) {
+  const valDate = getDateFromDataVal(date1);
+
+  let months = (valDate.getUTCFullYear() - date2.getUTCFullYear()) * 12;
   months -= date2.getUTCMonth();
-  months += date1.getUTCMonth();
+  months += valDate.getUTCMonth();
 
   return months;
 }

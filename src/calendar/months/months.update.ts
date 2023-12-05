@@ -4,6 +4,7 @@ import { Context } from 'telegraf';
 import { GeneralMiddlewares } from 'src/general/general.middlewares';
 import { getCtxData, getNowDate } from 'src/libs/common';
 import { getDateFromDataVal } from '../assets';
+import { getMonthDifferenceByDateVal } from './assets';
 
 @Update()
 export class CalendarMonthsUpdate {
@@ -43,14 +44,10 @@ export class CalendarMonthsUpdate {
   @Action(/.*::back_to_calendar_month/)
   async backToMonthBtn(ctx: Context) {
     const { dataValue } = getCtxData(ctx);
-    const nowDate = getNowDate();
-    const valDate = getDateFromDataVal(dataValue);
-    const yearsDiff =
-      12 * (valDate.getUTCFullYear() - nowDate.getUTCFullYear());
-    const incMouth = valDate.getUTCMonth() - nowDate.getUTCMonth() + yearsDiff;
+    const incMouths = getMonthDifferenceByDateVal(dataValue);
 
     await this.middlewares.btnMiddleware(ctx, (ctx: Context) =>
-      this.mouthsService.changeToMouth(ctx, incMouth),
+      this.mouthsService.changeToMouth(ctx, incMouths),
     );
   }
 }

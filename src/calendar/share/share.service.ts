@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Context } from 'telegraf';
 import { ShareCalendarMonthsService } from '../months/share-months.service';
-import { getMonthDifference } from '../months/assets';
+import { getMonthDifferenceByDateVal } from '../months/assets';
 import { getZero } from 'src/libs/common';
 
 @Injectable()
@@ -17,8 +17,8 @@ export class ShareCalendarService {
     const userId = args[3];
 
     if (serviceType === 'm') {
-      const incMouths = getMonthDifference(
-        new Date(`${year}-${getZero(month)}-02T00:00:00.000Z`),
+      const incMouths = getMonthDifferenceByDateVal(
+        `02.${getZero(month)}.${year}`,
       );
 
       await this.shareMonthsService.sendMouth(ctx, userId, incMouths);

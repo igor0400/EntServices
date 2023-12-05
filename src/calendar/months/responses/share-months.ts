@@ -10,17 +10,19 @@ import { getEmptyBtns } from '../../assets';
 import { months, weekDays } from '../../configs';
 import { User } from 'src/users/models/user.model';
 
-export const calendarShareMonthsMessage = (
+export const shareCalendarMonthsMessage = (
   user: User,
 ) => `<b>Календарь встреч/событий</b>
 
 🗓 Календарь – это сервис для удобного планирования встреч и событий.
 
-👇 Чтобы назначить встречу ${getUserName(user)}, выберите удобную для вас дату.
+👇 Чтобы назначить встречу с ${getUserName(
+  user,
+)}, выберите удобную для вас дату.
 
 <i>❌ – день недоступен</i>`;
 
-export const calendarShareMonthsMarkup = (
+export const shareCalendarMonthsMarkup = (
   userId: string,
   busyDays: CalendarBusyDay[],
   incMouth = 0,
