@@ -22,6 +22,9 @@ import { ShareCalendarMonthsService } from './months/share-months.service';
 import { ShareCalendarMonthsUpdate } from './months/share-months.update';
 import { ShareCalendarDaysService } from './days/share-days.service';
 import { ShareCalendarDaysUpdate } from './days/share-days.update';
+import { ShareEventsService } from './events/share-events.service';
+import { ShareEventsUpdate } from './events/share-events.update';
+import { ShareEventsAdditionalService } from './events/share-events-additional.service';
 
 @Module({
   imports: [
@@ -51,6 +54,9 @@ import { ShareCalendarDaysUpdate } from './days/share-days.update';
     ShareCalendarMonthsUpdate,
     ShareCalendarDaysService,
     ShareCalendarDaysUpdate,
+    ShareEventsService,
+    ShareEventsUpdate,
+    ShareEventsAdditionalService,
   ],
   exports: [CalendarMonthsService, EventsService, ShareCalendarService],
 })

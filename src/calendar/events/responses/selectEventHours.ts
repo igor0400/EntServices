@@ -12,18 +12,25 @@ export const selectEventHoursMessage = ({
 export const selectEventHoursMarkup = async (
   dateVal: string,
   btns: string[],
-  { callbackDataTitle, startTime, type }: ChangeToSelectHoursOpts,
+  {
+    callbackDataTitle,
+    startTime,
+    type,
+    calType = 'pers',
+    userId,
+  }: ChangeToSelectHoursOpts,
   createPagination: (
     conf: Omit<CreatePaginationProps, 'userTelegramId'>,
   ) => Promise<InlineBtnType[][]>,
 ) => {
   const hoursBtns = [];
+  const textCalType = calType === 'share' ? 'sh' : 'pers';
 
   for (let btn of btns) {
     hoursBtns.push({
       text: btn,
-      callback_data: `${dateVal}-${startTime ?? btn}-${
-        startTime ? btn : null
+      callback_data: `${dateVal}-${startTime ?? btn}-${startTime ? btn : null}${
+        userId ? `_${userId}` : ''
       }::${callbackDataTitle}`,
     });
   }
@@ -43,8 +50,12 @@ export const selectEventHoursMarkup = async (
           text: '↩️ Назад',
           callback_data:
             type === 'start'
-              ? `${dateVal}::back_to_calendar_date`
-              : `${dateVal}::back_to_pers_cal_event_start_time`,
+              ? `${dateVal}${userId ? `_${userId}` : ''}::back_to${
+                  calType === 'share' ? `_${calType}` : ''
+                }_calendar_date`
+              : `${dateVal}${
+                  userId ? `_${userId}` : ''
+                }::back_to_${textCalType}_c_e_s_t`,
         },
       ],
       backInlineBtn,

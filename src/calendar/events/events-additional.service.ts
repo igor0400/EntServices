@@ -21,6 +21,8 @@ import { UserRepository } from 'src/users/repositories/user.repository';
 export interface ChangeToSelectHoursOpts {
   callbackDataTitle: string;
   type: 'start' | 'end';
+  calType?: 'pers' | 'share';
+  userId?: string;
   startTime?: string;
 }
 
@@ -36,12 +38,18 @@ export class EventsAdditionalService {
 
   async changeToSelectHours(ctx: Context, options: ChangeToSelectHoursOpts) {
     const { user: ctxUser, dataValue } = getCtxData(ctx);
-    const dateVal = dataValue.split('-')[0];
-    const userId = ctxUser.id;
+
+    const dateVal =
+      options.calType === 'pers'
+        ? dataValue?.split('-')[0]
+        : dataValue?.split('_')[0]?.split('-')[0];
+
+    const user = await this.userRepository.findByPk(options?.userId ?? '');
+    const userTgId = options.userId ? user?.telegramId : ctxUser.id;
 
     const eventsMembers = await this.eventsMembersRepository.findAll({
       where: {
-        userTelegramId: userId,
+        userTelegramId: userTgId,
       },
       include: [CalendarEvent],
     });
@@ -145,7 +153,7 @@ export class EventsAdditionalService {
       options,
       async (conf: Omit<CreatePaginationProps, 'userTelegramId'>) => {
         return await this.paginationService.create({
-          userTelegramId: userId,
+          userTelegramId: userTgId,
           ...conf,
         });
       },

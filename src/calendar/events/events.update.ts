@@ -16,36 +16,30 @@ export class EventsUpdate {
     private readonly daysService: CalendarDaysService,
   ) {}
 
-  @Action([
-    /.*::create_personal_calendar_event/,
-    /.*::back_to_pers_cal_event_start_time/,
-  ])
+  @Action([/.*::create_personal_calendar_event/, /.*::back_to_pers_c_e_s_t/])
   async createPersonalEventBtn(ctx: Context) {
     await this.middlewares.btnMiddleware(ctx, (ctx: Context) =>
       this.eventsAdditionalService.changeToSelectHours(ctx, {
-        callbackDataTitle: 'pers_cal_event_start_time',
+        callbackDataTitle: 'pers_c_e_s_t',
         type: 'start',
       }),
     );
   }
 
-  @Action([
-    /.*::pers_cal_event_start_time.*/,
-    /.*::back_to_pers_cal_event_end_time/,
-  ])
+  @Action([/.*::pers_c_e_s_t.*/, /.*::back_to_pers_c_e_e_t/])
   async personalEventStartTimeBtn(ctx: Context) {
     const { dataValue } = getCtxData(ctx);
 
     await this.middlewares.btnMiddleware(ctx, (ctx: Context) =>
       this.eventsAdditionalService.changeToSelectHours(ctx, {
-        callbackDataTitle: 'pers_cal_event_end_time',
+        callbackDataTitle: 'pers_c_e_e_t',
         type: 'end',
         startTime: dataValue.split('-')[1],
       }),
     );
   }
 
-  @Action(/.*::pers_cal_event_end_time.*/)
+  @Action(/.*::pers_c_e_e_t.*/)
   async personalEventEndTimeBtn(ctx: Context) {
     await this.middlewares.btnMiddleware(ctx, (ctx: Context) =>
       this.eventsAdditionalService.changeToWriteTitle(ctx),
