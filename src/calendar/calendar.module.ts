@@ -58,6 +58,11 @@ import { ShareEventsAdditionalService } from './events/share-events-additional.s
     ShareEventsUpdate,
     ShareEventsAdditionalService,
   ],
-  exports: [CalendarMonthsService, EventsService, ShareCalendarService],
+  exports: [
+    CalendarMonthsService,
+    EventsService,
+    ShareCalendarService,
+    ShareEventsService,
+  ],
 })
 export class CalendarModule {}

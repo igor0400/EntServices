@@ -25,8 +25,6 @@ export class ShareEventsAdditionalService {
       extraData: dataValue,
     });
 
-    // сделать обработчик в onMessage
-
     await ctx.editMessageCaption(writeShareTitleMessage(), {
       parse_mode: 'HTML',
       reply_markup: writeShareTitleMarkup(dataValue),

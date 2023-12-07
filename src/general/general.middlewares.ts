@@ -17,20 +17,29 @@ export class GeneralMiddlewares {
   ) {}
 
   async btnMiddleware(ctx: Context, func: Function) {
-    await this.usersService.updateUserNamesByCtx(ctx);
-    await this.defaultActions(ctx, func, 'edit');
+    await this.allActions(ctx, func, 'edit');
   }
 
   async commandMiddleware(ctx: Context | any, func: Function) {
+    await this.allActions(ctx, func, 'send');
+  }
+
+  async listenerMiddleware(ctx: Context | any, func: Function) {
+    await this.defaultActions(ctx, func, 'send');
+  }
+
+  private async allActions(
+    ctx: Context | any,
+    func: Function,
+    type: 'send' | 'edit',
+  ) {
     const { user } = getCtxData(ctx);
     const userTgId = user.id;
 
-    if (ctx.command) {
-      await this.usersService.updateUserNamesByCtx(ctx);
-      await this.listenersService.clearUserListeners(userTgId);
-    }
+    await this.usersService.updateUserNamesByCtx(ctx);
+    await this.listenersService.clearUserListeners(userTgId);
 
-    await this.defaultActions(ctx, func, 'send');
+    await this.defaultActions(ctx, func, type);
   }
 
   private async defaultActions(

@@ -27,24 +27,6 @@ export class GeneralButtons {
     );
   }
 
-  @Action('back_with_clear')
-  async backWithClearBtn(ctx: Context) {
-    const { user } = getCtxData(ctx);
-    // await clearUserListeners(user.id);
-    await this.middlewares.btnMiddleware(ctx, (ctx: Context) =>
-      this.menuService.changeToMenu(ctx),
-    );
-  }
-
-  @Action('send_back_with_clear')
-  async sendBackWithClearBtn(ctx: Context) {
-    const { user } = getCtxData(ctx);
-    // await clearUserListeners(user.id);
-    await this.middlewares.btnMiddleware(ctx, (ctx: Context) =>
-      this.menuService.sendMenu(ctx),
-    );
-  }
-
   @Action('close_message')
   async closeMessageBtn(ctx: Context) {
     await this.middlewares.btnMiddleware(ctx, async (ctx: Context) => {

@@ -12,7 +12,7 @@ export class ListenersUpdate {
 
   @On('text')
   async onMessage(ctx: Context) {
-    await this.middlewares.commandMiddleware(ctx, (ctx: Context) =>
+    await this.middlewares.listenerMiddleware(ctx, (ctx: Context) =>
       this.listenersService.onTextMessage(ctx),
     );
   }

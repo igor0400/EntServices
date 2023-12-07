@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { EventsRepository } from '../repositories/event.repository';
 import { Context, Telegraf } from 'telegraf';
-import { eventMarkup, eventMessage } from './responses';
+import { eventMessage, eventMarkup } from './responses';
 import { User } from 'src/users/models/user.model';
 import { CalendarEventMember } from '../models/event-member.model';
 import { InjectBot } from 'nestjs-telegraf';
@@ -14,15 +14,13 @@ export class ShareEventsService {
     private bot: Telegraf<Context>,
   ) {}
 
-  // в eventMarkup другие кнопки назад и удаления
-
-  async changeToEvent(ctx: Context, eventId: string) {
+  async changeToEvent(ctx: Context, eventId: string, inviterId: string) {
     const event = await this.eventsRepository.findByPk(eventId, {
       include: [{ model: CalendarEventMember, include: [User] }],
     });
 
     await ctx.editMessageCaption(eventMessage(event), {
-      reply_markup: eventMarkup(event),
+      reply_markup: eventMarkup(event, 'owner', inviterId),
       parse_mode: 'HTML',
     });
   }
@@ -31,6 +29,7 @@ export class ShareEventsService {
     chatId: string,
     messageId: string,
     eventId: string,
+    inviterId: string,
   ) {
     const event = await this.eventsRepository.findByPk(eventId, {
       include: [{ model: CalendarEventMember, include: [User] }],
@@ -42,7 +41,7 @@ export class ShareEventsService {
       undefined,
       eventMessage(event),
       {
-        reply_markup: eventMarkup(event),
+        reply_markup: eventMarkup(event, 'owner', inviterId),
         parse_mode: 'HTML',
       },
     );

@@ -83,4 +83,26 @@ export class EventsUpdate {
       );
     });
   }
+
+  @Action(/.*::leave_calendar_event_confirm/)
+  async leaveCalendarEventConfirmBtn(ctx: Context) {
+    // await this.middlewares.btnMiddleware(ctx, (ctx: Context) =>
+    //   this.eventsAdditionalService.deleteEventConfirm(ctx),
+    // );
+  }
+
+  @Action(/.*::leave_calendar_event/)
+  async leaveCalendarEventBtn(ctx: Context) {
+    const { dataValue } = getCtxData(ctx);
+
+    // await this.middlewares.btnMiddleware(ctx, async (ctx: Context) => {
+    //   const event = await this.eventsService.deleteEvent({
+    //     eventId: dataValue,
+    //   });
+    //   await this.daysService.changeToCalendarDay(
+    //     ctx,
+    //     getDayDate(event.startTime),
+    //   );
+    // });
+  }
 }

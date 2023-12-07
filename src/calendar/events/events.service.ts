@@ -141,12 +141,17 @@ export class EventsService {
   }
 
   async changeToEvent(ctx: Context, eventId: string) {
+    const { user: ctxUser } = getCtxData(ctx);
+
+    const user = await this.usersRepository.findByTgId(ctxUser.id);
     const event = await this.eventsRepository.findByPk(eventId, {
       include: [{ model: CalendarEventMember, include: [User] }],
     });
 
+    const type = user?.id === event?.creatorId ? 'owner' : 'inviter';
+
     await ctx.editMessageCaption(eventMessage(event), {
-      reply_markup: eventMarkup(event),
+      reply_markup: eventMarkup(event, type),
       parse_mode: 'HTML',
     });
   }
@@ -155,10 +160,12 @@ export class EventsService {
     chatId: string,
     messageId: string,
     eventId: string,
+    userId: string,
   ) {
     const event = await this.eventsRepository.findByPk(eventId, {
       include: [{ model: CalendarEventMember, include: [User] }],
     });
+    const type = userId === event?.creatorId ? 'owner' : 'inviter';
 
     await this.bot.telegram.editMessageCaption(
       chatId,
@@ -166,7 +173,7 @@ export class EventsService {
       undefined,
       eventMessage(event),
       {
-        reply_markup: eventMarkup(event),
+        reply_markup: eventMarkup(event, type),
         parse_mode: 'HTML',
       },
     );
