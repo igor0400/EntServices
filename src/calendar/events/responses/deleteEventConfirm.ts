@@ -1,6 +1,6 @@
 import { backInlineBtn } from 'src/general';
 
-export const deleteEventConfirmMessage = () => `<b>Удаление события</b>
+export const deleteEventConfirmMessage = () => `<b>Подтверждение</b>
 
 🗑 Вы хотите удалить событие?`;
 

@@ -1,4 +1,4 @@
-import { Action, Command, Update } from 'nestjs-telegraf';
+import { Action, Update } from 'nestjs-telegraf';
 import { EventsService } from './events.service';
 import { Context } from 'telegraf';
 import { GeneralMiddlewares } from 'src/general/general.middlewares';
@@ -86,23 +86,25 @@ export class EventsUpdate {
 
   @Action(/.*::leave_calendar_event_confirm/)
   async leaveCalendarEventConfirmBtn(ctx: Context) {
-    // await this.middlewares.btnMiddleware(ctx, (ctx: Context) =>
-    //   this.eventsAdditionalService.deleteEventConfirm(ctx),
-    // );
+    await this.middlewares.btnMiddleware(ctx, (ctx: Context) =>
+      this.eventsAdditionalService.leaveEventConfirm(ctx),
+    );
   }
 
   @Action(/.*::leave_calendar_event/)
   async leaveCalendarEventBtn(ctx: Context) {
-    const { dataValue } = getCtxData(ctx);
+    const { dataValue, user: ctxUser } = getCtxData(ctx);
+    const userTgId = ctxUser.id;
 
-    // await this.middlewares.btnMiddleware(ctx, async (ctx: Context) => {
-    //   const event = await this.eventsService.deleteEvent({
-    //     eventId: dataValue,
-    //   });
-    //   await this.daysService.changeToCalendarDay(
-    //     ctx,
-    //     getDayDate(event.startTime),
-    //   );
-    // });
+    await this.middlewares.btnMiddleware(ctx, async (ctx: Context) => {
+      const event = await this.eventsService.leaveEvent({
+        eventId: dataValue,
+        userTgId,
+      });
+      await this.daysService.changeToCalendarDay(
+        ctx,
+        getDayDate(event.startTime),
+      );
+    });
   }
 }

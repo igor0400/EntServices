@@ -8,6 +8,8 @@ import {
   writeTitleMessage,
   deleteEventConfirmMessage,
   deleteEventConfirmMarkup,
+  leaveEventConfirmMessage,
+  leaveEventConfirmMarkup,
 } from './responses';
 import { EventsMembersRepository } from '../repositories/event-member.repository';
 import { CalendarEvent } from '../models/event.model';
@@ -77,7 +79,9 @@ export class EventsAdditionalService {
       if (options.startTime) {
         const optStartDate = freeInterval?.startTime?.replace(
           /T\d\d:\d\d/,
-          `T${options.startTime.slice(0, 4)}1`,
+          `T${options.startTime.slice(0, 4)}${
+            +options.startTime.slice(4, 5) + 1
+          }`,
         );
 
         if (
@@ -201,6 +205,15 @@ export class EventsAdditionalService {
 
     await ctx.editMessageCaption(deleteEventConfirmMessage(), {
       reply_markup: deleteEventConfirmMarkup(dataValue),
+      parse_mode: 'HTML',
+    });
+  }
+
+  async leaveEventConfirm(ctx: Context) {
+    const { dataValue } = getCtxData(ctx);
+
+    await ctx.editMessageCaption(leaveEventConfirmMessage(), {
+      reply_markup: leaveEventConfirmMarkup(dataValue),
       parse_mode: 'HTML',
     });
   }

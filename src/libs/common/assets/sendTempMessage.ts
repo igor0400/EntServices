@@ -25,6 +25,7 @@ export const sendTempMessage = async ({
 }: Props) => {
   const mess = await ctx.reply(text, {
     parse_mode: 'HTML',
+    disable_web_page_preview: true,
   });
 
   setTimeout(async () => {
@@ -47,6 +48,7 @@ export const sendTempChatIdMessage = async ({
 }: ChatIdProps) => {
   const mess = await bot.telegram.sendMessage(chatId, text, {
     parse_mode: 'HTML',
+    disable_web_page_preview: true,
   });
 
   setTimeout(async () => {

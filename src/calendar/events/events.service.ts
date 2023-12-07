@@ -8,7 +8,14 @@ import { CalendarEvent } from '../models/event.model';
 import { filterEventsByDate } from './assets';
 import { Context, Telegraf } from 'telegraf';
 import { getCtxData, getZero, replyPhoto } from 'src/libs/common';
-import { eventMarkup, eventMessage } from './responses';
+import {
+  deletedEventMarkup,
+  deletedEventMessage,
+  eventMarkup,
+  eventMessage,
+  leavedEventMarkup,
+  leavedEventMessage,
+} from './responses';
 import { User } from 'src/users/models/user.model';
 import { CalendarEventMember } from '../models/event-member.model';
 import { InjectBot } from 'nestjs-telegraf';
@@ -94,18 +101,70 @@ export class EventsService {
 
     await this.eventsRepository.destroy({ where: { id: eventId } });
 
-    for (let member of event.members) {
-      await this.eventsMembersRepository.destroy({ where: { id: member.id } });
-    }
-
     const creator = await this.usersRepository.findByPk(event.creatorId);
-    const startDate = new Date(event.startTime);
 
     await this.checkIsDayBusy({
       userId: creator.id,
       userTelegramId: creator.telegramId,
+      dateVal: getDayDate(event.startTime),
+    });
+
+    for (let member of event.members) {
+      const memberId = member.userId;
+      const memberTgId = member.userTelegramId;
+
+      if (creator.id !== memberId) {
+        try {
+          await this.bot.telegram.sendPhoto(
+            member?.user?.telegramId,
+            replyPhoto(),
+            {
+              caption: deletedEventMessage(member?.user, event),
+              reply_markup: deletedEventMarkup(),
+              parse_mode: 'HTML',
+            },
+          );
+        } catch (e) {}
+      }
+
+      await this.eventsMembersRepository.destroy({ where: { id: member.id } });
+
+      await this.checkIsDayBusy({
+        userId: memberId,
+        userTelegramId: memberTgId,
+        dateVal: getDayDate(event?.startTime),
+      });
+    }
+
+    return event;
+  }
+
+  async leaveEvent({ eventId, userTgId }) {
+    const event = await this.eventsRepository.findByPk(eventId);
+    if (!event) return;
+
+    await this.eventsMembersRepository.destroy({
+      where: { calendarEventId: eventId, userTelegramId: userTgId },
+    });
+    const user = await this.usersRepository.findByTgId(userTgId);
+
+    const startDate = new Date(event.startTime);
+
+    await this.checkIsDayBusy({
+      userId: user.id,
+      userTelegramId: userTgId,
       dateVal: getDayDate(startDate),
     });
+
+    const creator = await this.usersRepository.findByPk(event?.creatorId);
+
+    try {
+      await this.bot.telegram.sendPhoto(creator?.telegramId, replyPhoto(), {
+        caption: leavedEventMessage(user),
+        reply_markup: leavedEventMarkup(event.id),
+        parse_mode: 'HTML',
+      });
+    } catch (e) {}
 
     return event;
   }
@@ -137,8 +196,11 @@ export class EventsService {
       startTime,
       endTime,
     });
+    const newEvent = await this.eventsRepository.findByPk(event.id, {
+      include: [{ model: CalendarEventMember, include: [User] }],
+    });
 
-    return event;
+    return newEvent;
   }
 
   async changeToEvent(ctx: Context, eventId: string) {
@@ -203,13 +265,10 @@ export class EventsService {
     await this.changeToEventByMess(chatId, messageId, event.id, userId);
   }
 
-  private async checkIsDayBusy({
-    userId,
-    userTelegramId,
-    dateVal,
-  }: CheckIsDayBusy) {
+  async checkIsDayBusy({ userId, userTelegramId, dateVal }: CheckIsDayBusy) {
     const [date, month, year] = dateVal.split('.');
     const newDate = getDateFromDataVal(dateVal);
+
     const eventMembers = await this.eventsMembersRepository.findAll({
       where: {
         userId,

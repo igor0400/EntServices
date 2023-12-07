@@ -1,24 +1,13 @@
 import { textMonths } from 'src/calendar/configs';
 import { CalendarEvent } from 'src/calendar/models/event.model';
+import { backInlineBtn } from 'src/general';
 import { getUserName } from 'src/libs/common';
 import { User } from 'src/users/models/user.model';
+import { getEventTexts } from '../assets';
 
 export const eventRequestMessage = (event: CalendarEvent, owner: User) => {
-  const startDate = new Date(event.startTime);
-
-  const title = event.title ? event.title : 'Событие';
-
-  const textDate = `${startDate.getUTCDate()} ${
-    textMonths[startDate.getUTCMonth()]
-  } ${startDate.getUTCFullYear()}`;
-  const textStart = event.startTime?.split('T')[1]?.slice(0, 5);
-  const textEnd = event.endTime?.split('T')[1]?.slice(0, 5);
-
-  const members = [];
-
-  for (let { user } of event?.members) {
-    members.push(getUserName(user));
-  }
+  const { title, textDate, textStart, textEnd, textMembers } =
+    getEventTexts(event);
 
   return `<b>Приглашение</b>
 
@@ -30,7 +19,7 @@ export const eventRequestMessage = (event: CalendarEvent, owner: User) => {
 🕗 <b>Начало:</b> <code>${textStart}</code>
 🕔 <b>Конец:</b> <code>${textEnd}</code>
 
-👥 <b>Участники:</b> ${members.join(', ')}`;
+👥 <b>Участники:</b> ${textMembers}`;
 };
 
 export const eventRequestMarkup = (eventId: string) => ({
@@ -42,5 +31,6 @@ export const eventRequestMarkup = (eventId: string) => ({
         callback_data: `${eventId}::reject_event_request`,
       },
     ],
+    backInlineBtn,
   ],
 });

@@ -11,7 +11,7 @@ import { ShareEventsAdditionalService } from './share-events-additional.service'
 export class ShareEventsUpdate {
   constructor(
     private readonly middlewares: GeneralMiddlewares,
-    private readonly eventsService: ShareEventsService,
+    private readonly shareEventsService: ShareEventsService,
     private readonly eventsAdditionalService: EventsAdditionalService,
     private readonly shareEventsAdditionalService: ShareEventsAdditionalService,
   ) {}
@@ -51,6 +51,29 @@ export class ShareEventsUpdate {
   async shareEventEndTimeBtn(ctx: Context) {
     await this.middlewares.btnMiddleware(ctx, (ctx: Context) =>
       this.shareEventsAdditionalService.changeToWriteTitle(ctx),
+    );
+  }
+
+  @Action([/.*::share_calendar_event/, /.*::back_to_share_calendar_event/])
+  async calendarEventBtn(ctx: Context) {
+    const { dataValue } = getCtxData(ctx);
+
+    // await this.middlewares.btnMiddleware(ctx, (ctx: Context) =>
+    //   this.eventsService.changeToEvent(ctx, dataValue),
+    // );
+  }
+
+  @Action(/.*::accept_event_request/)
+  async acceptEventRequestBtn(ctx: Context) {
+    await this.middlewares.btnMiddleware(ctx, (ctx: Context) =>
+      this.shareEventsService.acceptEventRequest(ctx),
+    );
+  }
+
+  @Action(/.*::reject_event_request/)
+  async rejectEventRequestBtn(ctx: Context) {
+    await this.middlewares.btnMiddleware(ctx, (ctx: Context) =>
+      this.shareEventsService.rejectEventRequest(ctx),
     );
   }
 }
