@@ -13,6 +13,7 @@ import { User } from 'src/users/models/user.model';
 import { CalendarEventMember } from '../models/event-member.model';
 import { InjectBot } from 'nestjs-telegraf';
 import { UserRepository } from 'src/users/repositories/user.repository';
+import { TextWaiter } from 'src/listeners/models/text-waiter.model';
 
 interface CreateEvent {
   creatorTgId: string;
@@ -177,6 +178,29 @@ export class EventsService {
         parse_mode: 'HTML',
       },
     );
+  }
+
+  async createEventByTitleListener({
+    textWaiter,
+    title,
+    userTgId,
+    userId,
+  }: {
+    textWaiter: TextWaiter;
+    title: string;
+    userTgId: string;
+    userId: string;
+  }) {
+    const { extraData, chatId, messageId } = textWaiter;
+
+    const event = await this.createEventByDataValue({
+      title,
+      dataValue: extraData,
+      creatorTgId: userTgId,
+      membersTgIds: [userTgId],
+    });
+
+    await this.changeToEventByMess(chatId, messageId, event.id, userId);
   }
 
   private async checkIsDayBusy({

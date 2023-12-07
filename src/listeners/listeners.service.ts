@@ -50,19 +50,12 @@ export class ListenersService {
       );
       if (!isValid) return;
 
-      const event = await this.eventsService.createEventByDataValue({
-        title: text,
-        dataValue: extraData,
-        creatorTgId: userTgId,
-        membersTgIds: [userTgId],
-      });
-
-      await this.eventsService.changeToEventByMess(
-        chatId,
-        messageId,
-        event.id,
+      await this.eventsService.createEventByTitleListener({
+        textWaiter,
+        userTgId,
         userId,
-      );
+        title: text,
+      });
     }
 
     if (type === 'create_share_cal_event_title') {
@@ -72,28 +65,12 @@ export class ListenersService {
       );
       if (!isValid) return;
 
-      const splitExtra = extraData.split('_');
-      const dataValue = splitExtra[0];
-      const invitedUserId = splitExtra[1];
-      const invitedUser = await this.usersRepository.findByPk(invitedUserId);
-      const invitedUserTgId = invitedUser?.telegramId;
-
-      const event = await this.eventsService.createEventByDataValue({
+      await this.shareEventsService.createEventByTitleListener({
+        textWaiter,
         title: text,
-        dataValue,
-        creatorTgId: userTgId,
-        membersTgIds: [userTgId],
+        userTgId,
+        userId,
       });
-
-      // invitedUser отправляется приглашение на event!!!!!!!!!!!
-      // писать создателю что приглашение было отправлено
-
-      await this.shareEventsService.changeToEventByMess(
-        chatId,
-        messageId,
-        event.id,
-        invitedUserId,
-      );
     }
 
     await this.textWaitersRepository.destroy({ where: { userId } });
