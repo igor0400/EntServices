@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Context } from 'telegraf';
 import { calendarDaysMarkup, calendarDaysMessage } from './responses';
-import { getCtxData } from 'src/libs/common';
+import { getCtxData, replyPhoto } from 'src/libs/common';
 import { EventsMembersRepository } from '../repositories/event-member.repository';
 import { CalendarEvent } from '../models/event.model';
 import { BusyDaysRepository } from '../repositories/busy-day.repository';
@@ -20,7 +20,8 @@ export class CalendarDaysService {
   async sendCalendarDay(ctx: Context, date: string) {
     const markupData = await this.getMarkupData(ctx, date);
 
-    await ctx.editMessageCaption(calendarDaysMessage(date), {
+    await ctx.sendPhoto(replyPhoto(), {
+      caption: calendarDaysMessage(date),
       reply_markup: calendarDaysMarkup({ date, ...markupData }),
       parse_mode: 'HTML',
     });

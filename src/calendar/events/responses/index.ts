@@ -3,7 +3,7 @@ export * from './writeTitle';
 export * from './event';
 export * from './deleteEventConfirm';
 export * from './writeShareTitle';
-export * from './eventRequest';
+export * from './eventInvite';
 export * from './eventAccepted';
 export * from './eventRejected';
 export * from './leaveEventConfirm';

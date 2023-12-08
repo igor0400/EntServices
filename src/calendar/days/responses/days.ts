@@ -37,7 +37,9 @@ export const calendarDaysMarkup = ({
         {
           text: '🔗 Поделиться ссылкой',
           url: encodeURI(
-            `https://t.me/share/url?url=https://t.me/EntServicesBot?start=cal-d-${date.replaceAll(
+            `https://t.me/share/url?url=${
+              process.env.BOT_LINK
+            }?start=cal-d-${date.replaceAll(
               '.',
               '_',
             )}-${userId}&text=Вот ссылка на мою занятость ${textDate}`,

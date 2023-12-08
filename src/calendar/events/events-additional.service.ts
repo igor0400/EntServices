@@ -14,11 +14,12 @@ import {
 import { EventsMembersRepository } from '../repositories/event-member.repository';
 import { CalendarEvent } from '../models/event.model';
 import { getDateFromDataVal, getFreeIntervals } from '../assets';
-import { filterEventsByDate } from './assets';
+import { filterEventsByDate, filterMultyEvents } from './assets';
 import { CreatePaginationProps, PaginationService } from 'src/libs/pagination';
 import { TextWaitersRepository } from 'src/listeners/repositories/text-waiter.repository';
 import { EventsService } from './events.service';
 import { UserRepository } from 'src/users/repositories/user.repository';
+import { Op } from 'sequelize';
 
 export interface ChangeToSelectHoursOpts {
   callbackDataTitle: string;
@@ -48,15 +49,21 @@ export class EventsAdditionalService {
 
     const user = await this.userRepository.findByPk(options?.userId ?? '');
     const userTgId = options.userId ? user?.telegramId : ctxUser.id;
+    const creatorTgId = ctxUser.id;
 
     const eventsMembers = await this.eventsMembersRepository.findAll({
       where: {
-        userTelegramId: userTgId,
+        userTelegramId: {
+          [Op.or]: [userTgId, creatorTgId],
+        },
       },
       include: [CalendarEvent],
     });
     const events = eventsMembers.map((i) => i.event);
-    const sortedEvents = filterEventsByDate(events, dateVal);
+    const filteredEvents = filterMultyEvents(
+      filterEventsByDate(events, dateVal),
+    );
+    const sortedEvents = filterEventsByDate(filteredEvents, dateVal);
     const initDate = getDateFromDataVal(dateVal);
 
     const freeIntervals = getFreeIntervals(
@@ -114,12 +121,12 @@ export class EventsAdditionalService {
       endMinutes,
     } of hoursIntervals) {
       for (let i = startHours; i < endHours + 1; i++) {
-        if (i === startHours) {
-          for (let x = startMinutes; x < 60; x += 15) {
+        if (i === endHours) {
+          for (let x = 0; x < endMinutes; x += 15) {
             hoursTexts.push(`${getZero(i)}:${getZero(x)}`);
           }
-        } else if (i === endHours) {
-          for (let x = 0; x < endMinutes; x += 15) {
+        } else if (i === startHours) {
+          for (let x = startMinutes; x < 60; x += 15) {
             hoursTexts.push(`${getZero(i)}:${getZero(x)}`);
           }
         } else {
@@ -157,7 +164,7 @@ export class EventsAdditionalService {
       options,
       async (conf: Omit<CreatePaginationProps, 'userTelegramId'>) => {
         return await this.paginationService.create({
-          userTelegramId: userTgId,
+          userTelegramId: creatorTgId,
           ...conf,
         });
       },

@@ -55,25 +55,19 @@ export class ShareEventsUpdate {
   }
 
   @Action([/.*::share_calendar_event/, /.*::back_to_share_calendar_event/])
-  async calendarEventBtn(ctx: Context) {
-    const { dataValue } = getCtxData(ctx);
+  async shareCalendarEventBtn(ctx: Context) {}
 
-    // await this.middlewares.btnMiddleware(ctx, (ctx: Context) =>
-    //   this.eventsService.changeToEvent(ctx, dataValue),
-    // );
-  }
-
-  @Action(/.*::accept_event_request/)
-  async acceptEventRequestBtn(ctx: Context) {
+  @Action(/.*::accept_event_invite/)
+  async acceptEventInviteBtn(ctx: Context) {
     await this.middlewares.btnMiddleware(ctx, (ctx: Context) =>
-      this.shareEventsService.acceptEventRequest(ctx),
+      this.shareEventsService.acceptEventInvite(ctx),
     );
   }
 
-  @Action(/.*::reject_event_request/)
-  async rejectEventRequestBtn(ctx: Context) {
+  @Action(/.*::reject_event_invite/)
+  async rejectEventInviteBtn(ctx: Context) {
     await this.middlewares.btnMiddleware(ctx, (ctx: Context) =>
-      this.shareEventsService.rejectEventRequest(ctx),
+      this.shareEventsService.rejectEventInvite(ctx),
     );
   }
 }

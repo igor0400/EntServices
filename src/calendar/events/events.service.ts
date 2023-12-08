@@ -205,8 +205,9 @@ export class EventsService {
 
   async changeToEvent(ctx: Context, eventId: string) {
     const { user: ctxUser } = getCtxData(ctx);
+    const userTgId = ctxUser.id;
 
-    const user = await this.usersRepository.findByTgId(ctxUser.id);
+    const user = await this.usersRepository.findByTgId(userTgId);
     const event = await this.eventsRepository.findByPk(eventId, {
       include: [{ model: CalendarEventMember, include: [User] }],
     });
@@ -214,7 +215,7 @@ export class EventsService {
     const type = user?.id === event?.creatorId ? 'owner' : 'inviter';
 
     await ctx.editMessageCaption(eventMessage(event), {
-      reply_markup: eventMarkup(event, type),
+      reply_markup: eventMarkup(event, type, user.id),
       parse_mode: 'HTML',
     });
   }
@@ -236,7 +237,7 @@ export class EventsService {
       undefined,
       eventMessage(event),
       {
-        reply_markup: eventMarkup(event, type),
+        reply_markup: eventMarkup(event, type, userId),
         parse_mode: 'HTML',
       },
     );

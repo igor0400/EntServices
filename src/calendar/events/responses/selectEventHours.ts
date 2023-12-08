@@ -35,6 +35,13 @@ export const selectEventHoursMarkup = async (
     });
   }
 
+  if (!hoursBtns.length) {
+    hoursBtns.push({
+      text: '🤷‍♂️ Список пуст',
+      callback_data: `empty_select_time`,
+    });
+  }
+
   const pagination = await createPagination({
     items: hoursBtns,
     pageItemsCount: 40,

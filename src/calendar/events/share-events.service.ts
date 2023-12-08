@@ -4,8 +4,8 @@ import { Context, Telegraf } from 'telegraf';
 import {
   eventMessage,
   eventMarkup,
-  eventRequestMessage,
-  eventRequestMarkup,
+  eventInviteMessage,
+  eventInviteMarkup,
   eventAcceptedMessage,
   eventAcceptedMarkup,
   eventRejectedMessage,
@@ -25,6 +25,7 @@ import {
 } from 'src/libs/common';
 import { EventsMembersRepository } from '../repositories/event-member.repository';
 import { getDayDate } from 'src/general';
+import { CalendarEvent } from '../models/event.model';
 
 @Injectable()
 export class ShareEventsService {
@@ -38,12 +39,16 @@ export class ShareEventsService {
   ) {}
 
   async changeToEvent(ctx: Context, eventId: string, inviterId: string) {
+    const { user: ctxUser } = getCtxData(ctx);
+    const userTgId = ctxUser.id;
+
+    const user = await this.usersRepository.findByTgId(userTgId);
     const event = await this.eventsRepository.findByPk(eventId, {
       include: [{ model: CalendarEventMember, include: [User] }],
     });
 
     await ctx.editMessageCaption(eventMessage(event), {
-      reply_markup: eventMarkup(event, 'owner', inviterId),
+      reply_markup: eventMarkup(event, 'owner', user.id, inviterId),
       parse_mode: 'HTML',
     });
   }
@@ -52,6 +57,7 @@ export class ShareEventsService {
     chatId: string,
     messageId: string,
     eventId: string,
+    userId: string,
     inviterId: string,
   ) {
     const event = await this.eventsRepository.findByPk(eventId, {
@@ -64,7 +70,7 @@ export class ShareEventsService {
       undefined,
       eventMessage(event),
       {
-        reply_markup: eventMarkup(event, 'owner', inviterId),
+        reply_markup: eventMarkup(event, 'owner', userId, inviterId),
         parse_mode: 'HTML',
       },
     );
@@ -97,12 +103,18 @@ export class ShareEventsService {
       membersTgIds: [userTgId],
     });
 
-    await this.changeToEventByMess(chatId, messageId, event.id, invitedUserId);
+    await this.changeToEventByMess(
+      chatId,
+      messageId,
+      event.id,
+      userId,
+      invitedUserId,
+    );
 
     try {
       await this.bot.telegram.sendPhoto(invitedUserTgId, replyPhoto(), {
-        caption: eventRequestMessage(event, owner),
-        reply_markup: eventRequestMarkup(event.id),
+        caption: eventInviteMessage(event, owner),
+        reply_markup: eventInviteMarkup(event.id),
         parse_mode: 'HTML',
       });
     } catch (e) {}
@@ -117,7 +129,7 @@ export class ShareEventsService {
     });
   }
 
-  async acceptEventRequest(ctx: Context) {
+  async acceptEventInvite(ctx: Context) {
     const { dataValue, user: ctxUser } = getCtxData(ctx);
     const userTgId = ctxUser.id;
     const user = await this.usersRepository.findByTgId(userTgId);
@@ -151,7 +163,7 @@ export class ShareEventsService {
     } catch (e) {}
   }
 
-  async rejectEventRequest(ctx: Context) {
+  async rejectEventInvite(ctx: Context) {
     const { dataValue, user: ctxUser } = getCtxData(ctx);
     const userTgId = ctxUser.id;
     const eventId = dataValue;
@@ -170,7 +182,17 @@ export class ShareEventsService {
       });
     } catch (e) {}
   }
-}
 
-// share events (может мне делать)
-// ссылка приглашения на евент
+  async sendInviteEvent(ctx: Context, eventId: string, userId: string) {
+    const event = await this.eventsRepository.findByPk(eventId, {
+      include: [{ model: CalendarEventMember, include: [User] }],
+    });
+    const owner = await this.usersRepository.findByPk(userId);
+
+    await ctx.sendPhoto(replyPhoto(), {
+      caption: eventInviteMessage(event, owner),
+      reply_markup: eventInviteMarkup(event.id),
+      parse_mode: 'HTML',
+    });
+  }
+}

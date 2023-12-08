@@ -19,6 +19,7 @@ export const eventMessage = (event: CalendarEvent) => {
 export const eventMarkup = (
   event: CalendarEvent,
   type: 'owner' | 'inviter' = 'owner',
+  userId: string,
   inviterId?: string,
 ) => {
   const startDate = new Date(event?.startTime);
@@ -62,7 +63,7 @@ export const eventMarkup = (
         {
           text: '🔗 Пригласить',
           url: `${encodeURI(
-            `https://t.me/share/url?url=https://t.me/EntServicesBot?start=cal-e-j-${event.id}&text=Приглашение присоединиться к событию ${textDate}`,
+            `https://t.me/share/url?url=${process.env.BOT_LINK}?start=cal-e-j-${event.id}-${userId}&text=Приглашение присоединиться к событию ${textDate}`,
           )}`,
         },
       ],

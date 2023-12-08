@@ -74,7 +74,9 @@ export const calendarMonthsMarkup = (
         {
           text: '🔗 Поделиться ссылкой',
           url: encodeURI(
-            `https://t.me/share/url?url=https://t.me/EntServicesBot?start=cal-m-${getZero(
+            `https://t.me/share/url?url=${
+              process.env.BOT_LINK
+            }?start=cal-m-${getZero(
               oldestDate.getUTCMonth() + 1,
             )}_${oldestDate.getUTCFullYear()}-${userId}&text=Вот ссылка на календарь моей занятости`,
           ),
