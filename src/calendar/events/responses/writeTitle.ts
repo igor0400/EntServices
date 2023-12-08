@@ -16,7 +16,7 @@ export const writeTitleMarkup = (dataValue: string) => {
       [
         {
           text: '↩️ Назад',
-          callback_data: `${dataValue}::back_to_pers_cal_event_end_time`,
+          callback_data: `${dataValue}::back_to_pers_c_e_e_t`,
         },
       ],
       backInlineBtn,
