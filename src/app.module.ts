@@ -16,6 +16,7 @@ import { NotificationsModule } from './notifications/notifications.module';
 import { PaginationModule } from './libs/pagination';
 import { ListenersLowModule } from './listeners/listeners-low.module';
 import { BansModule } from './bans/bans.module';
+import { ProfileModule } from './profile/profile.module';
 
 const sessions = new LocalSession({ database: 'session_db.json' });
 
@@ -48,6 +49,8 @@ const sessions = new LocalSession({ database: 'session_db.json' });
     ListenersLowModule,
 
     BansModule,
+
+    ProfileModule,
   ],
 })
 export class AppModule {}
