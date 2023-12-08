@@ -58,4 +58,4 @@ services:
 
 volumes:
   database:
-    driver: local
+    # driver: local
