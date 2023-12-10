@@ -21,15 +21,32 @@ export const eventInviteMessage = (event: CalendarEvent, owner: User) => {
 👥 <b>Участники:</b> ${textMembers}`;
 };
 
-export const eventInviteMarkup = (eventId: string) => ({
-  inline_keyboard: [
-    [
-      { text: '✅ Принять', callback_data: `${eventId}::accept_event_invite` },
-      {
-        text: '❌ Отклонить',
-        callback_data: `${eventId}::reject_event_invite`,
-      },
+export const eventInviteMarkup = (eventId: string, userId?: string) => {
+  const backNotifi = userId
+    ? [
+        [
+          {
+            text: '↩️ Назад',
+            callback_data: 'back_to_user_notifications',
+          },
+        ],
+      ]
+    : [];
+
+  return {
+    inline_keyboard: [
+      [
+        {
+          text: '✅ Принять',
+          callback_data: `${eventId}::accept_event_invite`,
+        },
+        {
+          text: '❌ Отклонить',
+          callback_data: `${eventId}::reject_event_invite`,
+        },
+      ],
+      ...backNotifi,
+      backInlineBtn,
     ],
-    backInlineBtn,
-  ],
-});
+  };
+};

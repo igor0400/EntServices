@@ -10,7 +10,7 @@ export class ProfileUpdate {
     private readonly profileService: ProfileService,
   ) {}
 
-  @Action('profile')
+  @Action(['profile', 'back_to_profile'])
   async profileBtn(ctx: Context) {
     await this.middlewares.btnMiddleware(ctx, (ctx: Context) =>
       this.profileService.changeToProfile(ctx),

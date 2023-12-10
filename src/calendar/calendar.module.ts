@@ -25,6 +25,7 @@ import { ShareCalendarDaysUpdate } from './days/share-days.update';
 import { ShareEventsService } from './events/share-events.service';
 import { ShareEventsUpdate } from './events/share-events.update';
 import { ShareEventsAdditionalService } from './events/share-events-additional.service';
+import { NotificationsModule } from 'src/notifications/notifications.module';
 
 @Module({
   imports: [
@@ -33,9 +34,10 @@ import { ShareEventsAdditionalService } from './events/share-events-additional.s
       CalendarEventMember,
       CalendarBusyDay,
     ]),
-    forwardRef(() => GeneralModule),
     UsersModule,
     PaginationModule,
+    NotificationsModule,
+    forwardRef(() => GeneralModule),
     forwardRef(() => ListenersModule),
   ],
   providers: [

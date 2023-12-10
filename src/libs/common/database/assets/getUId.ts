@@ -1,5 +1,5 @@
 import { uid } from 'uid';
 
 export const getUId = () => {
-  return uid(20);
+  return uid(10);
 };

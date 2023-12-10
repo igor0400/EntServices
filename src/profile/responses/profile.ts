@@ -7,9 +7,15 @@ export const profileMessage = (user: User) => `<b>Профиль</b>
 🎓 Вы: ${getUserName(user)}
 🔢 Ваш ID: <code>${user.telegramId}</code>`;
 
-export const profileMarkup = (userId: string) => ({
+export const profileMarkup = (userId: string, isFull = false) => ({
   inline_keyboard: [
     [{ text: '📨 Подписки', callback_data: `${userId}::user_subscriptions` }],
+    [
+      {
+        text: `${isFull ? '📬' : '📭'} Уведомления`,
+        callback_data: 'user_notifications',
+      },
+    ],
     backInlineBtn,
   ],
 });

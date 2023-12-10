@@ -25,7 +25,7 @@ import {
 } from 'src/libs/common';
 import { EventsMembersRepository } from '../repositories/event-member.repository';
 import { getDayDate } from 'src/general';
-import { CalendarEvent } from '../models/event.model';
+import { BasicNotificationRepository } from 'src/notifications/repositories/basic-notification.repository';
 
 @Injectable()
 export class ShareEventsService {
@@ -34,6 +34,7 @@ export class ShareEventsService {
     private readonly eventsRepository: EventsRepository,
     private readonly eventsMembersRepository: EventsMembersRepository,
     private readonly usersRepository: UserRepository,
+    private readonly basicNotificationRepository: BasicNotificationRepository,
     @InjectBot()
     private bot: Telegraf<Context>,
   ) {}
@@ -117,6 +118,13 @@ export class ShareEventsService {
         reply_markup: eventInviteMarkup(event.id),
         parse_mode: 'HTML',
       });
+
+      await this.basicNotificationRepository.create({
+        userTelegramId: invitedUserTgId,
+        title: 'Приглашение',
+        text: eventInviteMessage(event, owner),
+        markup: JSON.stringify(eventInviteMarkup(event.id, invitedUserId)),
+      });
     } catch (e) {}
 
     await sendTempChatIdMessage({
@@ -161,6 +169,10 @@ export class ShareEventsService {
         parse_mode: 'HTML',
       });
     } catch (e) {}
+
+    await this.basicNotificationRepository.destroy({
+      where: { userTelegramId: userTgId },
+    });
   }
 
   async rejectEventInvite(ctx: Context) {
@@ -181,6 +193,10 @@ export class ShareEventsService {
         parse_mode: 'HTML',
       });
     } catch (e) {}
+
+    await this.basicNotificationRepository.destroy({
+      where: { userTelegramId: userTgId },
+    });
   }
 
   async sendInviteEvent(ctx: Context, eventId: string, userId: string) {

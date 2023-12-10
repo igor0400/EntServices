@@ -5,10 +5,7 @@ import { User, UserCreationArgs } from '../models/user.model';
 import { FindOptions } from 'sequelize';
 
 @Injectable()
-export class UserRepository extends AbstractRepository<
-  User,
-  UserCreationArgs
-> {
+export class UserRepository extends AbstractRepository<User, UserCreationArgs> {
   protected readonly logger = new Logger(User.name);
 
   constructor(
