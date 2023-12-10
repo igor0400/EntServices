@@ -10,6 +10,7 @@ import {
   eventAcceptedMarkup,
   eventRejectedMessage,
   eventRejectedMarkup,
+  alreadyActiveInviteMessage,
 } from './responses';
 import { User } from 'src/users/models/user.model';
 import { CalendarEventMember } from '../models/event-member.model';
@@ -24,7 +25,7 @@ import {
   sendTempChatIdMessage,
 } from 'src/libs/common';
 import { EventsMembersRepository } from '../repositories/event-member.repository';
-import { getDayDate } from 'src/general';
+import { backMarkup, getDayDate } from 'src/general';
 import { BasicNotificationRepository } from 'src/notifications/repositories/basic-notification.repository';
 
 @Injectable()
@@ -200,6 +201,21 @@ export class ShareEventsService {
   }
 
   async sendInviteEvent(ctx: Context, eventId: string, userId: string) {
+    const isUserActivated = await this.eventsMembersRepository.findOne({
+      where: {
+        calendarEventId: eventId,
+        userId,
+      },
+    });
+
+    if (isUserActivated) {
+      return await ctx.sendPhoto(replyPhoto(), {
+        caption: alreadyActiveInviteMessage(),
+        reply_markup: backMarkup,
+        parse_mode: 'HTML',
+      });
+    }
+
     const event = await this.eventsRepository.findByPk(eventId, {
       include: [{ model: CalendarEventMember, include: [User] }],
     });

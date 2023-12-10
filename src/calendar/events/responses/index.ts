@@ -9,3 +9,4 @@ export * from './eventRejected';
 export * from './leaveEventConfirm';
 export * from './leavedEvent';
 export * from './deletedEvent';
+export * from './alreadyActiveInvite';
