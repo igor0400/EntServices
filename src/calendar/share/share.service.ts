@@ -5,10 +5,12 @@ import { getMonthDifferenceByDateVal } from '../months/assets';
 import { getZero } from 'src/libs/common';
 import { ShareCalendarDaysService } from '../days/share-days.service';
 import { ShareEventsService } from '../events/share-events.service';
+import { CalendarMonthsService } from '../months/months.service';
 
 @Injectable()
 export class ShareCalendarService {
   constructor(
+    private readonly monthsService: CalendarMonthsService,
     private readonly shareMonthsService: ShareCalendarMonthsService,
     private readonly shareDaysService: ShareCalendarDaysService,
     private readonly shareEventsService: ShareEventsService,
@@ -21,17 +23,17 @@ export class ShareCalendarService {
 
     if (serviceType === 'm') {
       const [month, year] = args[2]?.split('_');
-      const incMouths = getMonthDifferenceByDateVal(
+      const incMonths = getMonthDifferenceByDateVal(
         `02.${getZero(month)}.${year}`,
       );
 
-      await this.shareMonthsService.sendMouth(ctx, userId, incMouths);
+      return await this.shareMonthsService.sendMonth(ctx, userId, incMonths);
     }
 
     if (serviceType === 'd') {
       const dateVal = args[2]?.replaceAll('_', '.');
 
-      await this.shareDaysService.sendCalendarDay(ctx, dateVal, userId);
+      return await this.shareDaysService.sendCalendarDay(ctx, dateVal, userId);
     }
 
     if (serviceType === 'e') {
@@ -39,8 +41,14 @@ export class ShareCalendarService {
       const eventId = args[3];
 
       if (actionType === 'j') {
-        await this.shareEventsService.sendInviteEvent(ctx, eventId, userId);
+        return await this.shareEventsService.sendInviteEvent(
+          ctx,
+          eventId,
+          userId,
+        );
       }
     }
+
+    await this.monthsService.sendMonth(ctx);
   }
 }

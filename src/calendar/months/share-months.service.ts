@@ -16,46 +16,46 @@ export class ShareCalendarMonthsService {
     private readonly busyDaysRepository: BusyDaysRepository,
   ) {}
 
-  async sendMouth(ctx: Context, userId: string, incMouth: number = 0) {
-    await this.sendContent(ctx, userId, incMouth, true);
+  async sendMonth(ctx: Context, userId: string, incMonth: number = 0) {
+    await this.sendContent(ctx, userId, incMonth, true);
   }
 
-  async changeToMouth(ctx: Context, userId: string, incMouth: number = 0) {
-    await this.sendContent(ctx, userId, incMouth, false);
+  async changeToMonth(ctx: Context, userId: string, incMonth: number = 0) {
+    await this.sendContent(ctx, userId, incMonth, false);
   }
 
-  async navMouthItem(ctx: Context, type: 'next' | 'prev') {
+  async navMonthItem(ctx: Context, type: 'next' | 'prev') {
     const { dataValue } = getCtxData(ctx);
     const splitData = dataValue.split('_');
-    const mouthInt = +splitData[0];
-    const incMouth = type === 'prev' ? mouthInt - 1 : mouthInt + 1;
+    const monthInt = +splitData[0];
+    const incMonth = type === 'prev' ? monthInt - 1 : monthInt + 1;
 
-    await this.sendContent(ctx, splitData[1], incMouth, false);
+    await this.sendContent(ctx, splitData[1], incMonth, false);
   }
 
   private async sendContent(
     ctx: Context,
     userId: string,
-    incMouth: number = 0,
+    incMonth: number = 0,
     isSend: boolean = true,
   ) {
     const user = await this.userRepository.findByPk(userId);
     const busyDays = await this.busyDaysRepository.findAll({
       where: {
         userId: user.id,
-        month: getNowDate().getUTCMonth() + 1 + incMouth,
+        month: getNowDate().getUTCMonth() + 1 + incMonth,
       },
     });
 
     if (isSend) {
       await ctx.replyWithPhoto(replyPhoto(), {
         caption: shareCalendarMonthsMessage(user),
-        reply_markup: shareCalendarMonthsMarkup(user?.id, busyDays, incMouth),
+        reply_markup: shareCalendarMonthsMarkup(user?.id, busyDays, incMonth),
         parse_mode: 'HTML',
       });
     } else {
       await ctx.editMessageCaption(shareCalendarMonthsMessage(user), {
-        reply_markup: shareCalendarMonthsMarkup(user?.id, busyDays, incMouth),
+        reply_markup: shareCalendarMonthsMarkup(user?.id, busyDays, incMonth),
         parse_mode: 'HTML',
       });
     }

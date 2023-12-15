@@ -2,52 +2,51 @@ import { Action, Command, Update } from 'nestjs-telegraf';
 import { CalendarMonthsService } from './months.service';
 import { Context } from 'telegraf';
 import { GeneralMiddlewares } from 'src/general/general.middlewares';
-import { getCtxData, getNowDate } from 'src/libs/common';
-import { getDateFromDataVal } from '../assets';
+import { getCtxData } from 'src/libs/common';
 import { getMonthDifferenceByDateVal } from './assets';
 
 @Update()
 export class CalendarMonthsUpdate {
   constructor(
-    private readonly mouthsService: CalendarMonthsService,
+    private readonly monthsService: CalendarMonthsService,
     private readonly middlewares: GeneralMiddlewares,
   ) {}
 
   @Command('calendar')
   async calendarCommand(ctx: Context) {
     await this.middlewares.commandMiddleware(ctx, (ctx: Context) =>
-      this.mouthsService.sendMouth(ctx),
+      this.monthsService.sendMonth(ctx),
     );
   }
 
   @Action('calendar_service')
   async calendarBtn(ctx: Context) {
     await this.middlewares.btnMiddleware(ctx, (ctx: Context) =>
-      this.mouthsService.changeToMouth(ctx),
+      this.monthsService.changeToMonth(ctx),
     );
   }
 
-  @Action(/.*::next_calendar_mouth/)
-  async nextMouthBtn(ctx: Context) {
+  @Action(/.*::next_calendar_month/)
+  async nextMonthBtn(ctx: Context) {
     await this.middlewares.btnMiddleware(ctx, (ctx: Context) =>
-      this.mouthsService.navMouthItem(ctx, 'next'),
+      this.monthsService.navMonthItem(ctx, 'next'),
     );
   }
 
-  @Action(/.*::prev_calendar_mouth/)
-  async prevMouthBtn(ctx: Context) {
+  @Action(/.*::prev_calendar_month/)
+  async prevMonthBtn(ctx: Context) {
     await this.middlewares.btnMiddleware(ctx, (ctx: Context) =>
-      this.mouthsService.navMouthItem(ctx, 'prev'),
+      this.monthsService.navMonthItem(ctx, 'prev'),
     );
   }
 
   @Action(/.*::back_to_calendar_month/)
   async backToMonthBtn(ctx: Context) {
     const { dataValue } = getCtxData(ctx);
-    const incMouths = getMonthDifferenceByDateVal(dataValue);
+    const incMonths = getMonthDifferenceByDateVal(dataValue);
 
     await this.middlewares.btnMiddleware(ctx, (ctx: Context) =>
-      this.mouthsService.changeToMouth(ctx, incMouths),
+      this.monthsService.changeToMonth(ctx, incMonths),
     );
   }
 }

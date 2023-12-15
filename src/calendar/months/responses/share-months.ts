@@ -25,16 +25,16 @@ export const shareCalendarMonthsMessage = (
 export const shareCalendarMonthsMarkup = (
   userId: string,
   busyDays: CalendarBusyDay[],
-  incMouth = 0,
+  incMonth = 0,
 ) => {
   const oldestDate = getNowDate();
-  oldestDate.setUTCMonth(oldestDate.getUTCMonth() + 1 + incMouth);
+  oldestDate.setUTCMonth(oldestDate.getUTCMonth() + 1 + incMonth);
   oldestDate.setUTCDate(0);
   const maxDate = oldestDate.getUTCDate();
   const maxDateDay = oldestDate.getUTCDay();
 
   const newestDate = getNowDate();
-  newestDate.setUTCMonth(newestDate.getUTCMonth() + incMouth);
+  newestDate.setUTCMonth(newestDate.getUTCMonth() + incMonth);
   newestDate.setUTCDate(1);
   const minDateDay = newestDate.getUTCDay();
 
@@ -56,20 +56,20 @@ export const shareCalendarMonthsMarkup = (
   }
 
   const daysDiff = maxDate % 7;
-  const isMouthClear = daysDiff === 0 && minDateDay === 1;
+  const isMonthClear = daysDiff === 0 && minDateDay === 1;
 
-  if (!isMouthClear && maxDateDay !== 0) {
+  if (!isMonthClear && maxDateDay !== 0) {
     days.push(...getEmptyBtns(7 - maxDateDay));
   }
 
-  const mouthBtn = months[oldestDate.getUTCMonth()];
+  const monthBtn = months[oldestDate.getUTCMonth()];
 
   return {
     inline_keyboard: [
       [
         {
-          ...mouthBtn,
-          text: `${mouthBtn.text} ${oldestDate.getUTCFullYear()}`,
+          ...monthBtn,
+          text: `${monthBtn.text} ${oldestDate.getUTCFullYear()}`,
         },
       ],
       weekDays,
@@ -77,11 +77,11 @@ export const shareCalendarMonthsMarkup = (
       [
         {
           text: '◀️',
-          callback_data: `${incMouth}_${userId}::prev_share_calendar_mouth`,
+          callback_data: `${incMonth}_${userId}::prev_share_calendar_month`,
         },
         {
           text: '▶️',
-          callback_data: `${incMouth}_${userId}::next_share_calendar_mouth`,
+          callback_data: `${incMonth}_${userId}::next_share_calendar_month`,
         },
       ],
       backInlineBtn,

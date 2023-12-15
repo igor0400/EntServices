@@ -10,10 +10,17 @@ export class ConstructorUpdate {
     private readonly constructorService: ConstructorService,
   ) {}
 
-  @Action('constructor_service')
+  @Action(['constructor_service', 'back_to_constructor'])
   async constructorBtn(ctx: Context) {
     this.middlewares.btnMiddleware(ctx, (ctx: Context) =>
-      this.constructorService.changeToCategories(ctx),
+      this.constructorService.changeToStartConstructor(ctx),
+    );
+  }
+
+  @Action(/constructor_сategory_.*/)
+  async constructorCategoryShopBtn(ctx: Context) {
+    this.middlewares.btnMiddleware(ctx, (ctx: Context) =>
+      this.constructorService.changeToTypes(ctx),
     );
   }
 }

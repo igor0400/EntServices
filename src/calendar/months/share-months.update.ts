@@ -12,17 +12,17 @@ export class ShareCalendarMonthsUpdate {
     private readonly middlewares: GeneralMiddlewares,
   ) {}
 
-  @Action(/.*::next_share_calendar_mouth/)
-  async nextMouthBtn(ctx: Context) {
+  @Action(/.*::next_share_calendar_month/)
+  async nextMonthBtn(ctx: Context) {
     await this.middlewares.btnMiddleware(ctx, (ctx: Context) =>
-      this.shareMonthsService.navMouthItem(ctx, 'next'),
+      this.shareMonthsService.navMonthItem(ctx, 'next'),
     );
   }
 
-  @Action(/.*::prev_share_calendar_mouth/)
-  async prevMouthBtn(ctx: Context) {
+  @Action(/.*::prev_share_calendar_month/)
+  async prevMonthBtn(ctx: Context) {
     await this.middlewares.btnMiddleware(ctx, (ctx: Context) =>
-      this.shareMonthsService.navMouthItem(ctx, 'prev'),
+      this.shareMonthsService.navMonthItem(ctx, 'prev'),
     );
   }
 
@@ -30,10 +30,10 @@ export class ShareCalendarMonthsUpdate {
   async backToMonthBtn(ctx: Context) {
     const { dataValue } = getCtxData(ctx);
     const [date, userId] = dataValue.split('_');
-    const incMouths = getMonthDifferenceByDateVal(date);
+    const incMonths = getMonthDifferenceByDateVal(date);
 
     await this.middlewares.btnMiddleware(ctx, (ctx: Context) =>
-      this.shareMonthsService.changeToMouth(ctx, userId, incMouths),
+      this.shareMonthsService.changeToMonth(ctx, userId, incMonths),
     );
   }
 }

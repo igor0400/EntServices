@@ -1,5 +1,5 @@
 import { CalendarBusyDay } from 'src/calendar/models/busy-day.model';
-import { backInlineBtn } from '../../../general';
+import { backInlineBtn, localBackInlineBtn } from '../../../general';
 import { formatKeyboard, getNowDate, getZero } from 'src/libs/common';
 import { getEmptyBtns } from '../../assets';
 import { months, weekDays } from '../../configs';
@@ -17,16 +17,16 @@ export const calendarMonthsMessage = () => `<b>Календарь встреч/�
 export const calendarMonthsMarkup = (
   userId: string,
   busyDays: CalendarBusyDay[],
-  incMouth = 0,
+  incMonth = 0,
 ) => {
   const oldestDate = getNowDate();
-  oldestDate.setUTCMonth(oldestDate.getUTCMonth() + 1 + incMouth);
+  oldestDate.setUTCMonth(oldestDate.getUTCMonth() + 1 + incMonth);
   oldestDate.setUTCDate(0);
   const maxDate = oldestDate.getUTCDate();
   const maxDateDay = oldestDate.getUTCDay();
 
   const newestDate = getNowDate();
-  newestDate.setUTCMonth(newestDate.getUTCMonth() + incMouth);
+  newestDate.setUTCMonth(newestDate.getUTCMonth() + incMonth);
   newestDate.setUTCDate(1);
   const minDateDay = newestDate.getUTCDay();
 
@@ -48,27 +48,27 @@ export const calendarMonthsMarkup = (
   }
 
   const daysDiff = maxDate % 7;
-  const isMouthClear = daysDiff === 0 && minDateDay === 1;
+  const isMonthClear = daysDiff === 0 && minDateDay === 1;
 
-  if (!isMouthClear && maxDateDay !== 0) {
+  if (!isMonthClear && maxDateDay !== 0) {
     days.push(...getEmptyBtns(7 - maxDateDay));
   }
 
-  const mouthBtn = months[oldestDate.getUTCMonth()];
+  const monthBtn = months[oldestDate.getUTCMonth()];
 
   return {
     inline_keyboard: [
       [
         {
-          ...mouthBtn,
-          text: `${mouthBtn.text} ${oldestDate.getUTCFullYear()}`,
+          ...monthBtn,
+          text: `${monthBtn.text} ${oldestDate.getUTCFullYear()}`,
         },
       ],
       weekDays,
       ...formatKeyboard(days, 7),
       [
-        { text: '◀️', callback_data: `${incMouth}::prev_calendar_mouth` },
-        { text: '▶️', callback_data: `${incMouth}::next_calendar_mouth` },
+        { text: '◀️', callback_data: `${incMonth}::prev_calendar_month` },
+        { text: '▶️', callback_data: `${incMonth}::next_calendar_month` },
       ],
       [
         {
@@ -82,6 +82,7 @@ export const calendarMonthsMarkup = (
           ),
         },
       ],
+      localBackInlineBtn('back_to_services'),
       backInlineBtn,
     ],
   };
