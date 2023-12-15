@@ -9,7 +9,7 @@ export const profileMessage = (user: User) => `<b>Профиль</b>
 
 export const profileMarkup = (userId: string, isFull = false) => ({
   inline_keyboard: [
-    [{ text: '📨 Подписки', callback_data: `${userId}::user_subscriptions` }],
+    [{ text: '📨 Подписки', callback_data: 'latter' }], // `${userId}::user_subscriptions`
     [
       {
         text: `${isFull ? '📬' : '📭'} Уведомления`,

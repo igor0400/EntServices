@@ -1,6 +1,6 @@
 import { textMonths } from 'src/calendar/configs';
 import { CalendarEvent } from 'src/calendar/models/event.model';
-import { backInlineBtn, getDayDate } from 'src/general';
+import { backInlineBtn, getDayDate, localBackInlineBtn } from 'src/general';
 import { getEventTexts } from '../assets';
 
 export const eventMessage = (event: CalendarEvent) => {
@@ -42,20 +42,10 @@ export const eventMarkup = (
         ];
 
   const backDateBtn = inviterId
-    ? [
-        {
-          text: '↩️ Назад',
-          callback_data: `${getDayDate(
-            startDate,
-          )}_${inviterId}::back_to_share_calendar_date`,
-        },
-      ]
-    : [
-        {
-          text: '↩️ Назад',
-          callback_data: `${getDayDate(startDate)}::back_to_calendar_date`,
-        },
-      ];
+    ? localBackInlineBtn(
+        `${getDayDate(startDate)}_${inviterId}::back_to_share_calendar_date`,
+      )
+    : localBackInlineBtn(`${getDayDate(startDate)}::back_to_calendar_date`);
 
   return {
     inline_keyboard: [

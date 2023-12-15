@@ -73,7 +73,7 @@ export class GeneralPresets {
     ctx,
     text,
     isDeleteInitMess = false,
-    time = 2000,
+    time = 3000,
   }: {
     ctx: Context;
     text: string;

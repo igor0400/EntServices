@@ -17,7 +17,7 @@ export class ServicesUpdate {
     );
   }
 
-  @Action('services')
+  @Action(['services', 'back_to_services'])
   async servicesBtn(ctx: Context) {
     await this.middlewares.btnMiddleware(ctx, (ctx: Context) =>
       this.servicesService.changeToServices(ctx),

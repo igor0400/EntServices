@@ -1,5 +1,5 @@
 import { CalendarEvent } from 'src/calendar/models/event.model';
-import { backInlineBtn } from 'src/general';
+import { backInlineBtn, localBackInlineBtn } from 'src/general';
 import { getUserName } from 'src/libs/common';
 import { User } from 'src/users/models/user.model';
 import { getEventTexts } from '../assets';
@@ -23,14 +23,7 @@ export const eventInviteMessage = (event: CalendarEvent, owner: User) => {
 
 export const eventInviteMarkup = (eventId: string, userId?: string) => {
   const backNotifi = userId
-    ? [
-        [
-          {
-            text: '↩️ Назад',
-            callback_data: 'back_to_user_notifications',
-          },
-        ],
-      ]
+    ? [localBackInlineBtn('back_to_user_notifications')]
     : [];
 
   return {

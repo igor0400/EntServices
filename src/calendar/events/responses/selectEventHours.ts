@@ -1,4 +1,4 @@
-import { backInlineBtn } from 'src/general';
+import { backInlineBtn, localBackInlineBtn } from 'src/general';
 import { ChangeToSelectHoursOpts } from '../events-additional.service';
 import { CreatePaginationProps } from 'src/libs/pagination';
 import { InlineBtnType } from 'src/general';
@@ -49,22 +49,19 @@ export const selectEventHoursMarkup = async (
     isEmptyFill: true,
   });
 
+  const backCBData =
+    type === 'start'
+      ? `${dateVal}${userId ? `_${userId}` : ''}::back_to${
+          calType === 'share' ? `_${calType}` : ''
+        }_calendar_date`
+      : `${dateVal}${
+          userId ? `_${userId}` : ''
+        }::back_to_${textCalType}_c_e_s_t`;
+
   return {
     inline_keyboard: [
       ...pagination,
-      [
-        {
-          text: '↩️ Назад',
-          callback_data:
-            type === 'start'
-              ? `${dateVal}${userId ? `_${userId}` : ''}::back_to${
-                  calType === 'share' ? `_${calType}` : ''
-                }_calendar_date`
-              : `${dateVal}${
-                  userId ? `_${userId}` : ''
-                }::back_to_${textCalType}_c_e_s_t`,
-        },
-      ],
+      localBackInlineBtn(backCBData),
       backInlineBtn,
     ],
   };

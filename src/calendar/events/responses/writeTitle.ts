@@ -1,4 +1,4 @@
-import { backInlineBtn } from 'src/general';
+import { backInlineBtn, localBackInlineBtn } from 'src/general';
 
 export const writeTitleMessage = () => `<b>Создание события</b>
 
@@ -13,12 +13,7 @@ export const writeTitleMarkup = (dataValue: string) => {
           callback_data: `${dataValue}::skip_pers_cal_event_title`,
         },
       ],
-      [
-        {
-          text: '↩️ Назад',
-          callback_data: `${dataValue}::back_to_pers_c_e_e_t`,
-        },
-      ],
+      localBackInlineBtn(`${dataValue}::back_to_pers_c_e_e_t`),
       backInlineBtn,
     ],
   };

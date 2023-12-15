@@ -27,3 +27,7 @@ export const sendBackWithClearInlineBtn = [
 export const sendBackWithClearMarkup = {
   inline_keyboard: [sendBackWithClearInlineBtn],
 };
+
+export const localBackInlineBtn = (callback_data: string) => [
+  { text: '↩️ Назад', callback_data },
+];

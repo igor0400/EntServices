@@ -1,4 +1,4 @@
-import { backInlineBtn } from 'src/general';
+import { backInlineBtn, localBackInlineBtn } from 'src/general';
 
 export const writeShareTitleMessage = () => `<b>Создание события</b>
 
@@ -7,12 +7,7 @@ export const writeShareTitleMessage = () => `<b>Создание события<
 export const writeShareTitleMarkup = (dataValue: string) => {
   return {
     inline_keyboard: [
-      [
-        {
-          text: '↩️ Назад',
-          callback_data: `${dataValue}::back_to_sh_c_e_e_t`,
-        },
-      ],
+      localBackInlineBtn(`${dataValue}::back_to_sh_c_e_e_t`),
       backInlineBtn,
     ],
   };
