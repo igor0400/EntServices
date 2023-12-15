@@ -15,6 +15,12 @@ export const selectCategoryMarkup = {
       },
     ],
     [{ text: '🍴 Заведение', callback_data: 'latter' }], // constructor_сategory_eat_place
+    [
+      {
+        text: '📰 Лендинг',
+        callback_data: 'latter', // 'constructor_сategory_landing'
+      },
+    ],
     [{ text: '⚒ На заказ', callback_data: 'latter' }], // constructor_сategory_custom
     localBackInlineBtn('back_to_services'),
     backInlineBtn,

@@ -8,14 +8,26 @@ export const selectTypeMarkup = (category: string) => ({
   inline_keyboard: [
     [
       {
-        text: '📰 Лендинг',
-        callback_data: 'latter', // `constructor_type_${category}_landing`
+        text: '🖥 Сайт',
+        callback_data: `constructor_type_${category}_site`,
       },
     ],
     [
       {
-        text: '🖥 Сайт',
-        callback_data: `constructor_type_${category}_site`,
+        text: '✈️ Telegram бот',
+        callback_data: 'latter', // `constructor_type_${category}_telegram_bot`
+      },
+    ],
+    [
+      {
+        text: '🟢 WhatsApp бот',
+        callback_data: 'latter', // `constructor_type_${category}_whatsapp_bot`
+      },
+    ],
+    [
+      {
+        text: '🔵 VK бот',
+        callback_data: 'latter', // `constructor_type_${category}_vk_bot`
       },
     ],
     [

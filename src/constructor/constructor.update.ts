@@ -1,4 +1,4 @@
-import { Action, Update } from 'nestjs-telegraf';
+import { Action, Command, Update } from 'nestjs-telegraf';
 import { ConstructorService } from './constructor.service';
 import { Context } from 'telegraf';
 import { GeneralMiddlewares } from 'src/general/general.middlewares';
@@ -9,6 +9,13 @@ export class ConstructorUpdate {
     private readonly middlewares: GeneralMiddlewares,
     private readonly constructorService: ConstructorService,
   ) {}
+
+  @Command('constructor')
+  async constructorCommand(ctx: Context) {
+    await this.middlewares.commandMiddleware(ctx, (ctx: Context) =>
+      this.constructorService.sendStartConstructor(ctx),
+    );
+  }
 
   @Action(['constructor_service', 'back_to_constructor'])
   async constructorBtn(ctx: Context) {
