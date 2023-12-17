@@ -11,20 +11,18 @@ export const selectCategoryMarkup = {
     [
       {
         text: '🛍 Интернет-магазин',
-        callback_data: 'constructor_сategory_shop',
+        callback_data: 'online_shop::constructor_type',
       },
     ],
-    [{ text: '🍴 Заведение', callback_data: 'latter' }], // constructor_сategory_eat_place
     [
       {
-        text: '📰 Лендинг',
-        callback_data: 'latter', // 'constructor_сategory_landing'
+        text: '🍴 Заведение',
+        callback_data: 'places::constructor_type',
       },
     ],
-    [{ text: '⚒ На заказ', callback_data: 'latter' }], // constructor_сategory_custom
+    [{ text: '💬 Форум', callback_data: 'forum::constructor_type' }],
+    [{ text: '⚒ На заказ', callback_data: 'custom::constructor_type' }],
     localBackInlineBtn('back_to_services'),
     backInlineBtn,
   ],
 };
-
-// тип: сайт, лендинг, приложение -> стиль: модерн, классический... -> введите название -> введите описание -> мб введите слоган -> загрузите товары (exel, еще что то, в ручную)

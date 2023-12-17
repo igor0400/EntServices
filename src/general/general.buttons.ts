@@ -40,6 +40,7 @@ export class GeneralButtons {
       await this.generalPresets.sendTempMessage({
         ctx,
         text: '⏳ <b>Скоро...</b>',
+        time: 2000,
       });
     });
   }

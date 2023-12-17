@@ -18,6 +18,7 @@ import { ListenersLowModule } from './listeners/listeners-low.module';
 import { BansModule } from './bans/bans.module';
 import { ProfileModule } from './profile/profile.module';
 import { ConstructorModule } from './constructor/constructor.module';
+import { ChainModule } from './libs/chain/chain.module';
 
 const sessions = new LocalSession({ database: 'session_db.json' });
 
@@ -54,6 +55,8 @@ const sessions = new LocalSession({ database: 'session_db.json' });
     ProfileModule,
 
     ConstructorModule,
+
+    ChainModule,
   ],
 })
 export class AppModule {}
