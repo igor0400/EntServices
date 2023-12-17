@@ -31,10 +31,10 @@ export class ConstructorUpdate {
     );
   }
 
-  @Action(/.*::constructor_local_settings/)
+  @Action(/.*site::constructor_local_settings/)
   async constructorTypeShopBtn(ctx: Context) {
     await this.middlewares.btnMiddleware(ctx, (ctx: Context) =>
-      this.constructorService.changeToLocalSettings(ctx),
+      this.constructorService.changeToSiteStyle(ctx),
     );
   }
 }

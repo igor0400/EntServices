@@ -1,4 +1,4 @@
 export * from './selectCategory';
 export * from './selectType';
-export * from './seelctLocalSettings';
+export * from './selectSiteStyle';
 export * from './selectPlace';

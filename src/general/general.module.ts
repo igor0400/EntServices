@@ -7,6 +7,7 @@ import { MenuModule } from '../menu/menu.module';
 import { UsersModule } from 'src/users/users.module';
 import { ListenersModule } from 'src/listeners/listeners.module';
 import { BansModule } from 'src/bans/bans.module';
+import { ChainModule } from 'src/libs/chain';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { BansModule } from 'src/bans/bans.module';
     forwardRef(() => UsersModule),
     forwardRef(() => ListenersModule),
     forwardRef(() => BansModule),
+    forwardRef(() => ChainModule),
   ],
   providers: [
     GeneralValidations,

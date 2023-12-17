@@ -3,31 +3,24 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    return queryInterface.createTable('text_waiters', {
+    return queryInterface.createTable('chain_fields', {
       id: {
         type: Sequelize.STRING(500),
         allowNull: false,
         unique: true,
         primaryKey: true,
       },
-      type: {
+      chainId: {
         type: Sequelize.STRING(100),
         allowNull: false,
       },
-      userId: {
+      name: {
         type: Sequelize.STRING(100),
         allowNull: false,
       },
-      chatId: {
-        type: Sequelize.STRING(100),
-        allowNull: false,
-      },
-      messageId: {
-        type: Sequelize.STRING(100),
-        allowNull: false,
-      },
-      extraData: {
+      data: {
         type: Sequelize.TEXT,
+        allowNull: false,
       },
       createdAt: {
         type: Sequelize.DATE,
@@ -43,6 +36,6 @@ module.exports = {
   },
 
   async down(queryInterface) {
-    return queryInterface.dropTable('text_waiters');
+    return queryInterface.dropTable('chain_fields');
   },
 };

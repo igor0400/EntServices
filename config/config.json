@@ -17,7 +17,7 @@
     "username": "MainUser",
     "password": "dkfjsdofnsofnmno5j84584nknvkIDJFIDOFJODS&&&***&(hjhdfkldf",
     "database": "main_database",
-    "host": "103.13.211.217",
+    "host": "localhost",
     "dialect": "mysql"
   }
 }

@@ -11,7 +11,7 @@ export const selectCategoryMarkup = {
     [
       {
         text: '🛍 Интернет-магазин',
-        callback_data: 'online_shop::constructor_type',
+        callback_data: 'online-shop::constructor_type',
       },
     ],
     [

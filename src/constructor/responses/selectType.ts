@@ -14,10 +14,9 @@ export const selectTypeMarkup = (category: string) => {
       typesBtns.push([
         {
           text,
-          callback_data: callback_data?.replaceAll(
-            '<default>',
-            `${category}::constructor_local_settings`,
-          ),
+          callback_data: callback_data
+            ?.replaceAll('<default>', 'constructor_local_settings')
+            ?.replaceAll('<category>', category),
         },
       ]);
     }

@@ -6,12 +6,14 @@ import { UsersService } from 'src/users/users.service';
 import { ListenersService } from 'src/listeners/listeners.service';
 import { UserRepository } from 'src/users/repositories/user.repository';
 import { BanUserRepository } from 'src/bans/repositories/ban-user.repository';
+import { ChainService } from 'src/libs/chain';
 
 @Injectable()
 export class GeneralMiddlewares {
   constructor(
     private readonly usersService: UsersService,
     private readonly listenersService: ListenersService,
+    private readonly chainService: ChainService,
     private readonly userRepository: UserRepository,
     private readonly banUserRepository: BanUserRepository,
   ) {}
@@ -21,6 +23,10 @@ export class GeneralMiddlewares {
   }
 
   async commandMiddleware(ctx: Context | any, func: Function) {
+    const { user } = getCtxData(ctx);
+    const userTgId = user.id;
+    await this.chainService.clearUserChains(userTgId);
+
     await this.allActions(ctx, func, 'send');
   }
 

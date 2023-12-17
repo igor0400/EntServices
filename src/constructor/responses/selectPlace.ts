@@ -9,7 +9,7 @@ export const selectPlaceMarkup = {
     [
       {
         text: '🛒 Офлайн-магазин',
-        callback_data: 'offline_shop::constructor_type',
+        callback_data: 'offline-shop::constructor_type',
       },
     ],
     [
@@ -33,7 +33,7 @@ export const selectPlaceMarkup = {
     [
       {
         text: '💇‍♀️ Салон красоты',
-        callback_data: 'beauty_salon::constructor_type',
+        callback_data: 'beauty-salon::constructor_type',
       },
     ],
     localBackInlineBtn('back_to_constructor'),

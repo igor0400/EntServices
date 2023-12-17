@@ -3,16 +3,17 @@ import { Context } from 'telegraf';
 import {
   selectCategoryMarkup,
   selectCategoryMessage,
-  selectLocalSettingsMarkup,
-  selectLocalSettingsMessage,
   selectPlaceMarkup,
   selectPlaceMessage,
+  selectSiteStyleMarkup,
+  selectSiteStyleMessage,
   selectTypeMarkup,
   selectTypeMessage,
 } from './responses';
 import { getCtxData, replyPhoto } from 'src/libs/common';
 
-// стиль: модерн, классический... -> введите название (chain) -> введите описание -> мб введите слоган -> загрузите товары (exel, еще что то, в ручную)
+// введите название (chain) -> мб введите слоган -> введите описание -> загрузите товары (exel, еще что то, в ручную)
+// [{ text: '💭 Сгенерировать ИИ', callback_data: aiBtnData }];
 
 @Injectable()
 export class ConstructorService {
@@ -55,14 +56,12 @@ export class ConstructorService {
     });
   }
 
-  async changeToLocalSettings(ctx: Context) {
+  async changeToSiteStyle(ctx: Context) {
     const { dataValue } = getCtxData(ctx);
-    const [type, category] = dataValue?.split(':');
+    const [category, type] = dataValue?.split('_');
 
-    // сделать шаблон что передавать при каком типе и категории
-
-    await ctx.editMessageCaption(selectLocalSettingsMessage(), {
-      reply_markup: selectLocalSettingsMarkup(type, category),
+    await ctx.editMessageCaption(selectSiteStyleMessage(), {
+      reply_markup: selectSiteStyleMarkup(category),
       parse_mode: 'HTML',
     });
   }
