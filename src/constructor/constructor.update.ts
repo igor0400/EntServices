@@ -2,7 +2,6 @@ import { Action, Command, Update } from 'nestjs-telegraf';
 import { ConstructorService } from './constructor.service';
 import { Context } from 'telegraf';
 import { GeneralMiddlewares } from 'src/general/general.middlewares';
-import { getCtxData } from 'src/libs/common';
 
 @Update()
 export class ConstructorUpdate {
