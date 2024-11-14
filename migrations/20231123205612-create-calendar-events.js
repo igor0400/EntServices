@@ -3,7 +3,7 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    return queryInterface.createTable('calendar_events', {
+    return queryInterface.createTable('CalendarEvents', {
       id: {
         type: Sequelize.STRING(500),
         allowNull: false,
@@ -43,6 +43,6 @@ module.exports = {
   },
 
   async down(queryInterface) {
-    return queryInterface.dropTable('calendar_events');
+    return queryInterface.dropTable('CalendarEvents');
   },
 };

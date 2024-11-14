@@ -8,15 +8,39 @@ export class UsersService {
   constructor(private readonly userRepository: UserRepository) {}
 
   async updateUserNamesByCtx(ctx: Context) {
-    const { user } = getCtxData(ctx);
-    const telegramId = user.id;
-    const firstName = user.first_name;
-    const lastName = user.last_name;
-    const userName = user.username;
+    const { ctxUser } = getCtxData(ctx);
+    const telegramId = ctxUser.id;
+    const firstName = ctxUser.first_name;
+    const lastName = ctxUser.last_name;
+    const userName = ctxUser.username;
 
     await this.userRepository.update(
       { firstName, lastName, userName },
       { where: { telegramId } },
     );
+  }
+
+  async findOrCreateUserByCtx({
+    id,
+    first_name,
+    last_name,
+    username,
+  }: {
+    id: string;
+    first_name: string;
+    last_name: string;
+    username: string;
+  }) {
+    const isCreated = await this.userRepository.findByTgId(id);
+    if (isCreated) return isCreated;
+
+    const user = await this.userRepository.create({
+      telegramId: id,
+      firstName: first_name?.trim(),
+      lastName: last_name?.trim(),
+      userName: username?.trim(),
+    });
+
+    return user;
   }
 }

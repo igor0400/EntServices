@@ -1,13 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { Context } from 'telegraf';
 import { shareCalendarDaysMarkup, shareCalendarDaysMessage } from './responses';
-import { getCtxData, replyPhoto } from 'src/libs/common';
 import { EventsMembersRepository } from '../repositories/event-member.repository';
 import { CalendarEvent } from '../models/event.model';
 import { BusyDaysRepository } from '../repositories/busy-day.repository';
 import { getDateFromDataVal } from '../assets';
 import { filterEventsByDate } from '../events/assets';
 import { UserRepository } from 'src/users/repositories/user.repository';
+import { sendMessage } from 'src/general';
 
 @Injectable()
 export class ShareCalendarDaysService {
@@ -21,10 +21,10 @@ export class ShareCalendarDaysService {
     const user = await this.usersRepository.findByPk(userId);
     const markupData = await this.getMarkupData(date, userId);
 
-    await ctx.sendPhoto(replyPhoto(), {
-      caption: shareCalendarDaysMessage(date, user),
+    await sendMessage(shareCalendarDaysMessage(date, user), {
+      ctx,
       reply_markup: shareCalendarDaysMarkup({ date, ...markupData }),
-      parse_mode: 'HTML',
+      type: 'send',
     });
   }
 
@@ -32,9 +32,9 @@ export class ShareCalendarDaysService {
     const user = await this.usersRepository.findByPk(userId);
     const markupData = await this.getMarkupData(date, userId);
 
-    await ctx.editMessageCaption(shareCalendarDaysMessage(date, user), {
+    await sendMessage(shareCalendarDaysMessage(date, user), {
+      ctx,
       reply_markup: shareCalendarDaysMarkup({ date, ...markupData }),
-      parse_mode: 'HTML',
     });
   }
 

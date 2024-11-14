@@ -4,11 +4,16 @@ import { Chain } from './chain.model';
 
 export interface ChainFieldCreationArgs {
   chainId: string;
-  name: string;
-  data: string;
+  serNum: number;
+  title: string;
+  text: string;
+  isSkip?: boolean;
+  cancelBtnCallbackData?: string;
+  type?: 'text' | 'image' | 'file';
+  validations?: string;
 }
 
-@Table({ tableName: 'chain_fields' })
+@Table({ tableName: 'ChainFields' })
 export class ChainField extends AbstractModel<
   ChainField,
   ChainFieldCreationArgs
@@ -21,14 +26,53 @@ export class ChainField extends AbstractModel<
   chainId: string;
 
   @Column({
-    type: DataType.STRING,
+    type: DataType.INTEGER,
     allowNull: false,
   })
-  name: string;
+  serNum: number;
+
+  @Column({
+    type: DataType.STRING,
+    defaultValue: 'text',
+  })
+  type: 'text' | 'image' | 'file';
 
   @Column({
     type: DataType.STRING,
     allowNull: false,
   })
-  data: string;
+  title: string;
+
+  @Column({
+    type: DataType.STRING,
+    allowNull: false,
+  })
+  text: string;
+
+  @Column({
+    type: DataType.STRING,
+  })
+  cancelBtnCallbackData: string;
+
+  @Column({
+    type: DataType.STRING,
+  })
+  validations?: string;
+
+  @Column({
+    type: DataType.BOOLEAN,
+    defaultValue: false,
+  })
+  isSkip: boolean;
+
+  @Column({
+    type: DataType.BOOLEAN,
+    defaultValue: false,
+  })
+  isSkipped: boolean;
+
+  @Column({
+    type: DataType.BLOB,
+  })
+  userResponse?: string;
 }

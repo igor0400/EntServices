@@ -8,7 +8,7 @@ export interface BasicNotificationCreationArgs {
   markup?: string;
 }
 
-@Table({ tableName: 'basic_notifications' })
+@Table({ tableName: 'BasicNotifications' })
 export class BasicNotification extends AbstractModel<
   BasicNotification,
   BasicNotificationCreationArgs

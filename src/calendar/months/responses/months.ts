@@ -1,5 +1,9 @@
 import { CalendarBusyDay } from 'src/calendar/models/busy-day.model';
-import { backInlineBtn, localBackInlineBtn } from '../../../general';
+import {
+  backBarInlineBtns,
+  backInlineBtn,
+  localBackInlineBtn,
+} from '../../../general';
 import { formatKeyboard, getNowDate, getZero } from 'src/libs/common';
 import { getEmptyBtns } from '../../assets';
 import { months, weekDays } from '../../configs';
@@ -39,8 +43,24 @@ export const calendarMonthsMarkup = (
   for (let i = 1; i < maxDate + 1; i++) {
     const isBusy = busyDays.map((i) => i.date).includes(i);
 
+    let dayText = String(i);
+
+    const today = getNowDate();
+
+    if (isBusy) {
+      dayText = '❌';
+    }
+
+    if (
+      oldestDate.getUTCFullYear() === today.getUTCFullYear() &&
+      oldestDate.getUTCMonth() === today.getUTCMonth() &&
+      today.getUTCDate() === i
+    ) {
+      dayText += ' ●';
+    }
+
     days.push({
-      text: isBusy ? '❌' : `${i}`,
+      text: dayText,
       callback_data: `${getZero(i)}.${getZero(
         oldestDate.getUTCMonth() + 1,
       )}.${oldestDate.getUTCFullYear()}::calendar_date`,
@@ -82,8 +102,7 @@ export const calendarMonthsMarkup = (
           ),
         },
       ],
-      localBackInlineBtn('back_to_services'),
-      backInlineBtn,
+      ...backBarInlineBtns('back_to_services'),
     ],
   };
 };

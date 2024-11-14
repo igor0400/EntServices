@@ -3,7 +3,7 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    return queryInterface.createTable('chain_fields', {
+    return queryInterface.createTable('ChainFields', {
       id: {
         type: Sequelize.STRING(500),
         allowNull: false,
@@ -11,17 +11,38 @@ module.exports = {
         primaryKey: true,
       },
       chainId: {
+        type: Sequelize.STRING(500),
+        allowNull: false,
+      },
+      serNum: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+      },
+      type: {
+        type: Sequelize.STRING(100),
+        defaultValue: 'text',
+      },
+      title: {
         type: Sequelize.STRING(100),
         allowNull: false,
       },
-      name: {
+      cancelBtnCallbackData: {
         type: Sequelize.STRING(100),
-        allowNull: false,
       },
-      data: {
+      text: {
         type: Sequelize.TEXT,
         allowNull: false,
       },
+      isSkip: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: false,
+      },
+      isSkipped: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: false,
+      },
+      userResponse: Sequelize.BLOB,
+      validations: Sequelize.TEXT,
       createdAt: {
         type: Sequelize.DATE,
         defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
@@ -36,6 +57,6 @@ module.exports = {
   },
 
   async down(queryInterface) {
-    return queryInterface.dropTable('chain_fields');
+    return queryInterface.dropTable('ChainFields');
   },
 };

@@ -10,7 +10,7 @@ export interface CalendarEventCreationArgs {
   type: string;
 }
 
-@Table({ tableName: 'calendar_events' })
+@Table({ tableName: 'CalendarEvents' })
 export class CalendarEvent extends AbstractModel<
   CalendarEvent,
   CalendarEventCreationArgs

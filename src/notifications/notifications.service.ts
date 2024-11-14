@@ -14,7 +14,7 @@ export class NotificationsService {
   ) {}
 
   async changeToBasicNotifications(ctx: Context) {
-    const { user: ctxUser } = getCtxData(ctx);
+    const { ctxUser } = getCtxData(ctx);
     const userTgId = ctxUser.id;
     const notifications = await this.basicNotificationRepository.findAll({
       where: {

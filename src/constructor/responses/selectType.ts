@@ -1,4 +1,4 @@
-import { backInlineBtn, localBackInlineBtn } from 'src/general';
+import { backBarInlineBtns } from 'src/general';
 import { typesByCategory } from '../configs';
 
 export const selectTypeMessage = () => `<b>Конструктор</b>
@@ -25,8 +25,7 @@ export const selectTypeMarkup = (category: string) => {
   return {
     inline_keyboard: [
       ...typesBtns,
-      localBackInlineBtn('back_to_constructor'),
-      backInlineBtn,
+      ...backBarInlineBtns('back_to_constructor'),
     ],
   };
 };

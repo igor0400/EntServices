@@ -3,7 +3,7 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    return queryInterface.createTable('calendar_busy_days', {
+    return queryInterface.createTable('CalendarBusyDays', {
       id: {
         type: Sequelize.STRING(500),
         allowNull: false,
@@ -48,6 +48,6 @@ module.exports = {
   },
 
   async down(queryInterface) {
-    return queryInterface.dropTable('calendar_busy_days');
+    return queryInterface.dropTable('CalendarBusyDays');
   },
 };

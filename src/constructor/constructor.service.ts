@@ -11,6 +11,7 @@ import {
   selectTypeMessage,
 } from './responses';
 import { getCtxData, replyPhoto } from 'src/libs/common';
+import { sendMessage } from 'src/general';
 
 // введите название (chain) -> мб введите слоган -> введите описание -> загрузите товары (exel, еще что то, в ручную)
 // [{ text: '💭 Сгенерировать ИИ', callback_data: aiBtnData }];
@@ -26,17 +27,17 @@ export class ConstructorService {
   }
 
   async changeToCategories(ctx: Context) {
-    await ctx.editMessageCaption(selectCategoryMessage(), {
+    await sendMessage(selectCategoryMessage(), {
+      ctx,
       reply_markup: selectCategoryMarkup,
-      parse_mode: 'HTML',
     });
   }
 
   async sendCategories(ctx: Context) {
-    await ctx.sendPhoto(replyPhoto(), {
-      caption: selectCategoryMessage(),
+    await sendMessage(selectCategoryMessage(), {
+      ctx,
       reply_markup: selectCategoryMarkup,
-      parse_mode: 'HTML',
+      type: 'send',
     });
   }
 
@@ -44,15 +45,15 @@ export class ConstructorService {
     const { dataValue } = getCtxData(ctx);
 
     if (dataValue === 'places') {
-      return await ctx.editMessageCaption(selectPlaceMessage(), {
+      return await sendMessage(selectPlaceMessage(), {
+        ctx,
         reply_markup: selectPlaceMarkup,
-        parse_mode: 'HTML',
       });
     }
 
-    await ctx.editMessageCaption(selectTypeMessage(), {
+    await sendMessage(selectTypeMessage(), {
+      ctx,
       reply_markup: selectTypeMarkup(dataValue),
-      parse_mode: 'HTML',
     });
   }
 
@@ -60,9 +61,9 @@ export class ConstructorService {
     const { dataValue } = getCtxData(ctx);
     const [category, type] = dataValue?.split('_');
 
-    await ctx.editMessageCaption(selectSiteStyleMessage(), {
+    await sendMessage(selectSiteStyleMessage(), {
+      ctx,
       reply_markup: selectSiteStyleMarkup(category),
-      parse_mode: 'HTML',
     });
   }
 }

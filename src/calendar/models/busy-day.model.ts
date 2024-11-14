@@ -10,7 +10,7 @@ export interface CalendarBusyDayCreationArgs {
   type: string;
 }
 
-@Table({ tableName: 'calendar_busy_days' })
+@Table({ tableName: 'CalendarBusyDays' })
 export class CalendarBusyDay extends AbstractModel<
   CalendarBusyDay,
   CalendarBusyDayCreationArgs

@@ -3,20 +3,20 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    return queryInterface.createTable('text_waiters', {
+    return queryInterface.createTable('Mailings', {
       id: {
         type: Sequelize.STRING(500),
         allowNull: false,
         unique: true,
         primaryKey: true,
       },
-      type: {
-        type: Sequelize.STRING(100),
+      userId: {
+        type: Sequelize.STRING(500),
         allowNull: false,
       },
-      userId: {
-        type: Sequelize.STRING(100),
-        allowNull: false,
+      status: {
+        type: Sequelize.STRING(50),
+        defaultValue: 'CREATING',
       },
       chatId: {
         type: Sequelize.STRING(100),
@@ -26,9 +26,14 @@ module.exports = {
         type: Sequelize.STRING(100),
         allowNull: false,
       },
-      extraData: {
-        type: Sequelize.TEXT,
-      },
+      text: Sequelize.STRING(700),
+      animationFileId: Sequelize.STRING(500),
+      audioFileId: Sequelize.STRING(500),
+      documentFileId: Sequelize.STRING(500),
+      videoFileId: Sequelize.STRING(500),
+      photoFileId: Sequelize.STRING(500),
+      voiceFileId: Sequelize.STRING(500),
+      stickerFileId: Sequelize.STRING(500),
       createdAt: {
         type: Sequelize.DATE,
         defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
@@ -43,6 +48,6 @@ module.exports = {
   },
 
   async down(queryInterface) {
-    return queryInterface.dropTable('text_waiters');
+    return queryInterface.dropTable('Mailings');
   },
 };

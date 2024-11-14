@@ -15,7 +15,7 @@ export interface CalendarEventMemberCreationArgs {
   userTelegramId: string;
 }
 
-@Table({ tableName: 'calendar_events_members' })
+@Table({ tableName: 'CalendarEventsMembers' })
 export class CalendarEventMember extends AbstractModel<
   CalendarEventMember,
   CalendarEventMemberCreationArgs

@@ -8,6 +8,7 @@ import { BusyDaysRepository } from '../repositories/busy-day.repository';
 import { getDateFromDataVal } from '../assets';
 import { filterEventsByDate } from '../events/assets';
 import { UserRepository } from 'src/users/repositories/user.repository';
+import { sendMessage } from 'src/general';
 
 @Injectable()
 export class CalendarDaysService {
@@ -20,24 +21,24 @@ export class CalendarDaysService {
   async sendCalendarDay(ctx: Context, date: string) {
     const markupData = await this.getMarkupData(ctx, date);
 
-    await ctx.sendPhoto(replyPhoto(), {
-      caption: calendarDaysMessage(date),
+    await sendMessage(calendarDaysMessage(date), {
+      ctx,
       reply_markup: calendarDaysMarkup({ date, ...markupData }),
-      parse_mode: 'HTML',
+      type: 'send',
     });
   }
 
   async changeToCalendarDay(ctx: Context, date: string) {
     const markupData = await this.getMarkupData(ctx, date);
 
-    await ctx.editMessageCaption(calendarDaysMessage(date), {
+    await sendMessage(calendarDaysMessage(date), {
+      ctx,
       reply_markup: calendarDaysMarkup({ date, ...markupData }),
-      parse_mode: 'HTML',
     });
   }
 
   async setDayBusy(ctx: Context) {
-    const { dataValue, user: ctxUser } = getCtxData(ctx);
+    const { dataValue, ctxUser } = getCtxData(ctx);
 
     await this.createBusyDayByDateVal({
       dateVal: dataValue,
@@ -49,7 +50,7 @@ export class CalendarDaysService {
   }
 
   async deleteBusyDay(ctx: Context) {
-    const { dataValue, user: ctxUser } = getCtxData(ctx);
+    const { dataValue, ctxUser } = getCtxData(ctx);
 
     await this.deleteBusyDayByDateVal({
       dateVal: dataValue,
@@ -111,7 +112,7 @@ export class CalendarDaysService {
   }
 
   private async getMarkupData(ctx: Context, dateVal: string) {
-    const { user: ctxUser } = getCtxData(ctx);
+    const { ctxUser } = getCtxData(ctx);
     const userTgId = ctxUser.id;
     const user = await this.usersRepository.findByTgId(userTgId);
     const userId = user.id;

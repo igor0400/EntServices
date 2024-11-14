@@ -1,4 +1,4 @@
-import { backInlineBtn, localBackInlineBtn } from 'src/general';
+import { backBarInlineBtns } from 'src/general';
 
 export const selectCategoryMessage = () => `<b>Конструктор</b>
 
@@ -22,7 +22,6 @@ export const selectCategoryMarkup = {
     ],
     [{ text: '💬 Форум', callback_data: 'forum::constructor_type' }],
     [{ text: '⚒ На заказ', callback_data: 'custom::constructor_type' }],
-    localBackInlineBtn('back_to_services'),
-    backInlineBtn,
+    ...backBarInlineBtns('back_to_services'),
   ],
 };

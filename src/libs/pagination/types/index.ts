@@ -1,7 +1,7 @@
 import { InlineBtnType } from 'src/general';
 
 export interface CreatePaginationProps {
-  userTelegramId: string;
+  userId: string;
   items: InlineBtnType[];
   pageItemsCount?: number;
   rowLen?: number;
@@ -11,6 +11,6 @@ export interface CreatePaginationProps {
 }
 
 export interface ChangePaginationPageProps {
-  userTelegramId: string;
+  userId: string;
   page?: number;
 }

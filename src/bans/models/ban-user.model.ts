@@ -8,7 +8,7 @@ export interface BanUserCreationArgs {
   reason: string;
 }
 
-@Table({ tableName: 'ban_users' })
+@Table({ tableName: 'BanUsers' })
 export class BanUser extends AbstractModel<BanUser, BanUserCreationArgs> {
   @ForeignKey(() => User)
   @Column({

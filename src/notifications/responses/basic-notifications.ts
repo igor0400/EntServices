@@ -1,4 +1,4 @@
-import { backInlineBtn, localBackInlineBtn } from 'src/general';
+import { backBarInlineBtns } from 'src/general';
 import { BasicNotification } from '../models/basic-notification.model';
 
 export const basicNotificationsMessage = (isFull = false) => `<b>Уведомления</b>
@@ -31,8 +31,7 @@ export const basicNotificationsMarkup = (
   return {
     inline_keyboard: [
       ...notificationsBtns,
-      localBackInlineBtn('back_to_profile'),
-      backInlineBtn,
+      ...backBarInlineBtns('back_to_profile'),
     ],
   };
 };

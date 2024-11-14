@@ -3,7 +3,7 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    return queryInterface.createTable('users', {
+    return queryInterface.createTable('Users', {
       id: {
         type: Sequelize.STRING(500),
         allowNull: false,
@@ -37,6 +37,6 @@ module.exports = {
   },
 
   async down(queryInterface) {
-    return queryInterface.dropTable('users');
+    return queryInterface.dropTable('Users');
   },
 };

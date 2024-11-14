@@ -1,5 +1,5 @@
 import { CalendarEvent } from 'src/calendar/models/event.model';
-import { backInlineBtn, localBackInlineBtn } from '../../../general';
+import { backBarInlineBtns, backInlineBtn, localBackInlineBtn } from '../../../general';
 import { textMonths } from '../../configs';
 import { getZero } from 'src/libs/common';
 import { CalendarBusyDay } from 'src/calendar/models/busy-day.model';
@@ -48,8 +48,7 @@ export const calendarDaysMarkup = ({
           ),
         },
       ],
-      localBackInlineBtn(`${date}::back_to_calendar_month`),
-      backInlineBtn,
+      ...backBarInlineBtns(`${date}::back_to_calendar_month`)
     ],
   };
 };

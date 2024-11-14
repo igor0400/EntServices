@@ -1,7 +1,7 @@
-import { backInlineBtn, localBackInlineBtn } from 'src/general';
+import { backBarInlineBtns } from 'src/general';
 import { ChangeToSelectHoursOpts } from '../events-additional.service';
-import { CreatePaginationProps } from 'src/libs/pagination';
 import { InlineBtnType } from 'src/general';
+import { CreatePaginationProps } from 'src/libs/pagination/types';
 
 export const selectEventHoursMessage = ({
   type,
@@ -43,6 +43,7 @@ export const selectEventHoursMarkup = async (
   }
 
   const pagination = await createPagination({
+    userId,
     items: hoursBtns,
     pageItemsCount: 40,
     rowLen: 4,
@@ -59,10 +60,6 @@ export const selectEventHoursMarkup = async (
         }::back_to_${textCalType}_c_e_s_t`;
 
   return {
-    inline_keyboard: [
-      ...pagination,
-      localBackInlineBtn(backCBData),
-      backInlineBtn,
-    ],
+    inline_keyboard: [...pagination, ...backBarInlineBtns(backCBData)],
   };
 };

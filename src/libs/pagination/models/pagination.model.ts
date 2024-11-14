@@ -2,7 +2,7 @@ import { Column, Table, DataType } from 'sequelize-typescript';
 import { AbstractModel } from 'src/libs/common';
 
 export interface PaginationCreationArgs {
-  userTelegramId: string;
+  userId: string;
   items: string;
   pageItemsCount?: number;
   rowLen?: number;
@@ -11,7 +11,7 @@ export interface PaginationCreationArgs {
   dontHideNavbar?: boolean;
 }
 
-@Table({ tableName: 'paginations' })
+@Table({ tableName: 'Paginations' })
 export class Pagination extends AbstractModel<
   Pagination,
   PaginationCreationArgs
@@ -20,7 +20,7 @@ export class Pagination extends AbstractModel<
     type: DataType.STRING,
     allowNull: false,
   })
-  userTelegramId: string;
+  userId: string;
 
   @Column({
     type: DataType.TEXT,

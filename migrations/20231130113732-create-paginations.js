@@ -3,15 +3,15 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    return queryInterface.createTable('paginations', {
+    return queryInterface.createTable('Paginations', {
       id: {
         type: Sequelize.STRING(500),
         allowNull: false,
         unique: true,
         primaryKey: true,
       },
-      userTelegramId: {
-        type: Sequelize.STRING(100),
+      userId: {
+        type: Sequelize.STRING(500),
         allowNull: false,
       },
       items: {
@@ -52,6 +52,6 @@ module.exports = {
   },
 
   async down(queryInterface) {
-    return queryInterface.dropTable('paginations');
+    return queryInterface.dropTable('Paginations');
   },
 };

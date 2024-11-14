@@ -1,5 +1,6 @@
-import { Column, Table, DataType } from 'sequelize-typescript';
+import { Column, Table, DataType, HasMany } from 'sequelize-typescript';
 import { AbstractModel } from 'src/libs/common';
+import { UserRoles } from 'src/roles/models/user-roles.model';
 
 export interface UserCreationArgs {
   telegramId: string;
@@ -8,7 +9,7 @@ export interface UserCreationArgs {
   userName: string;
 }
 
-@Table({ tableName: 'users' })
+@Table({ tableName: 'Users' })
 export class User extends AbstractModel<User, UserCreationArgs> {
   @Column({
     type: DataType.STRING,
@@ -30,4 +31,7 @@ export class User extends AbstractModel<User, UserCreationArgs> {
     type: DataType.STRING,
   })
   userName: string;
+
+  @HasMany(() => UserRoles)
+  roles: UserRoles[];
 }

@@ -7,10 +7,11 @@ export interface ChainCreationArgs {
   userId: string;
   chatId: string;
   messageId: string;
+  isCancel?: boolean;
   extraData?: string;
 }
 
-@Table({ tableName: 'chains' })
+@Table({ tableName: 'Chains' })
 export class Chain extends AbstractModel<Chain, ChainCreationArgs> {
   @Column({
     type: DataType.STRING,
@@ -35,6 +36,12 @@ export class Chain extends AbstractModel<Chain, ChainCreationArgs> {
     allowNull: false,
   })
   messageId: string;
+
+  @Column({
+    type: DataType.BOOLEAN,
+    defaultValue: true,
+  })
+  isCancel: boolean;
 
   @Column({
     type: DataType.STRING,

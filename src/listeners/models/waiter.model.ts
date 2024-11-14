@@ -1,24 +1,28 @@
 import { Column, Table, DataType } from 'sequelize-typescript';
 import { AbstractModel } from 'src/libs/common';
 
-export interface TextWaiterCreationArgs {
+export interface WaiterCreationArgs {
   type: string;
+  kind: string;
   userId: string;
   chatId: string;
   messageId: string;
   extraData?: string;
 }
 
-@Table({ tableName: 'text_waiters' })
-export class TextWaiter extends AbstractModel<
-  TextWaiter,
-  TextWaiterCreationArgs
-> {
+@Table({ tableName: 'Waiters' })
+export class Waiter extends AbstractModel<Waiter, WaiterCreationArgs> {
   @Column({
     type: DataType.STRING,
     allowNull: false,
   })
   type: string;
+
+  @Column({
+    type: DataType.STRING,
+    defaultValue: 'text',
+  })
+  kind: string;
 
   @Column({
     type: DataType.STRING,

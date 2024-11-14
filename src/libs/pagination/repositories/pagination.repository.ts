@@ -18,13 +18,13 @@ export class PaginationRepository extends AbstractRepository<
     super(paginationModel);
   }
 
-  async findByUserTgId(
-    userTgId: string | number,
+  async findByUserId(
+    userId: string,
     options?: Omit<FindOptions<Pagination>, 'where'>,
   ) {
     const document = await this.paginationModel.findOne({
       where: {
-        userTelegramId: userTgId,
+        userId,
       },
       ...options,
     });
@@ -32,13 +32,13 @@ export class PaginationRepository extends AbstractRepository<
     return document as Pagination;
   }
 
-  async destroyByUserTgId(
-    userTgId: string | number,
+  async destroyByUserId(
+    userId: string,
     options?: Omit<DestroyOptions<Pagination>, 'where'>,
   ) {
     const document = await this.paginationModel.destroy({
       where: {
-        userTelegramId: userTgId,
+        userId,
       },
       ...options,
     });

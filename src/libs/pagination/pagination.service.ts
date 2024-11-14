@@ -9,9 +9,9 @@ export class PaginationService {
   constructor(private readonly paginationRepository: PaginationRepository) {}
 
   async create(props: CreatePaginationProps) {
-    const { userTelegramId, items } = props;
+    const { userId, items } = props;
 
-    await this.paginationRepository.destroyByUserTgId(userTelegramId);
+    await this.paginationRepository.destroyByUserId(userId);
     await this.paginationRepository.create({
       ...props,
       items: JSON.stringify(items),
@@ -20,10 +20,8 @@ export class PaginationService {
     return this.generateKeyboard(props);
   }
 
-  async changePage({ userTelegramId, page }: ChangePaginationPageProps) {
-    const pagination = await this.paginationRepository.findByUserTgId(
-      userTelegramId,
-    );
+  async changePage({ userId, page }: ChangePaginationPageProps) {
+    const pagination = await this.paginationRepository.findByUserId(userId);
     if (!pagination) return;
 
     const items = JSON.parse(pagination.items);

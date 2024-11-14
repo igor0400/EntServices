@@ -16,7 +16,10 @@ export class CalendarDaysUpdate {
     const { dataValue } = getCtxData(ctx);
 
     await this.middlewares.btnMiddleware(ctx, (ctx: Context) =>
-      this.calendarDaysService.changeToCalendarDay(ctx, dataValue),
+      this.calendarDaysService.changeToCalendarDay(
+        ctx,
+        dataValue.split('_')[0],
+      ),
     );
   }
 

@@ -3,7 +3,7 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    return queryInterface.createTable('ban_users', {
+    return queryInterface.createTable('BanUsers', {
       id: {
         type: Sequelize.STRING(500),
         allowNull: false,
@@ -35,6 +35,6 @@ module.exports = {
   },
 
   async down(queryInterface) {
-    return queryInterface.dropTable('ban_users');
+    return queryInterface.dropTable('BanUsers');
   },
 };

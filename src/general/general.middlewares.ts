@@ -6,7 +6,7 @@ import { UsersService } from 'src/users/users.service';
 import { ListenersService } from 'src/listeners/listeners.service';
 import { UserRepository } from 'src/users/repositories/user.repository';
 import { BanUserRepository } from 'src/bans/repositories/ban-user.repository';
-import { ChainService } from 'src/libs/chain';
+import { ChainService } from 'src/libs/chain/chain.service';
 
 @Injectable()
 export class GeneralMiddlewares {
@@ -23,8 +23,8 @@ export class GeneralMiddlewares {
   }
 
   async commandMiddleware(ctx: Context | any, func: Function) {
-    const { user } = getCtxData(ctx);
-    const userTgId = user.id;
+    const { ctxUser } = getCtxData(ctx);
+    const userTgId = ctxUser.id;
     await this.chainService.clearUserChains(userTgId);
 
     await this.allActions(ctx, func, 'send');
@@ -39,8 +39,8 @@ export class GeneralMiddlewares {
     func: Function,
     type: 'send' | 'edit',
   ) {
-    const { user } = getCtxData(ctx);
-    const userTgId = user.id;
+    const { ctxUser } = getCtxData(ctx);
+    const userTgId = ctxUser.id;
 
     await this.usersService.updateUserNamesByCtx(ctx);
     await this.listenersService.clearUserListeners(userTgId);
@@ -53,8 +53,8 @@ export class GeneralMiddlewares {
     func: Function,
     type: 'send' | 'edit',
   ) {
-    const { user } = getCtxData(ctx);
-    const userTgId = user.id;
+    const { ctxUser } = getCtxData(ctx);
+    const userTgId = ctxUser.id;
 
     const banUser = await this.banUserRepository.findOne({
       where: { userTelegramId: userTgId },
@@ -81,9 +81,9 @@ export class GeneralMiddlewares {
       where: { telegramId: userTgId },
       defaults: {
         telegramId: userTgId,
-        firstName: user.first_name,
-        lastName: user.last_name,
-        userName: user.username,
+        firstName: ctxUser.first_name,
+        lastName: ctxUser.last_name,
+        userName: ctxUser.username,
       },
     });
 

@@ -93,7 +93,7 @@ export class EventsUpdate {
 
   @Action(/.*::leave_calendar_event/)
   async leaveCalendarEventBtn(ctx: Context) {
-    const { dataValue, user: ctxUser } = getCtxData(ctx);
+    const { dataValue, ctxUser } = getCtxData(ctx);
     const userTgId = ctxUser.id;
 
     await this.middlewares.btnMiddleware(ctx, async (ctx: Context) => {

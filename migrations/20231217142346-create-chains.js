@@ -3,18 +3,18 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    return queryInterface.createTable('chains', {
+    return queryInterface.createTable('Chains', {
       id: {
         type: Sequelize.STRING(500),
         allowNull: false,
         unique: true,
         primaryKey: true,
       },
-      type: {
-        type: Sequelize.STRING(100),
+      userId: {
+        type: Sequelize.STRING(500),
         allowNull: false,
       },
-      userId: {
+      type: {
         type: Sequelize.STRING(100),
         allowNull: false,
       },
@@ -25,6 +25,10 @@ module.exports = {
       messageId: {
         type: Sequelize.STRING(100),
         allowNull: false,
+      },
+      isCancel: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: true,
       },
       extraData: {
         type: Sequelize.TEXT,
@@ -43,6 +47,6 @@ module.exports = {
   },
 
   async down(queryInterface) {
-    return queryInterface.dropTable('chains');
+    return queryInterface.dropTable('Chains');
   },
 };

@@ -34,7 +34,7 @@ export class CalendarMonthsService {
     incMonth: number = 0,
     isSend: boolean = true,
   ) {
-    const { user: ctxUser } = getCtxData(ctx);
+    const { ctxUser } = getCtxData(ctx);
     const userId = ctxUser.id;
     const user = await this.userRepository.findByTgId(userId);
     const busyDays = await this.busyDaysRepository.findAll({

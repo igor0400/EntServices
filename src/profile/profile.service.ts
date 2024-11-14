@@ -4,6 +4,7 @@ import { Context } from 'telegraf';
 import { profileMarkup, profileMessage } from './responses';
 import { UserRepository } from 'src/users/repositories/user.repository';
 import { BasicNotificationRepository } from 'src/notifications/repositories/basic-notification.repository';
+import { sendMessage } from 'src/general';
 
 @Injectable()
 export class ProfileService {
@@ -17,14 +18,14 @@ export class ProfileService {
   }
 
   async changeToProfile(ctx: Context) {
-    await this.profileDefaultHandler(ctx, 'change');
+    await this.profileDefaultHandler(ctx, 'edit');
   }
 
   private async profileDefaultHandler(
     ctx: Context,
-    type: 'change' | 'send' = 'send',
+    type: 'edit' | 'send' = 'send',
   ) {
-    const { user: ctxUser } = getCtxData(ctx);
+    const { ctxUser } = getCtxData(ctx);
     const userTgId = ctxUser.id;
     const user = await this.userRepository.findByTgId(userTgId);
     const notifications = await this.basicNotificationRepository.findAll({
@@ -32,17 +33,10 @@ export class ProfileService {
     });
     const isFull = Boolean(notifications?.length);
 
-    if (type === 'change') {
-      await ctx.editMessageCaption(profileMessage(user), {
-        reply_markup: profileMarkup(user.id, isFull),
-        parse_mode: 'HTML',
-      });
-    } else {
-      await ctx.sendPhoto(replyPhoto(), {
-        caption: profileMessage(user),
-        reply_markup: profileMarkup(user.id, isFull),
-        parse_mode: 'HTML',
-      });
-    }
+    await sendMessage(profileMessage(user), {
+      ctx,
+      reply_markup: profileMarkup(user.id, isFull),
+      type,
+    });
   }
 }

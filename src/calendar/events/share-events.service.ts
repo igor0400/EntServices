@@ -15,7 +15,6 @@ import {
 import { User } from 'src/users/models/user.model';
 import { CalendarEventMember } from '../models/event-member.model';
 import { InjectBot } from 'nestjs-telegraf';
-import { TextWaiter } from 'src/listeners/models/text-waiter.model';
 import { UserRepository } from 'src/users/repositories/user.repository';
 import { EventsService } from './events.service';
 import {
@@ -25,8 +24,9 @@ import {
   sendTempChatIdMessage,
 } from 'src/libs/common';
 import { EventsMembersRepository } from '../repositories/event-member.repository';
-import { backMarkup, getDayDate } from 'src/general';
+import { backMarkup, getDayDate, sendMessage } from 'src/general';
 import { BasicNotificationRepository } from 'src/notifications/repositories/basic-notification.repository';
+import { Waiter } from 'src/listeners/models/waiter.model';
 
 @Injectable()
 export class ShareEventsService {
@@ -36,12 +36,11 @@ export class ShareEventsService {
     private readonly eventsMembersRepository: EventsMembersRepository,
     private readonly usersRepository: UserRepository,
     private readonly basicNotificationRepository: BasicNotificationRepository,
-    @InjectBot()
-    private bot: Telegraf<Context>,
+    @InjectBot() private bot: Telegraf<Context>,
   ) {}
 
   async changeToEvent(ctx: Context, eventId: string, inviterId: string) {
-    const { user: ctxUser } = getCtxData(ctx);
+    const { ctxUser } = getCtxData(ctx);
     const userTgId = ctxUser.id;
 
     const user = await this.usersRepository.findByTgId(userTgId);
@@ -49,9 +48,9 @@ export class ShareEventsService {
       include: [{ model: CalendarEventMember, include: [User] }],
     });
 
-    await ctx.editMessageCaption(eventMessage(event), {
+    await sendMessage(eventMessage(event), {
+      ctx,
       reply_markup: eventMarkup(event, 'owner', user.id, inviterId),
-      parse_mode: 'HTML',
     });
   }
 
@@ -66,16 +65,12 @@ export class ShareEventsService {
       include: [{ model: CalendarEventMember, include: [User] }],
     });
 
-    await this.bot.telegram.editMessageCaption(
+    await sendMessage(eventMessage(event), {
+      bot: this.bot,
       chatId,
-      +messageId,
-      undefined,
-      eventMessage(event),
-      {
-        reply_markup: eventMarkup(event, 'owner', userId, inviterId),
-        parse_mode: 'HTML',
-      },
-    );
+      messageId: +messageId,
+      reply_markup: eventMarkup(event, 'owner', userId, inviterId),
+    });
   }
 
   async createEventByTitleListener({
@@ -84,7 +79,7 @@ export class ShareEventsService {
     userTgId,
     userId,
   }: {
-    textWaiter: TextWaiter;
+    textWaiter: Waiter;
     title: string;
     userTgId: string;
     userId: string;
@@ -139,7 +134,7 @@ export class ShareEventsService {
   }
 
   async acceptEventInvite(ctx: Context) {
-    const { dataValue, user: ctxUser } = getCtxData(ctx);
+    const { dataValue, ctxUser } = getCtxData(ctx);
     const userTgId = ctxUser.id;
     const user = await this.usersRepository.findByTgId(userTgId);
     const userId = user.id;
@@ -177,7 +172,7 @@ export class ShareEventsService {
   }
 
   async rejectEventInvite(ctx: Context) {
-    const { dataValue, user: ctxUser } = getCtxData(ctx);
+    const { dataValue, ctxUser } = getCtxData(ctx);
     const userTgId = ctxUser.id;
     const eventId = dataValue;
     const event = await this.eventsRepository.findByPk(eventId);
@@ -201,18 +196,21 @@ export class ShareEventsService {
   }
 
   async sendInviteEvent(ctx: Context, eventId: string, userId: string) {
+    const { ctxUser } = getCtxData(ctx);
+    const user = await this.usersRepository.findByTgId(ctxUser.id);
+
     const isUserActivated = await this.eventsMembersRepository.findOne({
       where: {
         calendarEventId: eventId,
-        userId,
+        userId: user.id,
       },
     });
 
     if (isUserActivated) {
-      return await ctx.sendPhoto(replyPhoto(), {
-        caption: alreadyActiveInviteMessage(),
+      return sendMessage(alreadyActiveInviteMessage(), {
+        ctx,
         reply_markup: backMarkup,
-        parse_mode: 'HTML',
+        type: 'send',
       });
     }
 
@@ -221,10 +219,10 @@ export class ShareEventsService {
     });
     const owner = await this.usersRepository.findByPk(userId);
 
-    await ctx.sendPhoto(replyPhoto(), {
-      caption: eventInviteMessage(event, owner),
+    await sendMessage(eventInviteMessage(event, owner), {
+      ctx,
       reply_markup: eventInviteMarkup(event.id),
-      parse_mode: 'HTML',
+      type: 'send',
     });
   }
 }

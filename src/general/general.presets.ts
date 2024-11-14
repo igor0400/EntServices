@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectBot } from 'nestjs-telegraf';
 import { Context, Telegraf } from 'telegraf';
+import { sendMessage } from './assets';
 
 @Injectable()
 export class GeneralPresets {
@@ -13,6 +14,7 @@ export class GeneralPresets {
 
     const message = await ctx.sendMessage(this.textWrapper(`${initText}...`), {
       parse_mode: 'HTML',
+      disable_notification: true,
     });
 
     const internalId = setInterval(async () => {
@@ -35,17 +37,12 @@ export class GeneralPresets {
         type = 'dec';
       }
 
-      try {
-        await this.bot.telegram.editMessageText(
-          message.chat.id,
-          message.message_id,
-          undefined,
-          this.textWrapper(text),
-          {
-            parse_mode: 'HTML',
-          },
-        );
-      } catch (e) {}
+      await sendMessage(this.textWrapper(text), {
+        bot: this.bot,
+        chatId: message.chat.id,
+        messageId: message.message_id,
+        isBanner: false,
+      });
     }, 500);
 
     const chatId = message.chat.id;

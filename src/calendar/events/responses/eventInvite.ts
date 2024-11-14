@@ -1,5 +1,5 @@
 import { CalendarEvent } from 'src/calendar/models/event.model';
-import { backInlineBtn, localBackInlineBtn } from 'src/general';
+import { backBarInlineBtns, backInlineBtn } from 'src/general';
 import { getUserName } from 'src/libs/common';
 import { User } from 'src/users/models/user.model';
 import { getEventTexts } from '../assets';
@@ -22,9 +22,9 @@ export const eventInviteMessage = (event: CalendarEvent, owner: User) => {
 };
 
 export const eventInviteMarkup = (eventId: string, userId?: string) => {
-  const backNotifi = userId
-    ? [localBackInlineBtn('back_to_user_notifications')]
-    : [];
+  const backBtns = userId
+    ? backBarInlineBtns('back_to_user_notifications')
+    : [backInlineBtn];
 
   return {
     inline_keyboard: [
@@ -38,8 +38,7 @@ export const eventInviteMarkup = (eventId: string, userId?: string) => {
           callback_data: `${eventId}::reject_event_invite`,
         },
       ],
-      ...backNotifi,
-      backInlineBtn,
+      ...backBtns,
     ],
   };
 };

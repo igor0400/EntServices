@@ -20,7 +20,7 @@ import { User } from 'src/users/models/user.model';
 import { CalendarEventMember } from '../models/event-member.model';
 import { InjectBot } from 'nestjs-telegraf';
 import { UserRepository } from 'src/users/repositories/user.repository';
-import { TextWaiter } from 'src/listeners/models/text-waiter.model';
+import { Waiter } from 'src/listeners/models/waiter.model';
 
 interface CreateEvent {
   creatorTgId: string;
@@ -180,7 +180,9 @@ export class EventsService {
     membersTgIds: string[];
     title?: string;
   }) {
-    const [date, startVal, endVal] = dataValue.split('-');
+    const [timeData, userId] = dataValue.split('_');
+    const [date, startVal, endVal] = timeData.split('-');
+
     const [day, month, year] = date.split('.');
     const startTime = `${year}-${getZero(month)}-${getZero(
       day,
@@ -204,7 +206,7 @@ export class EventsService {
   }
 
   async changeToEvent(ctx: Context, eventId: string) {
-    const { user: ctxUser } = getCtxData(ctx);
+    const { ctxUser } = getCtxData(ctx);
     const userTgId = ctxUser.id;
 
     const user = await this.usersRepository.findByTgId(userTgId);
@@ -249,7 +251,7 @@ export class EventsService {
     userTgId,
     userId,
   }: {
-    textWaiter: TextWaiter;
+    textWaiter: Waiter;
     title: string;
     userTgId: string;
     userId: string;

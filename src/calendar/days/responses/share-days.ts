@@ -1,5 +1,9 @@
 import { CalendarEvent } from 'src/calendar/models/event.model';
-import { backInlineBtn, localBackInlineBtn } from '../../../general';
+import {
+  backBarInlineBtns,
+  backInlineBtn,
+  localBackInlineBtn,
+} from '../../../general';
 import { textMonths } from '../../configs';
 import { getUserName, getZero } from 'src/libs/common';
 import { CalendarBusyDay } from 'src/calendar/models/busy-day.model';
@@ -32,8 +36,7 @@ export const shareCalendarDaysMarkup = ({
   return {
     inline_keyboard: [
       ...eventsBtns,
-      localBackInlineBtn(`${date}_${userId}::back_to_share_calendar_month`),
-      backInlineBtn,
+      ...backBarInlineBtns(`${date}_${userId}::back_to_share_calendar_month`),
     ],
   };
 };

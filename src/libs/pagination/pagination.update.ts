@@ -1,21 +1,25 @@
-import { Action, Update } from 'nestjs-telegraf';
+import { Action, Ctx, Update } from 'nestjs-telegraf';
 import { GeneralMiddlewares } from 'src/general/general.middlewares';
 import { PaginationService } from './pagination.service';
 import { Context } from 'telegraf';
 import { getCtxData } from '../common';
+import { UserRepository } from 'src/users/repositories/user.repository';
 
 @Update()
 export class PaginationUpdate {
   constructor(
     private readonly middlewares: GeneralMiddlewares,
     private readonly paginationService: PaginationService,
+    private readonly userRepository: UserRepository,
   ) {}
 
   @Action(/.*::pagination_nav_item/)
-  async changePaginationPageBtn(ctx: Context) {
-    const { dataValue, user, message } = getCtxData(ctx);
-    const userTelegramId = user?.id;
+  async changePaginationPageBtn(@Ctx() ctx: Context) {
+    const { dataValue, ctxUser, message } = getCtxData(ctx);
+    const userTgId = ctxUser?.id;
     const [page, maxPage, type] = dataValue.split('-');
+
+    const user = await this.userRepository.findByTgId(userTgId);
 
     const changedPage = type === 'next' ? +page + 1 : +page - 1;
 
@@ -24,7 +28,7 @@ export class PaginationUpdate {
     await this.middlewares.btnMiddleware(ctx, async (ctx: Context) => {
       const markup = [];
       const paginationMarkup = await this.paginationService.changePage({
-        userTelegramId,
+        userId: user.id,
         page: changedPage ?? 0,
       });
 

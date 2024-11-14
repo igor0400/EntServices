@@ -7,7 +7,5 @@ ${reason ? `🗣 <b>Причина:</b> <code>${reason}</code>` : ''}
 };
 
 export const banMarkup = {
-  inline_keyboard: [
-    [{ text: '💻 Администратор', url: `https://t.me/Igor0400` }],
-  ],
+  inline_keyboard: [[{ text: '💻 Администратор', url: `https://t.me/ul1dev` }]],
 };

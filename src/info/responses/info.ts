@@ -16,7 +16,7 @@ export const infoMarkup = {
       { text: '💬 Наш чат', url: 'https://t.me/EntServicesChat' },
       { text: '📨 Наш канал', url: 'https://t.me/EntServicesNews' },
     ],
-    [{ text: '💻 Администратор', url: `https://t.me/Igor0400` }],
+    [{ text: '💻 Администратор', url: `https://t.me/ul1dev` }],
     backInlineBtn,
   ],
 };

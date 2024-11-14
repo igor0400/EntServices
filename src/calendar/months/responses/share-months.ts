@@ -47,8 +47,24 @@ export const shareCalendarMonthsMarkup = (
   for (let i = 1; i < maxDate + 1; i++) {
     const isBusy = busyDays.map((i) => i.date).includes(i);
 
+    let dayText = String(i);
+
+    const today = getNowDate();
+
+    if (isBusy) {
+      dayText = '❌';
+    }
+
+    if (
+      oldestDate.getUTCFullYear() === today.getUTCFullYear() &&
+      oldestDate.getUTCMonth() === today.getUTCMonth() &&
+      today.getUTCDate() === i
+    ) {
+      dayText += ' ●';
+    }
+
     days.push({
-      text: isBusy ? '❌' : `${i}`,
+      text: dayText,
       callback_data: `${getZero(i)}.${getZero(
         oldestDate.getUTCMonth() + 1,
       )}.${oldestDate.getUTCFullYear()}_${userId}::share_calendar_date`,

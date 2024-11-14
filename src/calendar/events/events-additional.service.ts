@@ -15,11 +15,12 @@ import { EventsMembersRepository } from '../repositories/event-member.repository
 import { CalendarEvent } from '../models/event.model';
 import { getDateFromDataVal, getFreeIntervals } from '../assets';
 import { filterEventsByDate, filterMultyEvents } from './assets';
-import { CreatePaginationProps, PaginationService } from 'src/libs/pagination';
-import { TextWaitersRepository } from 'src/listeners/repositories/text-waiter.repository';
 import { EventsService } from './events.service';
 import { UserRepository } from 'src/users/repositories/user.repository';
 import { Op } from 'sequelize';
+import { WaitersRepository } from 'src/listeners/repositories/waiter.repository';
+import { PaginationService } from 'src/libs/pagination/pagination.service';
+import { CreatePaginationProps } from 'src/libs/pagination/types';
 
 export interface ChangeToSelectHoursOpts {
   callbackDataTitle: string;
@@ -34,13 +35,13 @@ export class EventsAdditionalService {
   constructor(
     private readonly eventsMembersRepository: EventsMembersRepository,
     private readonly paginationService: PaginationService,
-    private readonly textWaitersRepository: TextWaitersRepository,
+    private readonly waitersRepository: WaitersRepository,
     private readonly userRepository: UserRepository,
     private readonly eventsService: EventsService,
   ) {}
 
   async changeToSelectHours(ctx: Context, options: ChangeToSelectHoursOpts) {
-    const { user: ctxUser, dataValue } = getCtxData(ctx);
+    const { ctxUser, dataValue } = getCtxData(ctx);
 
     const dateVal =
       options.calType === 'pers'
@@ -50,6 +51,9 @@ export class EventsAdditionalService {
     const user = await this.userRepository.findByPk(options?.userId ?? '');
     const userTgId = options.userId ? user?.telegramId : ctxUser.id;
     const creatorTgId = ctxUser.id;
+    const creator = await this.userRepository.findByTgId(creatorTgId);
+
+    const userId = options?.userId ?? creator.id;
 
     const eventsMembers = await this.eventsMembersRepository.findAll({
       where: {
@@ -161,10 +165,10 @@ export class EventsAdditionalService {
     const markup = await selectEventHoursMarkup(
       dateVal,
       sortedHoursTexts,
-      options,
+      { ...options, userId },
       async (conf: Omit<CreatePaginationProps, 'userTelegramId'>) => {
         return await this.paginationService.create({
-          userTelegramId: creatorTgId,
+          userId,
           ...conf,
         });
       },
@@ -177,12 +181,13 @@ export class EventsAdditionalService {
   }
 
   async changeToWriteTitle(ctx: Context) {
-    const { dataValue, user: ctxUser, message } = getCtxData(ctx);
+    const { dataValue, ctxUser, message } = getCtxData(ctx);
     const userTgId = ctxUser.id;
     const user = await this.userRepository.findByTgId(userTgId);
 
-    await this.textWaitersRepository.create({
+    await this.waitersRepository.create({
       type: 'create_pers_cal_event_title',
+      kind: 'text',
       userId: user?.id,
       chatId: message?.chat?.id,
       messageId: message?.message_id,
@@ -196,12 +201,12 @@ export class EventsAdditionalService {
   }
 
   async skipWriteTitle(ctx: Context) {
-    const { dataValue, user } = getCtxData(ctx);
+    const { dataValue, ctxUser } = getCtxData(ctx);
 
     const event = await this.eventsService.createEventByDataValue({
       dataValue,
-      creatorTgId: user.id,
-      membersTgIds: [user.id],
+      creatorTgId: ctxUser.id,
+      membersTgIds: [ctxUser.id],
     });
 
     await this.eventsService.changeToEvent(ctx, event.id);

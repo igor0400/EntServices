@@ -75,7 +75,7 @@ export abstract class AbstractRepository<
     values: {
       [key in keyof TModel]?: TModel[key] | Fn | Col | Literal;
     },
-    options: Omit<UpdateOptions<TModel>, 'returning'>,
+    options?: Omit<UpdateOptions<TModel>, 'returning'>,
   ) {
     const affectedCount = await this.model.update(values, options);
 

@@ -1,4 +1,4 @@
-import { backInlineBtn, localBackInlineBtn } from 'src/general';
+import { backBarInlineBtns } from 'src/general';
 
 export const selectPlaceMessage = () => `<b>Конструктор</b>
 
@@ -36,7 +36,6 @@ export const selectPlaceMarkup = {
         callback_data: 'beauty-salon::constructor_type',
       },
     ],
-    localBackInlineBtn('back_to_constructor'),
-    backInlineBtn,
+    ...backBarInlineBtns('back_to_constructor'),
   ],
 };

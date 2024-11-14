@@ -26,7 +26,7 @@ services:
     image: mysql:8.0
     restart: always
     environment:
-      MYSQL_DATABASE: 'main_database'
+      MYSQL_DATABASE: 'MainDatabase'
       MYSQL_USER: 'MainUser'
       MYSQL_PASSWORD: 'dkfjsdofnsofnmno5j84584nknvkIDJFIDOFJODS&&&***&(hjhdfkldf'
       MYSQL_ROOT_PASSWORD: 'root'

@@ -1,4 +1,4 @@
-import { backInlineBtn, localBackInlineBtn } from 'src/general';
+import { backBarInlineBtns } from 'src/general';
 
 export const selectSiteStyleMessage = () => `<b>Конструктор</b>
 
@@ -31,8 +31,7 @@ export const selectSiteStyleMarkup = (category: string) => {
           callback_data: `${category}_site_brutalism::fill_platform_data`,
         },
       ],
-      localBackInlineBtn(`${category}::back_to_constructor_type`),
-      backInlineBtn,
+      ...backBarInlineBtns(`${category}::back_to_constructor_type`),
     ],
   };
 };
