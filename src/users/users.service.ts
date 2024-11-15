@@ -20,17 +20,10 @@ export class UsersService {
     );
   }
 
-  async findOrCreateUserByCtx({
-    id,
-    first_name,
-    last_name,
-    username,
-  }: {
-    id: string;
-    first_name: string;
-    last_name: string;
-    username: string;
-  }) {
+  async findOrCreateUserByCtx(ctx: Context | any) {
+    const { ctxUser } = getCtxData(ctx);
+    const { id, first_name, last_name, username } = ctxUser;
+
     const isCreated = await this.userRepository.findByTgId(id);
     if (isCreated) return isCreated;
 

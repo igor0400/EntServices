@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { MenuService } from 'src/menu/menu.service';
 import { Context } from 'telegraf';
 import { StartArgsService } from './args.service';
+import { sendMessage } from 'src/general';
 
 @Injectable()
 export class StartService {
@@ -21,7 +22,11 @@ export class StartService {
   }
 
   async sendStartMessage(ctx: Context) {
-    await ctx.reply('👋');
+    await sendMessage('👋', {
+      ctx,
+      type: 'send',
+      isBanner: false,
+    });
     await this.menuService.sendMenu(ctx);
   }
 }

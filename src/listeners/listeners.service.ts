@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { WaitersRepository } from './repositories/waiter.repository';
-import { GeneralValidations } from 'src/general/general.validations';
 import { Context, Telegraf } from 'telegraf';
 import { getCtxData } from 'src/libs/common';
 import { UserRepository } from 'src/users/repositories/user.repository';
@@ -9,9 +8,6 @@ import { InjectBot } from 'nestjs-telegraf';
 import { InlineKeyboardMarkup } from 'telegraf/typings/core/types/typegram';
 import { MailingRepository } from 'src/mailings/repositories/mailing.repository';
 import { MailingTemplateRepository } from 'src/mailings/repositories/mailing-template.repository';
-import { createEventTitleValidation } from './configs';
-import { EventsService } from 'src/calendar/events/events.service';
-import { ShareEventsService } from 'src/calendar/events/share-events.service';
 
 interface CreateWaiterArgs {
   type: string;
@@ -26,10 +22,7 @@ interface CreateWaiterArgs {
 export class ListenersService {
   constructor(
     private readonly userRepository: UserRepository,
-    private readonly eventsService: EventsService,
-    private readonly shareEventsService: ShareEventsService,
     private readonly waitersRepository: WaitersRepository,
-    private readonly generalValidations: GeneralValidations,
     private readonly mailingRepository: MailingRepository,
     private readonly mailingTemplateRepository: MailingTemplateRepository,
     @InjectBot() private readonly bot: Telegraf<Context>,
@@ -75,35 +68,8 @@ export class ListenersService {
       markup?: InlineKeyboardMarkup;
     };
 
-    if (type === 'create_pers_cal_event_title') {
-      const isValid = await this.generalValidations.startValidation(
-        ctx,
-        createEventTitleValidation(text),
-      );
-      if (!isValid) return;
-
-
-      await this.eventsService.createEventByTitleListener({
-        textWaiter,
-        userTgId,
-        userId,
-        title: text,
-      });
-    }
-
-    if (type === 'create_share_cal_event_title') {
-      const isValid = await this.generalValidations.startValidation(
-        ctx,
-        createEventTitleValidation(text),
-      );
-      if (!isValid) return;
-
-      await this.shareEventsService.createEventByTitleListener({
-        textWaiter,
-        title: text,
-        userTgId,
-        userId,
-      });
+    if (type === 'some') {
+      // do something
     }
 
     await this.waitersRepository.destroy({ where: { userId } });

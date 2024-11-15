@@ -1,8 +1,5 @@
 import { Module } from '@nestjs/common';
 import { BanUser } from 'src/bans/models/ban-user.model';
-import { CalendarBusyDay } from 'src/calendar/models/busy-day.model';
-import { CalendarEventMember } from 'src/calendar/models/event-member.model';
-import { CalendarEvent } from 'src/calendar/models/event.model';
 import { ChainField } from 'src/libs/chain/models/chain-field.model';
 import { Chain } from 'src/libs/chain/models/chain.model';
 import { DatabaseModule as AppDatabaseModule } from 'src/libs/common';
@@ -21,9 +18,6 @@ import { User } from 'src/users/models/user.model';
       User,
       UserRoles,
       Waiter,
-      CalendarEvent,
-      CalendarEventMember,
-      CalendarBusyDay,
       Pagination,
       BanUser,
       BasicNotification,

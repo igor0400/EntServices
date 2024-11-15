@@ -6,6 +6,7 @@ import {
   basicNotificationsMessage,
 } from './responses';
 import { BasicNotificationRepository } from './repositories/basic-notification.repository';
+import { sendMessage } from 'src/general';
 
 @Injectable()
 export class NotificationsService {
@@ -23,9 +24,9 @@ export class NotificationsService {
     });
     const isFull = Boolean(notifications.length);
 
-    await ctx.editMessageCaption(basicNotificationsMessage(isFull), {
+    await sendMessage(basicNotificationsMessage(isFull), {
+      ctx,
       reply_markup: basicNotificationsMarkup(notifications),
-      parse_mode: 'HTML',
     });
   }
 
@@ -34,11 +35,11 @@ export class NotificationsService {
       notificationId,
     );
 
-    await ctx.editMessageCaption(notification.text, {
+    await sendMessage(notification.text, {
+      ctx,
       reply_markup: notification.markup
         ? JSON.parse(notification.markup)
         : undefined,
-      parse_mode: 'HTML',
     });
   }
 }

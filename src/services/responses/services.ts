@@ -6,8 +6,8 @@ export const servicesMessage = () => `<b>Сервисы</b>
 
 export const servicesMarkup = {
   inline_keyboard: [
-    [{ text: '🗓 Календарь', callback_data: 'calendar_service' }],
-    [{ text: '🏗 Конструктор', callback_data: 'constructor_service' }],
+    [{ text: '🗓 Календарь', url: 'https://t.me/TaskTamerRobot' }],
+    // [{ text: '🏗 Конструктор', url: 'https://t.me/' }],
     backInlineBtn,
   ],
 };

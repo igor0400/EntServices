@@ -10,12 +10,10 @@ import { validationSchema } from './libs/common';
 import { UsersModule } from './users/users.module';
 import { DatabaseModule } from './general/database/database.module';
 import { ListenersModule } from './listeners/listeners.module';
-import { CalendarModule } from './calendar/calendar.module';
 import { NotificationsModule } from './notifications/notifications.module';
 import { ListenersLowModule } from './listeners/listeners-low.module';
 import { BansModule } from './bans/bans.module';
 import { ProfileModule } from './profile/profile.module';
-import { ConstructorModule } from './constructor/constructor.module';
 import { ChainModule } from './libs/chain/chain.module';
 import { RolesModule } from './roles/roles.module';
 import { MailingsModule } from './mailings/mailings.module';
@@ -36,7 +34,6 @@ import { FilesModule } from './files/files.module';
       inject: [ConfigService],
     }),
     DatabaseModule,
-    CalendarModule,
     StartModule,
     MenuModule,
     ServicesModule,
@@ -48,7 +45,6 @@ import { FilesModule } from './files/files.module';
     ListenersModule,
     BansModule,
     ProfileModule,
-    ConstructorModule,
     ChainModule,
     RolesModule,
     MailingsModule,
