@@ -117,7 +117,11 @@ export class GeneralMiddlewares {
     await this.usersService.updateUserNamesByCtx(ctx);
     await this.listenersService.clearUserListeners(ctxUser.id);
 
-    await this.isNewsFollowWrapper(ctx, func, type);
+    if (ctx?.args && Array.from(ctx?.args)?.length) {
+      await this.isBannedWrapper(ctx, func, type);
+    } else {
+      await this.isNewsFollowWrapper(ctx, func, type);
+    }
   }
 
   private async isBannedWrapper(
