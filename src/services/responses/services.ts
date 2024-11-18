@@ -1,4 +1,4 @@
-import { backInlineBtn } from '../../general';
+import { localBackInlineBtn } from '../../general';
 
 export const servicesMessage = () => `<b>Сервисы</b>
 
@@ -8,6 +8,6 @@ export const servicesMarkup = {
   inline_keyboard: [
     [{ text: '🗓 Календарь', url: 'https://t.me/TaskTamerRobot' }],
     // [{ text: '🏗 Конструктор', url: 'https://t.me/' }],
-    backInlineBtn,
+    localBackInlineBtn('back'),
   ],
 };
