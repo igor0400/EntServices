@@ -7,7 +7,7 @@ export const menuMarkup = {
   inline_keyboard: [
     [
       { text: 'ℹ️ Информация', callback_data: 'info' },
-      { text: '👤 Профиль', callback_data: 'profile' },
+      // { text: '👤 Профиль', callback_data: 'profile' },
     ],
     [{ text: '🗂️ Сервисы', callback_data: 'services' }],
   ],
